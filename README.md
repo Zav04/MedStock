@@ -12,10 +12,7 @@ Gestão de stock hospitalar para:<br />
         - Materiais cirúrgicos<br />
         - Entre Outros...<br />
     - Sistema de controlo de pedidos de diferentes departamentos hospitalares <br />
-    - Controle de fornecedores para reposição de stock (futuro)<br />
-    - Interface gráfica com Flet<br />
-    - Backend desenvolvido em FastAPI<br />
-    - Base de dados em PostgreSQL<br /><br />
+    - Controlo de fornecedores para reposição de stock (futuro)<br />
     
 Tecnologias Utilizadas<br />
     - Python: Linguagem de programação principal.<br />
