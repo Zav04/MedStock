@@ -25,9 +25,9 @@ def config_login_page(page):
                             ]),
                             ft.Row(
                                 controls=[
-                                    ft.IconButton(icon=ft.icons.MINIMIZE_OUTLINED, on_click=lambda _: minimize_window(page)),
-                                    ft.IconButton(icon=ft.icons.CHECK_BOX_OUTLINE_BLANK, on_click=lambda _: maximize_window(page)),
-                                    ft.IconButton(icon=ft.icons.CLOSE_OUTLINED, on_click=lambda _: page.window.close()),
+                                    ft.IconButton(icon=ft.icons.MINIMIZE_OUTLINED, on_click=lambda _: minimize_window(page), icon_color=ft.colors.BLACK),
+                                    ft.IconButton(icon=ft.icons.CHECK_BOX_OUTLINE_BLANK, on_click=lambda _: maximize_window(page),icon_color=ft.colors.BLACK),
+                                    ft.IconButton(icon=ft.icons.CLOSE_OUTLINED, on_click=lambda _: page.window.close(),icon_color=ft.colors.BLACK),
                                 ],
                                 spacing=2
                             ),
