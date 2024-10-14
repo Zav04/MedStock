@@ -1,6 +1,6 @@
 import flet as ft
 from flet import *
-from .back_login import login_button_clicked, reset_password_button_clicked, register_button_clicked
+from .back_login import login_button_clicked, reset_password_button_clicked
 from .config_login import config_login_page, toggle_password_visibility
 
 def login_page(page: ft.Page):
@@ -39,20 +39,16 @@ def login_page(page: ft.Page):
         height=60,
         width=200,
         style=ft.ButtonStyle(
-            text_style=ft.TextStyle(size=20)
+            text_style=ft.TextStyle(size=25)
         )
     )
     
-    registar_text = ft.TextButton(
-        text="Registar", 
-        on_click=lambda _: register_button_clicked,        
-    )
-    
     reset_password_text = ft.TextButton(
-        text="Esqueci-me da Palavra-Passe", 
-        on_click=lambda _: reset_password_button_clicked,
+    text="Esqueci-me da Palavra-Passe", 
+    on_click=lambda _: reset_password_button_clicked,
     )
     
+
     img_login = ft.Image(
         src=f"Logo/Superior/PNG/Logo.png",
         fit=ft.ImageFit.FILL,
@@ -67,7 +63,6 @@ def login_page(page: ft.Page):
                 email_input,
                 password_input,
                 login_button,
-                registar_text,
                 reset_password_text
             ],
             alignment=ft.MainAxisAlignment.CENTER,

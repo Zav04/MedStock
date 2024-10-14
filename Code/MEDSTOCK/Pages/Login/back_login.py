@@ -6,6 +6,3 @@ def login_button_clicked(email_input, password_input):
     
 def reset_password_button_clicked(e):
     print("Esqueci-me da Palavra-Passe")
-    
-def register_button_clicked(e):
-    print("Registar")
