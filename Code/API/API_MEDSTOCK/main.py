@@ -16,4 +16,5 @@ api.add_middleware(
 api.include_router(GET_IS_ALIVE_router)
 
 if __name__ == "__main__":
-    uvicorn.run("main:api", host="localhost", port=5000, reload=True)
+    uvicorn.run("main:api", reload=True)
+    #uvicorn.run("main:api", host="localhost", port=5000, reload=True)
