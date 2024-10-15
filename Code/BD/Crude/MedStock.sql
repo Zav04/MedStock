@@ -1,0 +1,18 @@
+CREATE TABLE Utilizador (Utilizador_id BIGSERIAL NOT NULL, nome varchar(255) NOT NULL, email varchar(255) NOT NULL, sexo varchar(1) NOT NULL, data_nascimento date NOT NULL, role_id BIGINT NOT NULL, PRIMARY KEY (Utilizador_id));
+CREATE TABLE Medicamentos (medicamento_id BIGSERIAL NOT NULL, nome_medicamento varchar(255) NOT NULL, tipo_id BIGINT NOT NULL, Codigo varchar(255) NOT NULL, PRIMARY KEY (medicamento_id));
+CREATE TABLE Setor_Hospital (setor_id BIGSERIAL NOT NULL, nome_setor varchar(255) NOT NULL, localizacao varchar(255) NOT NULL, responsavel_id BIGINT NOT NULL, PRIMARY KEY (setor_id));
+CREATE TABLE Tipo_Medicamento (tipo_id BIGSERIAL NOT NULL, nome_tipo varchar(255) NOT NULL, PRIMARY KEY (tipo_id));
+CREATE TABLE Roles (role_id BIGSERIAL NOT NULL, nome_role varchar(255) NOT NULL, PRIMARY KEY (role_id));
+CREATE TABLE Stock (item_id BIGSERIAL NOT NULL, medicamento_id BIGINT NOT NULL, quantidade_disponivel BIGINT NOT NULL, PRIMARY KEY (item_id));
+CREATE TABLE Requerimento (requerimento_id BIGSERIAL NOT NULL, setor_id BIGINT NOT NULL, Utilizador_id_pedido BIGINT NOT NULL, Utilizador_id_confirmacao BIGINT, Utilizador_id_envio BIGINT, data_pedido timestamp NOT NULL, data_confirmacao timestamp, data_envio timestamp, status BIGINT NOT NULL, PRIMARY KEY (requerimento_id));
+CREATE TABLE Requerimento_Medicamentos (Requerimentorequerimento_id BIGINT NOT NULL, Medicamentosmedicamento_id BIGINT NOT NULL, quantidade BIGINT NOT NULL, PRIMARY KEY (Requerimentorequerimento_id, Medicamentosmedicamento_id));
+ALTER TABLE Utilizador ADD CONSTRAINT FKUtilizador412003 FOREIGN KEY (role_id) REFERENCES Roles (role_id);
+ALTER TABLE Medicamentos ADD CONSTRAINT FKMedicament500015 FOREIGN KEY (tipo_id) REFERENCES Tipo_Medicamento (tipo_id);
+ALTER TABLE Stock ADD CONSTRAINT FKStock175390 FOREIGN KEY (medicamento_id) REFERENCES Medicamentos (medicamento_id);
+ALTER TABLE Requerimento ADD CONSTRAINT FKRequerimen984863 FOREIGN KEY (setor_id) REFERENCES Setor_Hospital (setor_id);
+ALTER TABLE Requerimento ADD CONSTRAINT FKRequerimen803450 FOREIGN KEY (Utilizador_id_pedido) REFERENCES Utilizador (Utilizador_id);
+ALTER TABLE Requerimento ADD CONSTRAINT FKRequerimen320353 FOREIGN KEY (Utilizador_id_confirmacao) REFERENCES Utilizador (Utilizador_id);
+ALTER TABLE Requerimento ADD CONSTRAINT FKRequerimen295227 FOREIGN KEY (Utilizador_id_envio) REFERENCES Utilizador (Utilizador_id);
+ALTER TABLE Setor_Hospital ADD CONSTRAINT FKSetor_Hosp776558 FOREIGN KEY (responsavel_id) REFERENCES Utilizador (Utilizador_id);
+ALTER TABLE Requerimento_Medicamentos ADD CONSTRAINT FKRequerimen132618 FOREIGN KEY (Requerimentorequerimento_id) REFERENCES Requerimento (requerimento_id);
+ALTER TABLE Requerimento_Medicamentos ADD CONSTRAINT FKRequerimen680673 FOREIGN KEY (Medicamentosmedicamento_id) REFERENCES Medicamentos (medicamento_id);

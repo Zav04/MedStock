@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
-from CREATE_USER.PUT_Create_User import router as PUT_Create_User_router
+from IS_ALIVE.GET_IS_ALIVE import router as GET_IS_ALIVE_router
 
 api = FastAPI()
 
@@ -13,7 +13,7 @@ api.add_middleware(
     allow_headers=["*"],
 )
 
-api.include_router(PUT_Create_User_router)
+api.include_router(GET_IS_ALIVE_router)
 
 if __name__ == "__main__":
     uvicorn.run("main:api", host="localhost", port=5000, reload=True)

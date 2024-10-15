@@ -15,7 +15,6 @@ def login_page(page: ft.Page):
         text_align="start"
     )
     
-    # Campo de senha com ícone de visibilidade dentro do TextField
     password_input = ft.TextField(
         label="Password",
         password=True,
@@ -44,9 +43,18 @@ def login_page(page: ft.Page):
     )
     
     reset_password_text = ft.TextButton(
-    text="Esqueci-me da Palavra-Passe", 
-    on_click=lambda _: reset_password_button_clicked,
-    )
+        on_click=lambda _: reset_password_button_clicked, 
+        content=ft.Container(
+            content=ft.Column(
+                [
+                    ft.Text(value="Esqueci-me da Palavra-Passe", size=15),
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,
+                spacing=5,
+                ),
+                padding=ft.padding.all(10),
+    ),
+        )
     
 
     img_login = ft.Image(
