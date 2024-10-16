@@ -1,13 +1,13 @@
 import flet as ft
 from flet import *
 from .back_login import login_button_clicked, reset_password_button_clicked
-from .config_login import config_login_page, toggle_password_visibility
+from .back_login import toggle_password_visibility
+
 
 def login_page(page: ft.Page):
+    from Pages import config_system
+    config_system(page)
     
-    config_login_page(page)
-    
-    # Campo de email
     email_input = ft.TextField(
         label="Email", 
         width=500,
@@ -31,7 +31,6 @@ def login_page(page: ft.Page):
         )
     )
     
-    # Botão de login
     login_button = ft.ElevatedButton(
         text="Login",
         on_click=lambda _: login_button_clicked(email_input, password_input), 
@@ -59,9 +58,10 @@ def login_page(page: ft.Page):
 
     img_login = ft.Image(
         src=f"Logo/Superior/PNG/Logo.png",
-        fit=ft.ImageFit.FILL,
-        width=1200,
-        height=500,
+        fit=ft.ImageFit.CONTAIN,
+        width=1100,
+        height=400,
+        expand=False
     )
     
     login_container = ft.Container(
@@ -75,9 +75,10 @@ def login_page(page: ft.Page):
             ],
             alignment=ft.MainAxisAlignment.CENTER,
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-            expand=False
+            expand=True
         ),
         alignment=ft.alignment.center,
+        expand=True
     )
 
     page.add(login_container)

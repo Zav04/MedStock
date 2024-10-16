@@ -1,16 +1,16 @@
 import flet as ft
-import ctypes
 
-def config_login_page(page):
+
+def config_system(page):
     from Pages import maximize_window, minimize_window
-    page.theme_mode = ft.ThemeMode.LIGHT
+    page.theme_mode = ft.ThemeMode.SYSTEM
     
     if page.web:
         page.title = "Login"
     elif page.platform.value == "windows":
         page.window.resizable = True
         page.window.full_screen = False
-        page.window_frameless = True
+        page.window.frameless = True
 
         page.add(
             ft.ResponsiveRow([
@@ -38,10 +38,3 @@ def config_login_page(page):
                 )
             ])
         )
-
-
-def toggle_password_visibility(password_input, icon_button):
-    password_input.password = not password_input.password
-    icon_button.icon = ft.icons.VISIBILITY_OFF if password_input.password else ft.icons.VISIBILITY
-    password_input.update()
-    icon_button.update()
