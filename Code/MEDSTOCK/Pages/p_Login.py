@@ -36,10 +36,10 @@ class LoginPage(QWidget):
         main_layout.setContentsMargins(10, 30, 10, 30)
 
 
-        icon_path = os.path.abspath("./icons/MedStock/favicon.png")
+        icon_path = os.path.abspath("./icons/MedStock/Superior/PNG/Expand_With_BackGround.png")
         img_login = QLabel(self)
         pixmap = QPixmap(icon_path)
-        pixmap = pixmap.scaled(QSize(400, 150), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        pixmap = pixmap.scaled(QSize(1500, 450), Qt.KeepAspectRatio, Qt.SmoothTransformation)
         img_login.setPixmap(pixmap)
         img_login.setAlignment(Qt.AlignCenter)
         main_layout.addWidget(img_login)
