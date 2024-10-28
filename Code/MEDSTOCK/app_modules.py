@@ -1,14 +1,14 @@
 
 # GUI FILE
-from pages.Dashboard.ui_dashboard import Ui_MainWindow
+from pages.Dashboard.Ui_Dashboard import Ui_MainWindow
 # IMPORT QSS CUSTOM
-from pages.Dashboard.ui_styles import Style
+from APP.ui_styles import Style
 # IMPORT FUNCTIONS
-from pages.Dashboard.ui_functions import *
+from APP.ui_functions import *
 
 from main import Dashboard
 # Pages
-from pages.home import HomePage
+from pages.p_Home import HomePage
 
 
 import sys

@@ -80,11 +80,11 @@ class HomePage(QWidget):
 
 
         boxes = [
-            create_box('./icons/MedStock/description.png', 99, "Total de Pedidos"),
-            create_box('./icons/MedStock/pending_actions.png', 199, "Pedidos em Espera de Aprovação"),
+            create_box('./icons/MaterialIcons/description.png', 99, "Total de Pedidos"),
+            create_box('./icons/MaterialIcons/pending_actions.png', 199, "Pedidos em Espera de Aprovação"),
             create_box('./icons/MedStock/favicon.png', 29, "Pedidos em Aberto"),
             create_box('./icons/MedStock/favicon.png', 9, "Pedidos Pendentes"),
-            create_box('./icons/MedStock/assignment_turned.png', 373, "Pedidos Finalizados")
+            create_box('./icons/MaterialIcons/assignment_turned.png', 373, "Pedidos Finalizados")
         ]
 
         for i, box in enumerate(boxes):

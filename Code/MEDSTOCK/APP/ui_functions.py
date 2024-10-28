@@ -1,4 +1,4 @@
-from pages.Dashboard.ui_styles import Style
+from APP.ui_styles import Style
 from PySide2 import QtCore, QtGui
 from PySide2.QtCore import (QPropertyAnimation,QSize,Qt)
 from PySide2.QtGui import (QColor,QFont)
@@ -91,7 +91,7 @@ class UIFunctions(QMainWindow):
         button.setMinimumSize(QSize(0, 70))
         button.setLayoutDirection(Qt.LeftToRight)
         button.setFont(font)
-        button.setStyleSheet(Style.style_bt_standard.replace('ICON_REPLACE', icon))
+        button.setStyleSheet(Style.style_bt_menu.replace('ICON_REPLACE', icon))
         button.setText(name)
         button.setToolTip(name)
         button.clicked.connect(self.Button)

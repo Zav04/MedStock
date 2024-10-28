@@ -1,21 +1,17 @@
 from app_modules import *
-from PySide2.QtCore import (QMetaObject,QSize,Qt)
-from PySide2.QtGui import (QFont,QIcon)
+from PySide2.QtCore import (QMetaObject,QSize, Qt)
+from PySide2.QtGui import (QIcon)
 from PySide2.QtWidgets import *
 import files_rc
 
-class Ui_MainWindow(object):
+class Ui_Login(object):
     def setupUi(self, MainWindow):
-        MainWindow.resize(1500, 720)
-        MainWindow.setMinimumSize(QSize(1500, 720))
+        MainWindow.resize(800, 1000)
+        MainWindow.setMinimumSize(QSize(800, 1000))
 
         ########################################################################
         ## START - Configuração da interface
         ########################################################################
-        font = QFont()
-        font.setFamily(u"Segoe UI")
-        font.setPointSize(10)
-        MainWindow.setFont(font)
         MainWindow.setStyleSheet(u"QMainWindow {background: transparent; }\n"
 "QToolTip {\n"
 "	color: #ffffff;\n"
@@ -51,41 +47,6 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.setSpacing(0)
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
-        self.frame_toggle = QFrame(self.frame_top)
-        self.frame_toggle.setObjectName(u"frame_toggle")
-        self.frame_toggle.setMaximumSize(QSize(70, 16777215))
-        self.frame_toggle.setStyleSheet(u"background-color: rgb(27, 29, 35);")
-        self.frame_toggle.setFrameShape(QFrame.NoFrame)
-        self.frame_toggle.setFrameShadow(QFrame.Raised)
-        self.verticalLayout_3 = QVBoxLayout(self.frame_toggle)
-        self.verticalLayout_3.setSpacing(0)
-        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
-        self.btn_toggle_menu = QPushButton(self.frame_toggle)
-        self.btn_toggle_menu.setObjectName(u"btn_toggle_menu")
-        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.btn_toggle_menu.sizePolicy().hasHeightForWidth())
-        self.btn_toggle_menu.setSizePolicy(sizePolicy)
-        self.btn_toggle_menu.setStyleSheet(u"QPushButton {\n"
-"	background-image: url(:/24x24/icons/24x24/cil-menu.png);\n"
-"	background-position: center;\n"
-"	background-repeat: no-reperat;\n"
-"	border: none;\n"
-"	background-color: rgb(27, 29, 35);\n"
-"	background-color: #b5c6bf;\n"
-"}\n"
-"QPushButton:hover {\n"
-"	background-color: #81C784;\n"
-"}\n"
-"QPushButton:pressed {	\n"
-"	background-color: #4CAF50;\n"
-"}")
-
-        self.verticalLayout_3.addWidget(self.btn_toggle_menu)
-        
-        self.horizontalLayout_3.addWidget(self.frame_toggle)
 
         self.frame_top_right = QFrame(self.frame_top)
         self.frame_top_right.setObjectName(u"frame_top_right")
@@ -98,7 +59,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.frame_top_btns = QFrame(self.frame_top_right)
         self.frame_top_btns.setObjectName(u"frame_top_btns")
-        self.frame_top_btns.setMaximumSize(QSize(16777215, 42))
+        self.frame_top_btns.setMaximumSize(QSize(16777215, 16777215))
         self.frame_top_btns.setStyleSheet(u"background-color: rgba(27, 29, 35, 200)")
         self.frame_top_btns.setFrameShape(QFrame.NoFrame)
         self.frame_top_btns.setFrameShadow(QFrame.Raised)
@@ -134,12 +95,12 @@ class Ui_MainWindow(object):
 
         self.label_title_bar_top = QLabel(self.frame_label_top_btns)
         self.label_title_bar_top.setObjectName(u"label_title_bar_top")
-        font1 = QFont()
-        font1.setFamily(u"Segoe UI")
-        font1.setPointSize(10)
-        font1.setBold(True)
-        font1.setWeight(75)
-        self.label_title_bar_top.setFont(font1)
+        font = QFont()
+        font.setFamily(u"Segoe UI")
+        font.setPointSize(10)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_title_bar_top.setFont(font)
         self.label_title_bar_top.setStyleSheet(u"background: transparent;\n""")
         self.horizontalLayout_10.addWidget(self.label_title_bar_top)
         self.horizontalLayout_4.addWidget(self.frame_label_top_btns)
@@ -229,39 +190,11 @@ class Ui_MainWindow(object):
 
 
         self.verticalLayout_2.addWidget(self.frame_top_btns)
-
-        self.frame_top_info = QFrame(self.frame_top_right)
-        self.frame_top_info.setObjectName(u"frame_top_info")
-        self.frame_top_info.setMaximumSize(QSize(16777215, 65))
-        self.frame_top_info.setStyleSheet(u"background-color: #b5c6bf;")
-        self.frame_top_info.setFrameShape(QFrame.NoFrame)
-        self.frame_top_info.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_8 = QHBoxLayout(self.frame_top_info)
-        self.horizontalLayout_8.setSpacing(0)
-        self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
-        self.horizontalLayout_8.setContentsMargins(10, 0, 10, 0)
-        
-        self.label_top_info_right = QLabel(self.frame_top_info)
-        self.label_top_info_right.setObjectName(u"label_top_info_right")
-        self.label_top_info_right.setMinimumSize(QSize(0, 0))
-        self.label_top_info_right.setMaximumSize(QSize(16777215, 16777215))
-        font3 = QFont()
-        font3.setFamily(u"Segoe UI")
-        font3.setBold(True)
-        font3.setWeight(75)
-        self.label_top_info_right.setFont(font3)
-        self.label_top_info_right.setStyleSheet(u"color: rgb(98, 103, 111);")
-        self.label_top_info_right.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
-        
-        self.horizontalLayout_8.addWidget(self.label_top_info_right)
-        self.verticalLayout_2.addWidget(self.frame_top_info)
         self.horizontalLayout_3.addWidget(self.frame_top_right)
         self.verticalLayout.addWidget(self.frame_top)
 
         self.frame_center = QFrame(self.frame_main)
         self.frame_center.setObjectName(u"frame_center")
-        sizePolicy.setHeightForWidth(self.frame_center.sizePolicy().hasHeightForWidth())
-        self.frame_center.setSizePolicy(sizePolicy)
         self.frame_center.setStyleSheet(u"background-color: #b5c6bf;")
         self.frame_center.setFrameShape(QFrame.NoFrame)
         self.frame_center.setFrameShadow(QFrame.Raised)
@@ -269,73 +202,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.setSpacing(0)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.frame_left_menu = QFrame(self.frame_center)
-        self.frame_left_menu.setObjectName(u"frame_left_menu")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy3.setHorizontalStretch(0)
-        sizePolicy3.setVerticalStretch(0)
-        sizePolicy3.setHeightForWidth(self.frame_left_menu.sizePolicy().hasHeightForWidth())
-        self.frame_left_menu.setSizePolicy(sizePolicy3)
-        self.frame_left_menu.setMinimumSize(QSize(70, 0))
-        self.frame_left_menu.setMaximumSize(QSize(70, 16777215))
-        self.frame_left_menu.setLayoutDirection(Qt.LeftToRight)
-        self.frame_left_menu.setStyleSheet(u"background-color: #b5c6bf;")
-        self.frame_left_menu.setFrameShape(QFrame.NoFrame)
-        self.frame_left_menu.setFrameShadow(QFrame.Raised)
-        self.verticalLayout_5 = QVBoxLayout(self.frame_left_menu)
-        self.verticalLayout_5.setSpacing(1)
-        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
-        self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
-        self.frame_menus = QFrame(self.frame_left_menu)
-        self.frame_menus.setObjectName(u"frame_menus")
-        self.frame_menus.setFrameShape(QFrame.NoFrame)
-        self.frame_menus.setFrameShadow(QFrame.Raised)
-        self.layout_menus = QVBoxLayout(self.frame_menus)
-        self.layout_menus.setSpacing(0)
-        self.layout_menus.setObjectName(u"layout_menus")
-        self.layout_menus.setContentsMargins(0, 0, 0, 0)
-
-        self.verticalLayout_5.addWidget(self.frame_menus, 0, Qt.AlignTop)
-
-        self.frame_extra_menus = QFrame(self.frame_left_menu)
-        self.frame_extra_menus.setObjectName(u"frame_extra_menus")
-        sizePolicy3.setHeightForWidth(self.frame_extra_menus.sizePolicy().hasHeightForWidth())
-        self.frame_extra_menus.setSizePolicy(sizePolicy3)
-        self.frame_extra_menus.setFrameShape(QFrame.NoFrame)
-        self.frame_extra_menus.setFrameShadow(QFrame.Raised)
-        self.layout_menu_bottom = QVBoxLayout(self.frame_extra_menus)
-        self.layout_menu_bottom.setSpacing(10)
-        self.layout_menu_bottom.setObjectName(u"layout_menu_bottom")
-        self.layout_menu_bottom.setContentsMargins(0, 0, 0, 25)
-        self.label_user_icon = QLabel(self.frame_extra_menus)
-        self.label_user_icon.setObjectName(u"label_user_icon")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
-        sizePolicy4.setHorizontalStretch(0)
-        sizePolicy4.setVerticalStretch(0)
-        sizePolicy4.setHeightForWidth(self.label_user_icon.sizePolicy().hasHeightForWidth())
-        self.label_user_icon.setSizePolicy(sizePolicy4)
-        self.label_user_icon.setMinimumSize(QSize(60, 60))
-        self.label_user_icon.setMaximumSize(QSize(60, 60))
-        font4 = QFont()
-        font4.setFamily(u"Segoe UI")
-        font4.setPointSize(12)
-        self.label_user_icon.setFont(font4)
-        self.label_user_icon.setStyleSheet(u"QLabel {\n"
-"	border-radius: 30px;\n"
-"	background-color: #b5c6bf;\n"
-"	border: 5px solid rgb(39, 44, 54);\n"
-"	background-position: center;\n"
-"	background-repeat: no-repeat;\n"
-"	color: rgb(98, 103, 111);\n"
-"}")
-        self.label_user_icon.setAlignment(Qt.AlignCenter)
-
-        self.layout_menu_bottom.addWidget(self.label_user_icon, 0, Qt.AlignHCenter)
-
-        self.verticalLayout_5.addWidget(self.frame_extra_menus, 0, Qt.AlignBottom)
-
-        self.horizontalLayout_2.addWidget(self.frame_left_menu)
-
+        
         self.frame_content_full = QFrame(self.frame_center)
         self.frame_content_full.setObjectName(u"frame_content_full")
         self.frame_content_full.setStyleSheet(u"background-color: #F9F9F9;")
@@ -360,13 +227,11 @@ class Ui_MainWindow(object):
         self.frame_content.setFrameShape(QFrame.NoFrame)
         self.frame_content.setFrameShadow(QFrame.Raised)
         self.frame_content.setStyleSheet(u"background-color: #FFFFFF;")
-        self.verticalLayout_9 = QVBoxLayout(self.frame_content)
-        self.verticalLayout_9.setSpacing(0)
-        self.verticalLayout_9.setObjectName(u"verticalLayout_9")
-        self.verticalLayout_9.setContentsMargins(5, 5, 5, 5)
-        self.stackedWidget = QStackedWidget(self.frame_content)
-        self.stackedWidget.setObjectName(u"stackedWidget")
-        self.stackedWidget.setStyleSheet(u"background: transparent;")
+         # Adicionando layout vertical ao frame_content
+        self.content_layout = QVBoxLayout(self.frame_content)
+        self.content_layout.setContentsMargins(0, 0, 0, 0)  # Ajuste as margens conforme necessário
+        
+
         ########################################################################
         ## END - Centro da janela
         ########################################################################
@@ -377,7 +242,6 @@ class Ui_MainWindow(object):
         ########################################################################
         ## START - Criar Paginas
         ########################################################################
-        self.verticalLayout_9.addWidget(self.stackedWidget)
         self.verticalLayout_4.addWidget(self.frame_content)
         
         ########################################################################
@@ -438,9 +302,6 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         QWidget.setTabOrder(self.btn_minimize, self.btn_maximize_restore)
         QWidget.setTabOrder(self.btn_maximize_restore, self.btn_close)
-        QWidget.setTabOrder(self.btn_close, self.btn_toggle_menu)
-
-        #self.stackedWidget.setCurrentIndex(1)
 
         QMetaObject.connectSlotsByName(MainWindow)
 
