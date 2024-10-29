@@ -3,13 +3,13 @@ from PySide2.QtGui import QPixmap, QIcon, QColor
 from PySide2.QtCore import Qt, QSize
 import os
 from APP.ui_styles import Style
-from Overlays.Overlay import AlertOverlay
+from Overlays.Overlay import Overlay
 
 
 def login_button_clicked(email_input, password_input,main_window):
     email = email_input.text()
     password = password_input.text()
-    AlertOverlay("Este é um alerta de sucesso!", alert_type="success", parent=main_window)
+    Overlay.show_error(main_window, "Login Errado")
     print(f"Login: {email}, Password: {password}")
 
 def reset_password_button_clicked():
@@ -82,7 +82,7 @@ class LoginPage(QWidget):
         login_button = QPushButton("Login", self)
         login_button.setFixedSize(200, 60)
         login_button.setStyleSheet(Style.style_bt_QPushButton)
-        login_button.clicked.connect(lambda: login_button_clicked(email_input, password_input, main_layout))
+        login_button.clicked.connect(lambda: login_button_clicked(email_input, password_input, self))
         main_layout.addWidget(login_button, alignment=Qt.AlignCenter)
 
         main_layout.addSpacing(15)

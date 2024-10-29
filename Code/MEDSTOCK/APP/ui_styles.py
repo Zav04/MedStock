@@ -1,6 +1,9 @@
 
 
 class Style():
+    
+    # COLOR_BACKGROUND_2 = "#b5c6bf"
+    # PATH_RESOURCES = "./path/to/resources/" 
 
     style_bt_menu = (
     """
@@ -95,6 +98,86 @@ class Style():
         color: #4CAF50;
     }
 """)
+    
+    # style_InformationModal = f"""
+    # InformationModal {{
+    #     border-radius: 10px;
+    #     border: 5px solid {COLOR_BACKGROUND_2};
+
+    #     QPushButton#closeButton {{
+    #         background-color: transparent;
+    #         icon: url({PATH_RESOURCES+'window_close.png'});
+    #     }}
+
+    #     QLabel#iconlabel {{
+    #         image: url({PATH_RESOURCES+'info.png'});
+    #         min-width: 20px;
+    #         min-height: 20px;
+    #         max-width: 20px;
+    #         max-height: 20px;
+    #     }}
+    # }}
+    # """
+
+    # style_SuccessModal = f"""
+    # SuccessModal {{
+    #     border-radius: 10px;
+    #     border: 5px solid {COLOR_BACKGROUND_2};
+
+    #     QPushButton#closeButton {{
+    #         background-color: transparent;
+    #         icon: url({PATH_RESOURCES+'window_close.png'});
+    #     }}
+
+    #     QLabel#iconlabel {{
+    #         image: url({PATH_RESOURCES+'success.png'});
+    #         min-width: 20px;
+    #         min-height: 20px;
+    #         max-width: 20px;
+    #         max-height: 20px;
+    #     }}
+    # }}
+    # """
+
+    # style_WarningModal = f"""
+    # WarningModal {{
+    #     border-radius: 10px;
+    #     border: 5px solid {COLOR_BACKGROUND_2};
+
+    #     QPushButton#closeButton {{
+    #         background-color: transparent;
+    #         icon: url({PATH_RESOURCES+'window_close.png'});
+    #     }}
+
+    #     QLabel#iconlabel {{
+    #         image: url({PATH_RESOURCES+'warning.png'});
+    #         min-width: 20px;
+    #         min-height: 20px;
+    #         max-width: 20px;
+    #         max-height: 20px;
+    #     }}
+    # }}
+    # """
+
+    # style_ErrorModal = f"""
+    # ErrorModal {{
+    #     border-radius: 10px;
+    #     border: 5px solid {COLOR_BACKGROUND_2};
+
+    #     QPushButton#closeButton {{
+    #         background-color: transparent;
+    #         icon: url({PATH_RESOURCES+'window_close.png'});
+    #     }}
+
+    #     QLabel#iconlabel {{
+    #         image: url({PATH_RESOURCES+'error.png'});
+    #         min-width: 20px;
+    #         min-height: 20px;
+    #         max-width: 20px;
+    #         max-height: 20px;
+    #     }}
+    # }}
+    # """
     
     
     

@@ -3,6 +3,7 @@ from app_modules import *
 from PySide2.QtWidgets import *
 from pages.p_Home import HomePage
 from APP.WindowFunctions import WindowFunctions
+from Overlays.Overlay import Overlay
 
 
 class Dashboard(QMainWindow):
