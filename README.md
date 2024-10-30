@@ -1,6 +1,6 @@
 MedStock - Gestão de Stock para Farmácias Hospitalares
 
-![icon](https://github.com/user-attachments/assets/57a2e3b3-6341-4bb5-aac2-6220f1561881)
+![icon](C:\Users\bruno\Desktop\TP_Eng_SW\Code\MEDSTOCK\icons\MedStock\Superior\PNG\Expand_With_BackGround.png)
 
 MedStock é um sistema de gestão de stock para farmácias hospitalares. Este irá facilita o controlo de pedidos de medicamentos, vacinas, materiais cirúrgicos, entre outros, além de permitir o envio automático de pedidos a fornecedores quando um item está em falta (funcionalidade futura). 
 O projeto utiliza uma interface gráfica com o Flet, uma API em FastAPI para comunicação e integração com a base de dados, e o PostgreSQL como sistema de base de dados.
