@@ -2,7 +2,6 @@ from sqlalchemy.sql import text
 from fastapi import Depends, APIRouter
 from sqlalchemy.exc import SQLAlchemyError
 from dependencies import get_db_MEDSTOCK
-from Models.IsAlive import IsAlive
 
 router = APIRouter()
 

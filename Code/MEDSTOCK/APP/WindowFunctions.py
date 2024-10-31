@@ -1,7 +1,7 @@
 # WindowFunctions.py
-from PySide2.QtGui import QIcon
-from PySide2.QtCore import Qt
-from APP.ui_functions import UIFunctions
+from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import Qt
+from APP.Ui_Functions import UIFunctions
 
 class WindowFunctions:
     @staticmethod

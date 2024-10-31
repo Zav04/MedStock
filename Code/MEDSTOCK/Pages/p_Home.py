@@ -1,6 +1,6 @@
-from PySide2.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QFrame, QSizePolicy, QSpacerItem
-from PySide2.QtGui import QFont, QPixmap
-from PySide2.QtCore import Qt
+from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QFrame, QSizePolicy, QSpacerItem
+from PyQt5.QtGui import QFont, QPixmap
+from PyQt5.QtCore import Qt
 import os
 
 class HomePage(QWidget):

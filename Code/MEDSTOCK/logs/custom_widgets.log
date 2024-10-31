@@ -1,0 +1,113 @@
+2024-10-31 01:17:01,354 - INFO - Starting new HTTP connection (1): localhost
+2024-10-31 01:17:04,037 - DEBUG - "POST /MedStock_Login/ HTTP/1.1" 200 33
+2024-10-31 01:17:10,172 - INFO - Starting new HTTP connection (1): localhost
+2024-10-31 01:17:12,845 - DEBUG - "POST /MedStock_Login/ HTTP/1.1" 200 33
+2024-10-31 01:17:39,294 - INFO - Starting new HTTP connection (1): localhost
+2024-10-31 01:17:41,982 - DEBUG - "POST /MedStock_Login/ HTTP/1.1" 200 33
+2024-10-31 01:19:22,161 - INFO - Starting new HTTP connection (1): localhost
+2024-10-31 01:19:24,837 - DEBUG - "POST /MedStock_Login/ HTTP/1.1" 200 33
+2024-10-31 01:19:58,790 - INFO - Starting new HTTP connection (1): localhost
+2024-10-31 01:20:01,484 - DEBUG - "POST /MedStock_Login/ HTTP/1.1" 200 33
+2024-10-31 01:21:24,990 - INFO - Starting new HTTP connection (1): localhost
+2024-10-31 01:21:27,700 - DEBUG - "POST /MedStock_Login/ HTTP/1.1" 200 33
+2024-10-31 01:22:44,914 - INFO - Starting new HTTP connection (1): localhost
+2024-10-31 01:22:47,598 - DEBUG - "POST /MedStock_Login/ HTTP/1.1" 200 33
+2024-10-31 01:24:04,557 - INFO - Starting new HTTP connection (1): localhost
+2024-10-31 01:24:07,249 - DEBUG - "POST /MedStock_Login/ HTTP/1.1" 200 33
+2024-10-31 01:25:18,470 - INFO - Starting new HTTP connection (1): localhost
+2024-10-31 01:25:21,139 - DEBUG - "POST /MedStock_Login/ HTTP/1.1" 200 33
+2024-10-31 01:26:21,861 - INFO - Starting new HTTP connection (1): localhost
+2024-10-31 01:35:28,444 - INFO - Starting new HTTP connection (1): localhost
+2024-10-31 01:35:31,130 - DEBUG - "POST /MedStock_Login/ HTTP/1.1" 200 33
+2024-10-31 01:36:58,595 - INFO - Starting new HTTP connection (1): localhost
+2024-10-31 01:37:01,311 - DEBUG - "POST /MedStock_Login/ HTTP/1.1" 200 33
+2024-10-31 01:38:04,331 - INFO - Starting new HTTP connection (1): localhost
+2024-10-31 01:38:07,049 - DEBUG - "POST /MedStock_Login/ HTTP/1.1" 200 33
+2024-10-31 01:42:53,776 - INFO - Starting new HTTP connection (1): localhost
+2024-10-31 01:42:56,465 - DEBUG - "POST /MedStock_Login/ HTTP/1.1" 200 33
+2024-10-31 01:45:49,964 - INFO - Starting new HTTP connection (1): localhost
+2024-10-31 01:45:52,919 - DEBUG - "POST /MedStock_Login/ HTTP/1.1" 200 33
+2024-10-31 01:49:28,994 - INFO - Starting new HTTP connection (1): localhost
+2024-10-31 01:49:31,670 - DEBUG - "POST /MedStock_Login/ HTTP/1.1" 200 33
+2024-10-31 01:51:02,332 - INFO - Starting new HTTP connection (1): localhost
+2024-10-31 01:51:05,015 - DEBUG - "POST /MedStock_Login/ HTTP/1.1" 200 33
+2024-10-31 01:57:34,996 - DEBUG - load_ssl_context verify=True cert=None trust_env=True http2=False
+2024-10-31 01:57:34,998 - DEBUG - load_verify_locations cafile='C:\\Users\\bruno\\anaconda3\\envs\\qt_app\\Library\\ssl\\cacert.pem'
+2024-10-31 01:57:35,344 - DEBUG - connect_tcp.started host='localhost' port=5000 local_address=None timeout=5.0 socket_options=None
+2024-10-31 01:57:37,420 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001FA7EA1DCA0>
+2024-10-31 01:57:37,420 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2024-10-31 01:57:37,420 - DEBUG - send_request_headers.complete
+2024-10-31 01:57:37,420 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2024-10-31 01:57:37,421 - DEBUG - send_request_body.complete
+2024-10-31 01:57:37,421 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2024-10-31 01:57:38,278 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'date', b'Thu, 31 Oct 2024 01:57:37 GMT'), (b'server', b'uvicorn'), (b'content-length', b'33'), (b'content-type', b'application/json')])
+2024-10-31 01:57:38,280 - INFO - HTTP Request: POST http://localhost:5000/MedStock_Login/ "HTTP/1.1 200 OK"
+2024-10-31 01:57:38,280 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2024-10-31 01:57:38,280 - DEBUG - receive_response_body.complete
+2024-10-31 01:57:38,280 - DEBUG - response_closed.started
+2024-10-31 01:57:38,280 - DEBUG - response_closed.complete
+2024-10-31 01:57:38,281 - DEBUG - close.started
+2024-10-31 01:57:38,281 - DEBUG - close.complete
+2024-10-31 02:03:47,259 - DEBUG - load_ssl_context verify=True cert=None trust_env=True http2=False
+2024-10-31 02:03:47,262 - DEBUG - load_verify_locations cafile='C:\\Users\\bruno\\anaconda3\\envs\\qt_app\\Library\\ssl\\cacert.pem'
+2024-10-31 02:03:47,581 - DEBUG - connect_tcp.started host='localhost' port=5000 local_address=None timeout=5.0 socket_options=None
+2024-10-31 02:03:49,622 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001F885761A90>
+2024-10-31 02:03:49,622 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2024-10-31 02:03:49,622 - DEBUG - send_request_headers.complete
+2024-10-31 02:03:49,622 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2024-10-31 02:03:49,623 - DEBUG - send_request_body.complete
+2024-10-31 02:03:49,623 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2024-10-31 02:03:50,264 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'date', b'Thu, 31 Oct 2024 02:03:49 GMT'), (b'server', b'uvicorn'), (b'content-length', b'33'), (b'content-type', b'application/json')])
+2024-10-31 02:03:50,265 - INFO - HTTP Request: POST http://localhost:5000/MedStock_Login/ "HTTP/1.1 200 OK"
+2024-10-31 02:03:50,265 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2024-10-31 02:03:50,265 - DEBUG - receive_response_body.complete
+2024-10-31 02:03:50,266 - DEBUG - response_closed.started
+2024-10-31 02:03:50,266 - DEBUG - response_closed.complete
+2024-10-31 02:03:50,266 - DEBUG - close.started
+2024-10-31 02:03:50,266 - DEBUG - close.complete
+2024-10-31 02:09:34,100 - DEBUG - load_ssl_context verify=True cert=None trust_env=True http2=False
+2024-10-31 02:09:34,102 - DEBUG - load_verify_locations cafile='C:\\Users\\bruno\\anaconda3\\envs\\qt_app\\Library\\ssl\\cacert.pem'
+2024-10-31 02:09:34,430 - DEBUG - connect_tcp.started host='localhost' port=5000 local_address=None timeout=5.0 socket_options=None
+2024-10-31 02:09:36,503 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x0000023DBEAD1E50>
+2024-10-31 02:09:36,503 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2024-10-31 02:09:36,503 - DEBUG - send_request_headers.complete
+2024-10-31 02:09:36,504 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2024-10-31 02:09:36,504 - DEBUG - send_request_body.complete
+2024-10-31 02:09:36,504 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2024-10-31 02:09:37,126 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'date', b'Thu, 31 Oct 2024 02:09:36 GMT'), (b'server', b'uvicorn'), (b'content-length', b'33'), (b'content-type', b'application/json')])
+2024-10-31 02:09:37,127 - INFO - HTTP Request: POST http://localhost:5000/MedStock_Login/ "HTTP/1.1 200 OK"
+2024-10-31 02:09:37,127 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2024-10-31 02:09:37,127 - DEBUG - receive_response_body.complete
+2024-10-31 02:09:37,127 - DEBUG - response_closed.started
+2024-10-31 02:09:37,127 - DEBUG - response_closed.complete
+2024-10-31 02:09:37,127 - DEBUG - close.started
+2024-10-31 02:09:37,128 - DEBUG - close.complete
+2024-10-31 02:11:54,206 - DEBUG - load_ssl_context verify=True cert=None trust_env=True http2=False
+2024-10-31 02:11:54,208 - DEBUG - load_verify_locations cafile='C:\\Users\\bruno\\anaconda3\\envs\\qt_app\\Library\\ssl\\cacert.pem'
+2024-10-31 02:11:54,518 - DEBUG - connect_tcp.started host='localhost' port=5000 local_address=None timeout=5.0 socket_options=None
+2024-10-31 02:11:56,564 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001422C522F10>
+2024-10-31 02:11:56,564 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2024-10-31 02:11:56,564 - DEBUG - send_request_headers.complete
+2024-10-31 02:11:56,565 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2024-10-31 02:11:56,565 - DEBUG - send_request_body.complete
+2024-10-31 02:11:56,565 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2024-10-31 02:11:57,178 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'date', b'Thu, 31 Oct 2024 02:11:55 GMT'), (b'server', b'uvicorn'), (b'content-length', b'33'), (b'content-type', b'application/json')])
+2024-10-31 02:11:57,179 - INFO - HTTP Request: POST http://localhost:5000/MedStock_Login/ "HTTP/1.1 200 OK"
+2024-10-31 02:11:57,179 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2024-10-31 02:11:57,179 - DEBUG - receive_response_body.complete
+2024-10-31 02:11:57,179 - DEBUG - response_closed.started
+2024-10-31 02:11:57,179 - DEBUG - response_closed.complete
+2024-10-31 02:11:57,179 - DEBUG - close.started
+2024-10-31 02:11:57,179 - DEBUG - close.complete
+2024-10-31 02:18:42,596 - DEBUG - CACHEDIR=C:\Users\bruno\.matplotlib
+2024-10-31 02:18:42,599 - DEBUG - Using fontManager instance from C:\Users\bruno\.matplotlib\fontlist-v330.json
+2024-10-31 02:18:42,931 - DEBUG - Loaded backend qtagg version 6.6.3.1.
+2024-10-31 02:19:02,845 - DEBUG - CACHEDIR=C:\Users\bruno\.matplotlib
+2024-10-31 02:19:02,851 - DEBUG - Using fontManager instance from C:\Users\bruno\.matplotlib\fontlist-v330.json
+2024-10-31 02:19:03,208 - DEBUG - Loaded backend qtagg version 6.6.3.1.
+2024-10-31 02:31:41,365 - DEBUG - Using fontManager instance from C:\Users\bruno\.matplotlib\fontlist-v330.json
+2024-10-31 02:31:41,743 - DEBUG - Loaded backend qtagg version 6.6.3.1.
+2024-10-31 02:33:59,991 - DEBUG - Using fontManager instance from C:\Users\bruno\.matplotlib\fontlist-v330.json
+2024-10-31 02:34:00,415 - DEBUG - Loaded backend qtagg version 6.6.3.1.
+2024-10-31 03:04:53,629 - DEBUG - Using fontManager instance from C:\Users\bruno\.matplotlib\fontlist-v390.json
+2024-10-31 03:04:53,939 - DEBUG - Loaded backend qtagg version 6.8.0.2.

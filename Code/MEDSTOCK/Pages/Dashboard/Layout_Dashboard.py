@@ -1,9 +1,10 @@
 
-from app_modules import *
-from PySide2.QtWidgets import *
+from PyQt5.QtWidgets import *
 from pages.p_Home import HomePage
 from APP.WindowFunctions import WindowFunctions
 from Overlays.Overlay import Overlay
+from pages.Dashboard.Ui_Dashboard import Ui_MainWindow
+from APP.Ui_Functions import UIFunctions
 
 
 class Dashboard(QMainWindow):
@@ -16,6 +17,7 @@ class Dashboard(QMainWindow):
         WindowFunctions.removeTitleBar(self, True)
         WindowFunctions.setupWindow(self, 'MedStock', "icons/MedStock/favicon.png")
         WindowFunctions.enableWindowDragging(self)
+        self.ui.btn_toggle_menu.clicked.connect(lambda: UIFunctions.toggleMenu(self, 400, True))
         self.ui.btn_toggle_menu.clicked.connect(lambda: UIFunctions.toggleMenu(self, 400, True))
 
         self.initPages()
@@ -41,9 +43,6 @@ class Dashboard(QMainWindow):
         UIFunctions.userIcon(self, "BO")
 
 
-
-
-
     def Button(self):
         btnWidget = self.sender()
         if not btnWidget:
@@ -60,7 +59,7 @@ class Dashboard(QMainWindow):
             page_widget, page_title = page_info
             
             self.ui.stackedWidget.setCurrentWidget(page_widget)
-
+            Overlay.show_success(self, "Login Bem-Sucedido")
             UIFunctions.resetStyle(self, btnWidget.objectName())
             UIFunctions.labelPage(self, page_title)
             btnWidget.setStyleSheet(UIFunctions.selectMenu(btnWidget.styleSheet()))

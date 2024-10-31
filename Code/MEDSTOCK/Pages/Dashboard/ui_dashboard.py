@@ -1,7 +1,6 @@
-from app_modules import *
-from PySide2.QtCore import (QMetaObject,QSize,Qt)
-from PySide2.QtGui import (QFont,QIcon)
-from PySide2.QtWidgets import *
+from PyQt5.QtCore import (QMetaObject,QSize,Qt)
+from PyQt5.QtGui import (QFont,QIcon)
+from PyQt5.QtWidgets import *
 import files_rc
 
 class Ui_MainWindow(object):

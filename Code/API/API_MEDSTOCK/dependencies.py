@@ -1,4 +1,4 @@
-from database import SessionLocal_MEDSTOCK
+from DATABASE.database import SessionLocal_MEDSTOCK
 
 def get_db_MEDSTOCK():
     db = SessionLocal_MEDSTOCK()

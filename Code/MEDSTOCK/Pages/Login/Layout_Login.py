@@ -1,4 +1,4 @@
-from PySide2.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow
 from APP.WindowFunctions import WindowFunctions
 from pages.p_Login import LoginPage
 from .Ui_Login import Ui_Login

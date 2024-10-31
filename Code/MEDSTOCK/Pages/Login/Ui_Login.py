@@ -1,7 +1,8 @@
-from app_modules import *
-from PySide2.QtCore import (QMetaObject,QSize, Qt)
-from PySide2.QtGui import (QIcon)
-from PySide2.QtWidgets import *
+from PyQt5.QtCore import (QMetaObject,Qt)
+from PyQt5.QtGui import (QIcon, QFont)
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QSize
+
 import files_rc
 
 class Ui_Login(object):

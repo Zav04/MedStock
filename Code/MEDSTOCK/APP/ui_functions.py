@@ -1,9 +1,10 @@
-from APP.ui_styles import Style
-from PySide2 import QtCore, QtGui
-from PySide2.QtCore import (QPropertyAnimation,QSize,Qt)
-from PySide2.QtGui import (QColor,QFont)
-from PySide2.QtWidgets import *
-from app_modules import *
+from APP.Ui_Styles import Style
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtCore import (QPropertyAnimation,QSize,Qt)
+from PyQt5.QtGui import (QColor,QFont)
+from PyQt5.QtWidgets import *
+
+
 
 GLOBAL_STATE = 0
 GLOBAL_TITLE_BAR = True

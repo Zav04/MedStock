@@ -1,0 +1,8 @@
+pyhton==3.10
+numpy==1.24
+PyQt5
+QT-PyQt-PySide-Custom-Widgets
+requests
+pycairo 
+cairocffi
+shiboken2
