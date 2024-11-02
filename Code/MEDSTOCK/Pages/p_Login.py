@@ -6,22 +6,21 @@ import os
 from APP.Ui_Styles import Style
 from Overlays.Overlay import Overlay
 from API.API_POST_Request import API_Login
+from pages.Dashboard.Layout_Dashboard import Dashboard
 
 
 
-def login_button_clicked(email_input, password_input,main_window):
+def login_button_clicked(email_input, password_input,central_page,full_page):
     email = email_input.text()
     password = password_input.text()
     response= API_Login(email, password)
     if(response.success):
-        Overlay.show_success(main_window, "Login Bem-Sucedido")
+        full_page.close()
+        dashboard = Dashboard()
+        dashboard.show()
+        Overlay.show_success(central_page, "Login Bem-Sucedido")
     else:
-        Overlay.show_error(main_window, response.error_message)
-        Overlay.show_information(main_window, response.error_message)
-        Overlay.show_success(main_window, response.error_message)
-        Overlay.show_warning(main_window, response.error_message)
-
-    print(f"Login: {email}, Password: {password}")
+        Overlay.show_error(central_page, response.error_message)
 
 
 def reset_password_button_clicked():
@@ -35,8 +34,9 @@ def recolor_icon(path, color):
     return QIcon(colored_pixmap)
 
 class LoginPage(QWidget):
-    def __init__(self):
+    def __init__(self, mainwindow):
         super().__init__()
+        self.main_window = mainwindow
         
         self.is_password_visible = False
         
@@ -85,7 +85,7 @@ class LoginPage(QWidget):
         login_button = QPushButton("Login", self)
         login_button.setFixedSize(200, 60)
         login_button.setStyleSheet(Style.style_bt_QPushButton)
-        login_button.clicked.connect(lambda: login_button_clicked(email_input, password_input, main_layout.parent()))
+        login_button.clicked.connect(lambda: login_button_clicked(email_input, password_input,self.parent(), mainwindow))
         main_layout.addWidget(login_button, alignment=Qt.AlignCenter)
 
         main_layout.addSpacing(15)
@@ -94,6 +94,7 @@ class LoginPage(QWidget):
         reset_password_text.clicked.connect(reset_password_button_clicked)
         reset_password_text.setStyleSheet(Style.style_bt_TextEdit)
         main_layout.addWidget(reset_password_text, alignment=Qt.AlignCenter)
+        
 
         self.setLayout(main_layout)
 

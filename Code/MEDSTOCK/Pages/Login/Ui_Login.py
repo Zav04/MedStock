@@ -7,6 +7,7 @@ import files_rc
 
 class Ui_Login(object):
     def setupUi(self, MainWindow):
+        self.MainWindow = MainWindow
         MainWindow.resize(800, 1000)
         MainWindow.setMinimumSize(QSize(800, 1000))
 
