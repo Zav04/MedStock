@@ -2,8 +2,6 @@
 
 class Style():
     
-    # COLOR_BACKGROUND_2 = "#b5c6bf"
-    # PATH_RESOURCES = "./path/to/resources/" 
 
     style_bt_menu = (
     """
@@ -99,86 +97,129 @@ class Style():
     }
 """)
     
-    # style_InformationModal = f"""
-    # InformationModal {{
-    #     border-radius: 10px;
-    #     border: 5px solid {COLOR_BACKGROUND_2};
+    style_InformationModal = ("""
+    InformationModal {
+        border-radius: 10px;
+        border: 2px solid ;
+        border-color: #2799be;
+        background-color: #2799be;
+        }
+        QPushButton#closeButton {
+            border: none;
+            outline: none;
+            text-decoration: none;
+            background-color: transparent;
+        }
+        QLabel#titlelabel{
+            font-size: 12px;
+            font-weight: bold;
+            color: rgb(255, 255, 255);
+        }
+        QLabel#bodyLabel{
+            font-size: 11px;
+            font-weight: bold;
+            color: rgb(255, 255, 255);
+        }
+        QLabel#iconlabel {
+            min-width: 20px;
+            min-height: 20px;
+            max-width: 20px;
+            max-height: 20px;
+            margin-right: 12px;
+        }""")
 
-    #     QPushButton#closeButton {{
-    #         background-color: transparent;
-    #         icon: url({PATH_RESOURCES+'window_close.png'});
-    #     }}
 
-    #     QLabel#iconlabel {{
-    #         image: url({PATH_RESOURCES+'info.png'});
-    #         min-width: 20px;
-    #         min-height: 20px;
-    #         max-width: 20px;
-    #         max-height: 20px;
-    #     }}
-    # }}
-    # """
-
-    # style_SuccessModal = f"""
-    # SuccessModal {{
-    #     border-radius: 10px;
-    #     border: 5px solid {COLOR_BACKGROUND_2};
-
-    #     QPushButton#closeButton {{
-    #         background-color: transparent;
-    #         icon: url({PATH_RESOURCES+'window_close.png'});
-    #     }}
-
-    #     QLabel#iconlabel {{
-    #         image: url({PATH_RESOURCES+'success.png'});
-    #         min-width: 20px;
-    #         min-height: 20px;
-    #         max-width: 20px;
-    #         max-height: 20px;
-    #     }}
-    # }}
-    # """
-
-    # style_WarningModal = f"""
-    # WarningModal {{
-    #     border-radius: 10px;
-    #     border: 5px solid {COLOR_BACKGROUND_2};
-
-    #     QPushButton#closeButton {{
-    #         background-color: transparent;
-    #         icon: url({PATH_RESOURCES+'window_close.png'});
-    #     }}
-
-    #     QLabel#iconlabel {{
-    #         image: url({PATH_RESOURCES+'warning.png'});
-    #         min-width: 20px;
-    #         min-height: 20px;
-    #         max-width: 20px;
-    #         max-height: 20px;
-    #     }}
-    # }}
-    # """
-
-    # style_ErrorModal = f"""
-    # ErrorModal {{
-    #     border-radius: 10px;
-    #     border: 5px solid {COLOR_BACKGROUND_2};
-
-    #     QPushButton#closeButton {{
-    #         background-color: transparent;
-    #         icon: url({PATH_RESOURCES+'window_close.png'});
-    #     }}
-
-    #     QLabel#iconlabel {{
-    #         image: url({PATH_RESOURCES+'error.png'});
-    #         min-width: 20px;
-    #         min-height: 20px;
-    #         max-width: 20px;
-    #         max-height: 20px;
-    #     }}
-    # }}
-    # """
+    style_SuccessModal = ("""
+    SuccessModal {
+        border-radius: 5px;
+        border: 2px solid ;
+        border-color: #29b328;
+        background-color: #29b328;
+        }
+        QPushButton#closeButton {
+            border: none;
+            outline: none;
+            text-decoration: none;
+            background-color: transparent;
+        }
+        QLabel#titlelabel{
+            font-size: 12px;
+            font-weight: bold;
+            color: rgb(255, 255, 255);
+        }
+        QLabel#bodyLabel{
+            font-size: 11px;
+            font-weight: bold;
+            color: rgb(255, 255, 255);
+        }
+        QLabel#iconlabel {
+            min-width: 20px;
+            min-height: 20px;
+            max-width: 20px;
+            max-height: 20px;
+            margin-right: 12px;
+        }""")
     
-    
-    
+    style_WarningModal = ("""
+    WarningModal {
+        border-radius: 5px;
+        border: 2px solid ;
+        border-color: #bb8128;
+        background-color: #bb8128;
+        }
+        QPushButton#closeButton {
+            border: none;
+            outline: none;
+            text-decoration: none;
+            background-color: transparent;
+        }
+        QLabel#titlelabel{
+            font-size: 12px;
+            font-weight: bold;
+            color: rgb(255, 255, 255);
+        }
+        QLabel#bodyLabel{
+            font-size: 11px;
+            font-weight: bold;
+            color: rgb(255, 255, 255);
+        }
+        QLabel#iconlabel {
+            min-width: 20px;
+            min-height: 20px;
+            max-width: 20px;
+            max-height: 20px;
+            margin-right: 12px;
+        }""")
+
+    style_ErrorModal = ("""
+    ErrorModal {
+        border-radius: 5px;
+        border: 2px solid ;
+        border-color: #bb221d;
+        background-color: #bb221d;
+        }
+        QPushButton#closeButton {
+            border: none;
+            outline: none;
+            text-decoration: none;
+            background-color: transparent;
+        }
+        QLabel#titlelabel{
+            font-size: 12px;
+            font-weight: bold;
+            color: rgb(255, 255, 255);
+            
+        }
+        QLabel#bodyLabel{
+            font-size: 11px;
+            font-weight: bold;
+            color: rgb(255, 255, 255);
+        }
+        QLabel#iconlabel {
+            min-width: 20px;
+            min-height: 20px;
+            max-width: 20px;
+            max-height: 20px;
+            margin-right: 12px;
+        }""")
 

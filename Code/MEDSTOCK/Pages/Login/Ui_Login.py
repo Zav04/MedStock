@@ -227,12 +227,10 @@ class Ui_Login(object):
         self.frame_content.setObjectName(u"frame_content")
         self.frame_content.setFrameShape(QFrame.NoFrame)
         self.frame_content.setFrameShadow(QFrame.Raised)
-        self.frame_content.setStyleSheet(u"background-color: #FFFFFF;")
-         # Adicionando layout vertical ao frame_content
-        self.content_layout = QVBoxLayout(self.frame_content)
-        self.content_layout.setContentsMargins(0, 0, 0, 0)  # Ajuste as margens conforme necessário
+        self.frame_content.setStyleSheet(u"background-color: transparent;")
         
-
+        self.content_layout = QVBoxLayout(self.frame_content)
+        self.content_layout.setContentsMargins(0, 0, 0, 0)
         ########################################################################
         ## END - Centro da janela
         ########################################################################

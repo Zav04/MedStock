@@ -59,7 +59,10 @@ class Dashboard(QMainWindow):
             page_widget, page_title = page_info
             
             self.ui.stackedWidget.setCurrentWidget(page_widget)
-            Overlay.show_success(self, "Login Bem-Sucedido")
+            Overlay.show_success(self.ui.stackedWidget, "Login Bem-Sucedido")
+            Overlay.show_warning(self.ui.stackedWidget, "Login Bem-Sucedido")
+            Overlay.show_error(self.ui.stackedWidget, "Login Bem-Sucedido")
+            Overlay.show_information(self.ui.stackedWidget, "Login Bem-Sucedido")
             UIFunctions.resetStyle(self, btnWidget.objectName())
             UIFunctions.labelPage(self, page_title)
             btnWidget.setStyleSheet(UIFunctions.selectMenu(btnWidget.styleSheet()))

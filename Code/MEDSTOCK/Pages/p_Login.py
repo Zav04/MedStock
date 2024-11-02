@@ -16,7 +16,10 @@ def login_button_clicked(email_input, password_input,main_window):
     if(response.success):
         Overlay.show_success(main_window, "Login Bem-Sucedido")
     else:
-        Overlay.show_success(main_window, "response.error_message")
+        Overlay.show_error(main_window, response.error_message)
+        Overlay.show_information(main_window, response.error_message)
+        Overlay.show_success(main_window, response.error_message)
+        Overlay.show_warning(main_window, response.error_message)
 
     print(f"Login: {email}, Password: {password}")
 
@@ -41,7 +44,7 @@ class LoginPage(QWidget):
         main_layout.setAlignment(Qt.AlignCenter)
         main_layout.setContentsMargins(10, 30, 10, 30)
 
-        icon_path = os.path.abspath("./icons/MedStock/Superior/PNG/Expand_With_BackGround.png")
+        icon_path = os.path.abspath("./icons/MedStock/Superior/PNG/Expand.png")
         img_login = QLabel(self)
         pixmap = QPixmap(icon_path)
         pixmap = pixmap.scaled(QSize(1500, 450), Qt.KeepAspectRatio, Qt.SmoothTransformation)
@@ -82,7 +85,7 @@ class LoginPage(QWidget):
         login_button = QPushButton("Login", self)
         login_button.setFixedSize(200, 60)
         login_button.setStyleSheet(Style.style_bt_QPushButton)
-        login_button.clicked.connect(lambda: login_button_clicked(email_input, password_input, self.window()))
+        login_button.clicked.connect(lambda: login_button_clicked(email_input, password_input, main_layout.parent()))
         main_layout.addWidget(login_button, alignment=Qt.AlignCenter)
 
         main_layout.addSpacing(15)
