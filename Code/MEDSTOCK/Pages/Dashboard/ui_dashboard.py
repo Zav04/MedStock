@@ -5,6 +5,7 @@ import files_rc
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
+        self.MainWindow = MainWindow
         MainWindow.resize(1500, 720)
         MainWindow.setMinimumSize(QSize(1500, 720))
 

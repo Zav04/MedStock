@@ -6,11 +6,9 @@ import os
 from APP.Ui_Styles import Style
 from Overlays.Overlay import Overlay
 from API.API_POST_Request import API_Login
-from pages.Dashboard.Layout_Dashboard import Dashboard
-
-
 
 def login_button_clicked(email_input, password_input,central_page,full_page):
+    from pages.Dashboard.Layout_Dashboard import Dashboard
     email = email_input.text()
     password = password_input.text()
     response= API_Login(email, password)
@@ -73,7 +71,6 @@ class LoginPage(QWidget):
         self.visible_icon = recolor_icon("./icons/MaterialIcons/visibility.png", "#4CAF50")
 
         self.toggle_action = QAction(self.original_icon, "", self)
-        self.toggle_action.triggered.connect(lambda: self.toggle_password_visibility(password_input))
         password_input.addAction(self.toggle_action, QLineEdit.TrailingPosition)
 
         password_input.focusInEvent = self.create_focus_event(password_input, True)
@@ -85,16 +82,20 @@ class LoginPage(QWidget):
         login_button = QPushButton("Login", self)
         login_button.setFixedSize(200, 60)
         login_button.setStyleSheet(Style.style_bt_QPushButton)
-        login_button.clicked.connect(lambda: login_button_clicked(email_input, password_input,self.parent(), mainwindow))
-        main_layout.addWidget(login_button, alignment=Qt.AlignCenter)
 
+        main_layout.addWidget(login_button, alignment=Qt.AlignCenter)
         main_layout.addSpacing(15)
 
         reset_password_text = QPushButton("Esqueci-me da Palavra-Passe", self)
-        reset_password_text.clicked.connect(reset_password_button_clicked)
         reset_password_text.setStyleSheet(Style.style_bt_TextEdit)
         main_layout.addWidget(reset_password_text, alignment=Qt.AlignCenter)
         
+        
+        reset_password_text.clicked.connect(reset_password_button_clicked)
+        self.toggle_action.triggered.connect(lambda: self.toggle_password_visibility(password_input))
+        login_button.clicked.connect(lambda: login_button_clicked(email_input, password_input,self.parent(), mainwindow))
+        email_input.returnPressed.connect(lambda: self.check_and_login(email_input, password_input, login_button))
+        password_input.returnPressed.connect(lambda: self.check_and_login(email_input, password_input, login_button))
 
         self.setLayout(main_layout)
 
@@ -117,3 +118,8 @@ class LoginPage(QWidget):
                 self.toggle_action.setIcon(icon)
             QLineEdit.focusInEvent(password_input, event) if focus_in else QLineEdit.focusOutEvent(password_input, event)
         return event
+    
+    
+    def check_and_login(self, email_input, password_input, login_button):
+        if email_input.text() and password_input.text():
+            login_button.click()
