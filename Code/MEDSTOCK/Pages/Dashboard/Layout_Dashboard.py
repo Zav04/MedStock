@@ -14,13 +14,10 @@ class Dashboard(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-
         WindowFunctions.removeTitleBar(self, True)
         WindowFunctions.setupWindow(self, 'MedStock', "icons/MedStock/favicon.png")
         WindowFunctions.enableWindowDragging(self)
         self.ui.btn_toggle_menu.clicked.connect(lambda: UIFunctions.toggleMenu(self, 400, True))
-        self.ui.btn_toggle_menu.clicked.connect(lambda: UIFunctions.toggleMenu(self, 400, True))
-
         self.initPages()
         self.initMenus()
         self.show()
@@ -32,6 +29,7 @@ class Dashboard(QMainWindow):
         self.page_add_user = HomePage()
         self.ui.stackedWidget.addWidget(self.page_home)
         self.ui.stackedWidget.addWidget(self.page_add_user)
+        
         self.ui.stackedWidget.setCurrentWidget(self.page_home)
     
     #TODO VERIFICAR ISTO DE FORMA DINAMICA
@@ -51,9 +49,20 @@ class Dashboard(QMainWindow):
         if not btnWidget:
             return
 
+
+
+        #TODO Todas as Paginas
+        #HOME com estatisticas - Todos
+        #Criar novo utilizador - So admin
+        #Pedido de Material - Medicos, Enfermeriros, Assistentes e Secretarios Clinicos
+            #Lista de material que se pode escolher, ver como fazer isto, o mais complexo
+        #Aceitar pedidos Material - Gestor das Alas
+        #Validar pedidos e enviar- Farmaceuticos
+        #Tabela a mostrar Quantidade de Itens existentes - Farmaceuticos
+        #Se der tempo fazer graficos de tempo de demora, tempo de aceitação
         page_map = {
             "btn_home": (self.page_home, "Home"),
-            "btn_new_user": (self.page_add_user, "New User"),
+            "btn_new_user": (self.page_add_user, "Novo Utilizador"),
             "btn_log_out": None
         }
         
@@ -66,10 +75,6 @@ class Dashboard(QMainWindow):
             page_widget, page_title = page_info
             
             self.ui.stackedWidget.setCurrentWidget(page_widget)
-            Overlay.show_success(self.ui.stackedWidget, "Login Bem-Sucedido")
-            Overlay.show_warning(self.ui.stackedWidget, "Login Bem-Sucedido")
-            Overlay.show_error(self.ui.stackedWidget, "Login Bem-Sucedido")
-            Overlay.show_information(self.ui.stackedWidget, "Login Bem-Sucedido")
             UIFunctions.resetStyle(self, btnWidget.objectName())
             UIFunctions.labelPage(self, page_title)
             btnWidget.setStyleSheet(UIFunctions.selectMenu(btnWidget.styleSheet()))

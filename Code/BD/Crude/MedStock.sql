@@ -3,7 +3,7 @@ CREATE TABLE Item (item_id BIGSERIAL NOT NULL, nome_item varchar(255) NOT NULL, 
 CREATE TABLE Setor_Hospital (setor_id BIGSERIAL NOT NULL, nome_setor varchar(255) NOT NULL, localizacao varchar(255) NOT NULL, responsavel_id int8 NOT NULL, PRIMARY KEY (setor_id));
 CREATE TABLE Tipo_Item (tipo_id BIGSERIAL NOT NULL, nome_tipo varchar(255) NOT NULL, PRIMARY KEY (tipo_id));
 CREATE TABLE Role (role_id BIGSERIAL NOT NULL, nome_role varchar(255) NOT NULL, PRIMARY KEY (role_id));
-CREATE TABLE Requerimento (requerimento_id BIGSERIAL NOT NULL, setor_id int8 NOT NULL, user_id_pedido int8 NOT NULL, user_id_confirmacao int8, user_id_envio int8, data_pedido timestamp NOT NULL, data_confirmacao timestamp, data_envio timestamp, status int8 NOT NULL, PRIMARY KEY (requerimento_id));
+CREATE TABLE Requerimento (requerimento_id BIGSERIAL NOT NULL, setor_id int8 NOT NULL, user_id_pedido int8 NOT NULL, user_id_confirmacao int8, user_id_envio int8, data_pedido timestamp NOT NULL, data_confirmacao timestamp, data_envio timestamp, status int8 NOT NULL,urgente bool NOT NULL,PRIMARY KEY (requerimento_id));
 CREATE TABLE Item_Requerimento (ItemItem_id int8 NOT NULL, Requerimentorequerimento_id int8 NOT NULL, quantidade int8 NOT NULL, PRIMARY KEY (ItemItem_id, Requerimentorequerimento_id));
 ALTER TABLE Utilizador ADD CONSTRAINT FKUtilizador385847 FOREIGN KEY (role_id) REFERENCES Role (role_id);
 ALTER TABLE Item ADD CONSTRAINT FKItem233865 FOREIGN KEY (tipo_id) REFERENCES Tipo_Item (tipo_id);
