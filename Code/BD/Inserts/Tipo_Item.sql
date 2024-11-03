@@ -1,4 +1,4 @@
-INSERT INTO Tipo_Medicamento (nome_tipo) 
+INSERT INTO Tipo_Item (nome_tipo) 
 VALUES 
 ('Medicamento'),
 ('Vacinas'),

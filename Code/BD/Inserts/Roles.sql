@@ -1,4 +1,4 @@
-INSERT INTO Roles (nome_role) VALUES 
+INSERT INTO Role (nome_role) VALUES 
 ('Administrador'),         
 ('Farmacêutico'),          
 ('Gestor Responsável'),     

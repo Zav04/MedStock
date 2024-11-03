@@ -6,6 +6,9 @@ import os
 from APP.Ui_Styles import Style
 from Overlays.Overlay import Overlay
 from API.API_POST_Request import API_Login
+from pages.ResetPassword.Layout_ResetPassword import ResetPassword
+
+
 
 def login_button_clicked(email_input, password_input,central_page,full_page):
     from pages.Dashboard.Layout_Dashboard import Dashboard
@@ -20,9 +23,6 @@ def login_button_clicked(email_input, password_input,central_page,full_page):
     else:
         Overlay.show_error(central_page, response.error_message)
 
-
-def reset_password_button_clicked():
-    print("Redefinir Palavra-Passe")
 
 def recolor_icon(path, color):
     pixmap = QPixmap(path)
@@ -91,7 +91,7 @@ class LoginPage(QWidget):
         main_layout.addWidget(reset_password_text, alignment=Qt.AlignCenter)
         
         
-        reset_password_text.clicked.connect(reset_password_button_clicked)
+        reset_password_text.clicked.connect(self.open_reset_password_dialog)
         self.toggle_action.triggered.connect(lambda: self.toggle_password_visibility(password_input))
         login_button.clicked.connect(lambda: login_button_clicked(email_input, password_input,self.parent(), mainwindow))
         email_input.returnPressed.connect(lambda: self.check_and_login(email_input, password_input, login_button))
@@ -99,7 +99,16 @@ class LoginPage(QWidget):
 
         self.setLayout(main_layout)
 
+
+    def show_email_sent_overlay(self):
+        # Mostrar o overlay informando que o e-mail foi enviado
+        Overlay.show_success(self, "E-mail de redefinição de palavra-passe enviado com sucesso")
+
+    def open_reset_password_dialog(self):
+        dialog = ResetPassword(self)
+        dialog.exec_()
     def toggle_password_visibility(self, password_input):
+        
         self.is_password_visible = not self.is_password_visible
         if self.is_password_visible:
             password_input.setEchoMode(QLineEdit.Normal)

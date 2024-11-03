@@ -22,29 +22,29 @@ firebaseConfig = {
 }
 
 firebase = pyrebase.initialize_app(firebaseConfig)
-auth_manual = firebase.auth()
+auth_firebase = firebase.auth()
 
 
 def login(email, password):
     try:
-        login= auth_manual.sign_in_with_email_and_password(email,password)
+        login= auth_firebase.sign_in_with_email_and_password(email,password)
         return login
     except:
-        return 'Credenciais Invalidas'
+        return False
 
 
 def singup(email, password):
     try:
-        auth_manual.create_user_with_email_and_password(email, password)
+        auth_firebase.create_user_with_email_and_password(email, password)
         return True
     except:
-        return 'Email ja esta registado'
+        return False
 
 
 def resetpassword(email):
     try:
-        auth_manual.send_password_reset_email(email)
-        return 'Email para nova Password Enviado'
+        auth_firebase.send_password_reset_email(email)
+        return True
     except:
-        return 'Credenciais Invalidas'
+        return False
 
