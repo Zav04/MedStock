@@ -22,7 +22,6 @@ class ResetPassword(QDialog):
         self.page_reset_password = ResetPasswordPage(self)
         self.ui.content_layout.addWidget(self.page_reset_password)
         
-        # Conectar o sinal email_sent para fechar o diálogo e chamar o overlay no LoginPage
         self.page_reset_password.email_sent.connect(self.parent().show_email_sent_overlay)
         
         self.ui.btn_close.clicked.connect(self.close)

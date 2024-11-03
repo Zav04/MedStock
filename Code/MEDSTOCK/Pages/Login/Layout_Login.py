@@ -10,13 +10,11 @@ class Login(QMainWindow):
         self.ui = Ui_Login()
         self.ui.setupUi(self)
 
-        # Inicializar as propriedades da janela
         WindowFunctions.removeTitleBar(self, True)
         WindowFunctions.setupWindow(self, 'MedStock', "icons/MedStock/favicon.png")
         WindowFunctions.enableWindowDragging(self)
         
-        # Criar a página de login e adicioná-la ao layout de frame_content
         self.page_login = LoginPage(self)
-        self.ui.content_layout.addWidget(self.page_login)  # Adicionar ao layout de frame_content
+        self.ui.content_layout.addWidget(self.page_login)
         
         self.show()

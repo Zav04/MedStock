@@ -101,7 +101,6 @@ class LoginPage(QWidget):
 
 
     def show_email_sent_overlay(self):
-        # Mostrar o overlay informando que o e-mail foi enviado
         Overlay.show_success(self, "E-mail de redefinição de palavra-passe enviado com sucesso")
 
     def open_reset_password_dialog(self):

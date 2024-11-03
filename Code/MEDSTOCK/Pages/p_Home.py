@@ -11,26 +11,24 @@ class HomePage(QWidget):
         main_layout.setAlignment(Qt.AlignCenter)
         main_layout.setContentsMargins(10, 30, 10, 30)
 
-        # Título
         title = QLabel("<span style='color: #C0C0C0;'>BEM-VINDO</span><br><span style='color: #C0C0C0;'>AO</span><br><span style='color: #89c379;'>MEDSTOCK</span>")
         title_font = QFont("Arial", 40, QFont.Bold)
         title.setFont(title_font)
         title.setAlignment(Qt.AlignCenter)
         main_layout.addWidget(title)
 
-        # Adiciona um espaço flexível abaixo do título
+
         main_layout.addStretch(1)
 
-        # Layout para as caixas
+
         box_layout = QHBoxLayout()
         box_layout.setSpacing(15)
         box_layout.setAlignment(Qt.AlignCenter)
 
-        # Função para criar cada caixa com largura ajustada e altura mínima
         def create_box(icon_name, count, label_text):
             box = QFrame()
-            box.setFixedWidth(220)  # Aumenta a largura da caixa
-            box.setMinimumHeight(230)  # Define uma altura mínima
+            box.setFixedWidth(220)
+            box.setMinimumHeight(230)
             box.setFrameShape(QFrame.StyledPanel)
             box.setStyleSheet("""
                 background-color: #d5d5d5; 
@@ -39,12 +37,10 @@ class HomePage(QWidget):
                 padding: 10px;
             """)
 
-            # Layout interno da caixa
             box_layout = QVBoxLayout(box)
             box_layout.setAlignment(Qt.AlignCenter)
             box_layout.setSpacing(8)
 
-            # Ícone
             icon_path = os.path.abspath(icon_name)
             icon_label = QLabel()
             icon_pixmap = QPixmap(icon_path)
@@ -53,7 +49,6 @@ class HomePage(QWidget):
             icon_label.setAlignment(Qt.AlignCenter)
             box_layout.addWidget(icon_label)
 
-            # Número
             count_label = QLabel(str(count))
             count_font = QFont("Arial", 22, QFont.Bold)
             count_label.setFont(count_font)
@@ -61,7 +56,6 @@ class HomePage(QWidget):
             count_label.setStyleSheet("color: #89c379;")
             box_layout.addWidget(count_label)
 
-            # Texto da Caixa
             text_label = QLabel(label_text)
             text_label.setWordWrap(True)
             text_font = QFont("Arial", 12)
@@ -70,7 +64,6 @@ class HomePage(QWidget):
             text_label.setStyleSheet("color: #FFFFFF; font-weight: bold;")
             box_layout.addWidget(text_label)
 
-            # Rodapé dentro de cada caixa, mantendo uma margem superior fixa
             footer_label = QLabel("*Dados Ilustrativos")
             footer_label.setAlignment(Qt.AlignCenter)
             footer_label.setStyleSheet("color: #89c379; font-size: 11px; margin-top: 15px; font-weight: bold;")

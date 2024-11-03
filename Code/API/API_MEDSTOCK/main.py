@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
-from LOGIN.POST_Login import router as POST_login_router
-from RESET_PASSWORD.POST_Reset_Password import router as POST_resetpassword_router
+from REQUESTS.LOGIN.POST_Login import router as POST_login_router
+from REQUESTS.RESET_PASSWORD.POST_Reset_Password import router as POST_reset_password_router
 
 api = FastAPI()
 
@@ -16,7 +16,7 @@ api.add_middleware(
 
 
 api.include_router(POST_login_router)
-api.include_router(POST_resetpassword_router)
+api.include_router(POST_reset_password_router)
 
 if __name__ == "__main__":
     #uvicorn.run("main:api", reload=True)

@@ -440,8 +440,6 @@ class Ui_MainWindow(object):
         QWidget.setTabOrder(self.btn_maximize_restore, self.btn_close)
         QWidget.setTabOrder(self.btn_close, self.btn_toggle_menu)
 
-        #self.stackedWidget.setCurrentIndex(1)
-
         QMetaObject.connectSlotsByName(MainWindow)
 
 
