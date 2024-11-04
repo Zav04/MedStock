@@ -80,7 +80,103 @@ class Style():
     """
     )
     
+    style_QComboBox = (
+        """
+        QComboBox {
+            background-color: rgb(255, 255, 255);
+            border-radius: 5px;
+            border: 2px solid #b5c6bf;
+            padding-left: 10px;
+            color: rgb(0, 0, 0);
+            font: 16pt "Arial";
+        }
+        QComboBox:hover {
+            border: 2px solid #81C784;
+        }
+        QComboBox::drop-down {
+            subcontrol-origin: padding;
+            subcontrol-position: top right;
+            width: 25px;
+            border-left-width: 3px;
+            border-left-color: rgb(255, 255, 255);
+            border-left-style: solid;
+            border-top-right-radius: 3px;
+            border-bottom-right-radius: 3px;
+            background-image: url(:/16x16/icons/16x16/cil-arrow-bottom.png);
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        QComboBox QAbstractItemView {
+            border: 2px solid #81C784;
+            background-color: rgb(255, 255, 255);
+            selection-background-color: #81C784;
+            selection-color: rgb(255, 255, 255);
+            padding: 5px;
+            font: 14pt "Arial";
+            outline: 0;
+        }
+        QComboBox QAbstractItemView:hover {
+            border: 2px solid #81C784;
+        }
+        """
+    )
     
+    style_QDateEdit = (
+    """
+    QDateEdit {
+        background-color: rgb(255, 255, 255);
+        border-radius: 5px;
+        border: 2px solid #b5c6bf;
+        padding-left: 10px;
+        color: rgb(0, 0, 0);
+        font: 16pt "Arial";
+    }
+    QDateEdit:hover {
+        border: 2px solid #81C784;
+    }
+    QDateEdit::drop-down {
+        subcontrol-origin: padding;
+        subcontrol-position: top right;
+        width: 25px;
+        border-left-width: 3px;
+        border-left-color: rgb(255, 255, 255);
+        border-left-style: solid;
+        border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
+    }
+    QDateEdit::down-arrow {
+        image: url(:/icons/MaterialIcons/calendar_month.png);
+        width: 16px;
+        height: 16px;
+    }
+    QCalendarWidget QWidget {
+        alternate-background-color: #f4f4f4;
+        font-size: 10pt;
+    }
+    QCalendarWidget QAbstractItemView:enabled {
+        font-size: 10pt;
+        color: rgb(0, 0, 0);
+        background-color: rgb(255, 255, 255);
+        selection-background-color: #81C784;
+        selection-color: rgb(255, 255, 255);
+    }
+    QCalendarWidget QToolButton {
+        height: 40px;
+        width: 80px;
+        font-size: 10pt;
+        color: rgb(0, 0, 0);
+        background-color: #e6e6e6;
+        border: none;
+        margin: 5px;
+    }
+    QCalendarWidget QToolButton:hover {
+        background-color: #81C784;
+        color: rgb(255, 255, 255);
+    }
+    """
+    )
+
+
     style_bt_TextEdit = ("""
     QPushButton {
         background: none;
@@ -222,4 +318,8 @@ class Style():
             max-height: 20px;
             margin-right: 12px;
         }""")
+    
+    
+    
+    
 

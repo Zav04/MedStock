@@ -1,8 +1,11 @@
 from APP.Ui_Styles import Style
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import (QPropertyAnimation,QSize,Qt)
-from PyQt5.QtGui import (QColor,QFont)
+from PyQt5.QtGui import (QColor,QFont,QPixmap,QIcon)
 from PyQt5.QtWidgets import *
+import tempfile
+import os
+
 
 
 
@@ -168,3 +171,14 @@ class UIFunctions(QMainWindow):
 
         self.ui.btn_close.clicked.connect(lambda: self.close())
 
+    def recolor_icon(path, color):
+        pixmap = QPixmap(path)
+        colored_pixmap = QPixmap(pixmap.size())
+        colored_pixmap.fill(QColor(color))
+        colored_pixmap.setMask(pixmap.mask())
+        
+        temp_dir = tempfile.gettempdir()
+        temp_icon_path = os.path.join(temp_dir, f"recolor_{os.path.basename(path)}")
+        colored_pixmap.save(temp_icon_path, "PNG")
+        
+        return temp_icon_path

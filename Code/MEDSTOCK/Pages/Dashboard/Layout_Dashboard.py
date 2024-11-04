@@ -6,6 +6,7 @@ from Overlays.Overlay import Overlay
 from pages.Dashboard.Ui_Dashboard import Ui_MainWindow
 from APP.Ui_Functions import UIFunctions
 from pages.Login.Layout_Login import Login
+from pages.p_Add_User import CreateUserPage
 
 
 class Dashboard(QMainWindow):
@@ -16,7 +17,7 @@ class Dashboard(QMainWindow):
 
         WindowFunctions.removeTitleBar(self, True)
         WindowFunctions.setupWindow(self, 'MedStock', "icons/MedStock/favicon.png")
-        WindowFunctions.enableWindowDragging(self)
+        WindowFunctions.enableWindowDragging(self, self.ui.frame_top)
         self.ui.btn_toggle_menu.clicked.connect(lambda: UIFunctions.toggleMenu(self, 400, True))
         self.initPages()
         self.initMenus()
@@ -26,7 +27,7 @@ class Dashboard(QMainWindow):
     def initPages(self):
 
         self.page_home = HomePage()
-        self.page_add_user = HomePage()
+        self.page_add_user = CreateUserPage()
         self.ui.stackedWidget.addWidget(self.page_home)
         self.ui.stackedWidget.addWidget(self.page_add_user)
         

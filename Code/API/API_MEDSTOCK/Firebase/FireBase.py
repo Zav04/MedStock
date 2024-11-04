@@ -34,6 +34,7 @@ def login(email, password):
 
 
 def singup(email, password):
+    
     try:
         auth_firebase.create_user_with_email_and_password(email, password)
         return True

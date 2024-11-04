@@ -425,9 +425,17 @@
   </qresource>
   <qresource prefix="/">
     <file>icons/MedStock/favicon.png</file>
-    <file>icons/MedStock/inventory.png</file>
-    <file>icons/MedStock/pending_actions.png</file>
-    <file>icons/MedStock/description.png</file>
-    <file>icons/MedStock/assignment_turned.png</file>
+    <file>icons/MaterialIcons/inventory.png</file>
+    <file>icons/MaterialIcons/assignment_turned.png</file>
+    <file>icons/MaterialIcons/calendar_month.png</file>
+    <file>icons/MaterialIcons/check.png</file>
+    <file>icons/MaterialIcons/close.png</file>
+    <file>icons/MaterialIcons/description.png</file>
+    <file>icons/MaterialIcons/error.png</file>
+    <file>icons/MaterialIcons/inventory.png</file>
+    <file>icons/MaterialIcons/pending_actions.png</file>
+    <file>icons/MaterialIcons/visibility_off.png</file>
+    <file>icons/MaterialIcons/visibility.png</file>
+    <file>icons/MaterialIcons/warning.png</file>
   </qresource>
 </RCC>

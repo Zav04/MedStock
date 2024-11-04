@@ -12,7 +12,7 @@ class Login(QMainWindow):
 
         WindowFunctions.removeTitleBar(self, True)
         WindowFunctions.setupWindow(self, 'MedStock', "icons/MedStock/favicon.png")
-        WindowFunctions.enableWindowDragging(self)
+        WindowFunctions.enableWindowDragging(self, self.ui.frame_top)
         
         self.page_login = LoginPage(self)
         self.ui.content_layout.addWidget(self.page_login)

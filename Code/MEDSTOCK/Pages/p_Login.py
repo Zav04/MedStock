@@ -1,21 +1,19 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton,QAction
-from PyQt5.QtGui import QPixmap, QIcon, QColor
-from PyQt5.QtCore import Qt
-from PyQt5.QtCore import QSize
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QAction
+from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtCore import Qt, QSize
+from APP.Ui_Functions import UIFunctions
 import os
 from APP.Ui_Styles import Style
 from Overlays.Overlay import Overlay
 from API.API_POST_Request import API_Login
 from pages.ResetPassword.Layout_ResetPassword import ResetPassword
 
-
-
-def login_button_clicked(email_input, password_input,central_page,full_page):
+def login_button_clicked(email_input, password_input, central_page, full_page):
     from pages.Dashboard.Layout_Dashboard import Dashboard
     email = email_input.text()
     password = password_input.text()
-    response= API_Login(email, password)
-    if(response.success):
+    response = API_Login(email, password)
+    if response.success:
         full_page.close()
         dashboard = Dashboard()
         dashboard.show()
@@ -23,24 +21,25 @@ def login_button_clicked(email_input, password_input,central_page,full_page):
     else:
         Overlay.show_error(central_page, response.error_message)
 
-
-def recolor_icon(path, color):
-    pixmap = QPixmap(path)
-    colored_pixmap = QPixmap(pixmap.size())
-    colored_pixmap.fill(QColor(color))
-    colored_pixmap.setMask(pixmap.mask())
-    return QIcon(colored_pixmap)
-
 class LoginPage(QWidget):
     def __init__(self, mainwindow):
         super().__init__()
         self.main_window = mainwindow
-        
         self.is_password_visible = False
         
         main_layout = QVBoxLayout(self)
         main_layout.setAlignment(Qt.AlignCenter)
         main_layout.setContentsMargins(10, 30, 10, 30)
+
+
+        icon_path_visibility_off = "./icons/MaterialIcons/visibility_off.png"
+        icon_path_visibility_on = "./icons/MaterialIcons/visibility.png"
+        
+
+        self.original_icon = QIcon(icon_path_visibility_off)
+        self.recolored_icon = QIcon(UIFunctions.recolor_icon(icon_path_visibility_off, "#4CAF50"))
+        self.visible_icon = QIcon(UIFunctions.recolor_icon(icon_path_visibility_on, "#4CAF50"))
+
 
         icon_path = os.path.abspath("./icons/MedStock/Superior/PNG/Expand.png")
         img_login = QLabel(self)
@@ -52,6 +51,7 @@ class LoginPage(QWidget):
 
         main_layout.addSpacing(20)
 
+
         email_input = QLineEdit(self)
         email_input.setPlaceholderText("Email")
         email_input.setFixedSize(500, 60)
@@ -60,21 +60,23 @@ class LoginPage(QWidget):
 
         main_layout.addSpacing(15)
 
+
         password_input = QLineEdit(self)
         password_input.setPlaceholderText("Password")
         password_input.setEchoMode(QLineEdit.Password)
         password_input.setFixedSize(500, 60)
         password_input.setStyleSheet(Style.style_QlineEdit)
 
-        self.original_icon = QIcon("./icons/MaterialIcons/visibility_off.png")
-        self.colored_icon = recolor_icon("./icons/MaterialIcons/visibility_off.png", "#4CAF50")
-        self.visible_icon = recolor_icon("./icons/MaterialIcons/visibility.png", "#4CAF50")
 
         self.toggle_action = QAction(self.original_icon, "", self)
         password_input.addAction(self.toggle_action, QLineEdit.TrailingPosition)
 
+
         password_input.focusInEvent = self.create_focus_event(password_input, True)
         password_input.focusOutEvent = self.create_focus_event(password_input, False)
+
+
+        self.toggle_action.triggered.connect(lambda: self.toggle_password_visibility(password_input))
 
         main_layout.addWidget(password_input)
 
@@ -86,19 +88,18 @@ class LoginPage(QWidget):
         main_layout.addWidget(login_button, alignment=Qt.AlignCenter)
         main_layout.addSpacing(15)
 
+
         reset_password_text = QPushButton("Esqueci-me da Palavra-Passe", self)
         reset_password_text.setStyleSheet(Style.style_bt_TextEdit)
         main_layout.addWidget(reset_password_text, alignment=Qt.AlignCenter)
         
-        
+
         reset_password_text.clicked.connect(self.open_reset_password_dialog)
-        self.toggle_action.triggered.connect(lambda: self.toggle_password_visibility(password_input))
-        login_button.clicked.connect(lambda: login_button_clicked(email_input, password_input,self.parent(), mainwindow))
+        login_button.clicked.connect(lambda: login_button_clicked(email_input, password_input, self.parent(), mainwindow))
         email_input.returnPressed.connect(lambda: self.check_and_login(email_input, password_input, login_button))
         password_input.returnPressed.connect(lambda: self.check_and_login(email_input, password_input, login_button))
 
         self.setLayout(main_layout)
-
 
     def show_email_sent_overlay(self):
         Overlay.show_success(self, "E-mail de redefinição de palavra-passe enviado com sucesso")
@@ -106,28 +107,29 @@ class LoginPage(QWidget):
     def open_reset_password_dialog(self):
         dialog = ResetPassword(self)
         dialog.exec_()
+
     def toggle_password_visibility(self, password_input):
-        
+        """Alterna a visibilidade da senha e ajusta o ícone de acordo."""
         self.is_password_visible = not self.is_password_visible
         if self.is_password_visible:
             password_input.setEchoMode(QLineEdit.Normal)
             self.toggle_action.setIcon(self.visible_icon)
         else:
             password_input.setEchoMode(QLineEdit.Password)
-            self.toggle_action.setIcon(self.colored_icon if password_input.hasFocus() else self.original_icon)
+            self.toggle_action.setIcon(self.recolored_icon if password_input.hasFocus() else self.original_icon)
 
     def create_focus_event(self, password_input, focus_in):
+        """Define o ícone de visibilidade correto ao ganhar/perder foco."""
         def event(event):
             if focus_in:
-                icon = self.visible_icon if self.is_password_visible else self.colored_icon
+                icon = self.recolored_icon if not self.is_password_visible else self.visible_icon
                 self.toggle_action.setIcon(icon)
             else:
-                icon = self.visible_icon if self.is_password_visible else self.original_icon
+                icon = self.original_icon if not self.is_password_visible else self.visible_icon
                 self.toggle_action.setIcon(icon)
             QLineEdit.focusInEvent(password_input, event) if focus_in else QLineEdit.focusOutEvent(password_input, event)
         return event
-    
-    
+
     def check_and_login(self, email_input, password_input, login_button):
         if email_input.text() and password_input.text():
             login_button.click()
