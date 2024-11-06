@@ -193,6 +193,74 @@ class Style():
     }
 """)
     
+    style_Table = ("""
+            QTableWidget {
+                gridline-color: #dddddd;
+                background-color: #C0C0C0;
+                border: none;
+            }
+            
+            QTableWidget::item {
+                padding-left: 5px;
+                padding-right: 5px;
+                border-bottom: 3px solid #b5c6bf;
+                color:#FFFFFF;
+            }
+            
+            QTableWidget::item:selected {
+                background-color: #b5c6bf;
+                color: #333;
+            }
+            
+            QHeaderView::section {
+                background-color: #b5c6bf;
+                color: #333;
+                padding: 4px;
+                font-weight: bold;
+                font-size: 20px;
+                border: 1px solid #d0d0d0;
+            }
+            QScrollBar:vertical {
+                border: none;
+                background: #757575;
+                width: 14px;
+                margin: 21px 0 21px 0;
+                border-radius: 0px;
+            }
+            QScrollBar::handle:vertical {
+                background: #b5c6bf;
+                min-height: 25px;
+                border-radius: 7px;
+            }
+            QScrollBar::add-line:vertical {
+                border: none;
+                background: #757575;
+                height: 20px;
+                border-bottom-left-radius: 7px;
+                border-bottom-right-radius: 7px;
+                subcontrol-position: bottom;
+                subcontrol-origin: margin;
+            }
+            QScrollBar::sub-line:vertical {
+                border: none;
+                background: #757575;
+                height: 20px;
+                border-top-left-radius: 7px;
+                border-top-right-radius: 7px;
+                subcontrol-position: top;
+                subcontrol-origin: margin;
+            }
+            QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+                background: none;
+            }
+            QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+                background: none;
+            }
+        """)
+
+    
+    
+    
     style_InformationModal = ("""
     InformationModal {
         border-radius: 10px;

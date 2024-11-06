@@ -7,6 +7,7 @@ from pages.Dashboard.Ui_Dashboard import Ui_MainWindow
 from APP.Ui_Functions import UIFunctions
 from pages.Login.Layout_Login import Login
 from pages.p_Add_User import CreateUserPage
+from pages.p_Itens import ItemTablePage
 
 
 class Dashboard(QMainWindow):
@@ -28,8 +29,10 @@ class Dashboard(QMainWindow):
 
         self.page_home = HomePage()
         self.page_add_user = CreateUserPage()
+        self.page_stock = ItemTablePage()
         self.ui.stackedWidget.addWidget(self.page_home)
         self.ui.stackedWidget.addWidget(self.page_add_user)
+        self.ui.stackedWidget.addWidget(self.page_stock)
         
         self.ui.stackedWidget.setCurrentWidget(self.page_home)
     
@@ -37,6 +40,7 @@ class Dashboard(QMainWindow):
     def initMenus(self):
         UIFunctions.addNewMenu(self, "HOME", "btn_home", "url(:/16x16/icons/16x16/cil-home.png)", True)
         UIFunctions.addNewMenu(self, "CRIAR NOVO UTILIZADOR", "btn_new_user", "url(:/16x16/icons/16x16/cil-user-follow.png)", True)
+        UIFunctions.addNewMenu(self, "ITENS STOCK", "btn_stock", "url(:/16x16/icons/16x16/cil-notes.png)", True)
         UIFunctions.addNewMenu(self, "LOG OUT", "btn_log_out", "url(:/16x16/icons/16x16/cil-account-logout.png)", False)
         UIFunctions.selectStandardMenu(self, "btn_home", UIFunctions.labelPage)
         self.ui.stackedWidget.setMinimumWidth(20)
@@ -61,9 +65,12 @@ class Dashboard(QMainWindow):
         #Validar pedidos e enviar- Farmaceuticos
         #Tabela a mostrar Quantidade de Itens existentes - Farmaceuticos
         #Se der tempo fazer graficos de tempo de demora, tempo de aceitação
+        
+        
         page_map = {
             "btn_home": (self.page_home, "Home"),
             "btn_new_user": (self.page_add_user, "Novo Utilizador"),
+            "btn_stock": (self.page_stock, "Stock"),
             "btn_log_out": None
         }
         

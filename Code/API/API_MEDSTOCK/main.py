@@ -5,6 +5,7 @@ from REQUESTS.LOGIN.POST_Login import router as POST_login_router
 from REQUESTS.RESET_PASSWORD.POST_Reset_Password import router as POST_reset_password_router
 from REQUESTS.CREATE_USER.POST_Create_User import router as POST_create_user_router
 from REQUESTS.ROLES.GET_Roles import router as GET_roles_router
+from REQUESTS.ITENS.GET_Itens import router as GET_itens_router
 api = FastAPI()
 
 api.add_middleware(
@@ -20,6 +21,7 @@ api.include_router(POST_login_router)
 api.include_router(POST_reset_password_router)
 api.include_router(POST_create_user_router)
 api.include_router(GET_roles_router)
+api.include_router(GET_itens_router)
 
 if __name__ == "__main__":
     #uvicorn.run("main:api", reload=True)

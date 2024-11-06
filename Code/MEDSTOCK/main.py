@@ -11,5 +11,5 @@ if __name__ == "__main__":
     logging.getLogger("matplotlib").disabled = True 
     logging.getLogger("urllib3").disabled = True
     app = QApplication(sys.argv)
-    window = Login()
+    window = Dashboard()
     sys.exit(app.exec_())

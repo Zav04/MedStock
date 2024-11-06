@@ -9,121 +9,124 @@ from APP.Ui_Styles import Style
 from API.API_GET_Request import API_GetRoles
 from API.API_POST_Request import API_CreateUser, API_CreateUser_SendEmail
 from Overlays.Overlay import Overlay
+import asyncio
 
 
 
 class CreateUserPage(QWidget):
     def __init__(self):
         super().__init__()
-        DbRoles = API_GetRoles()
 
-        main_layout = QVBoxLayout(self)
-        main_layout.setAlignment(Qt.AlignCenter)
-        main_layout.setContentsMargins(20, 30, 20, 30)
+        self.main_layout = QVBoxLayout(self)
+        self.main_layout.setAlignment(Qt.AlignCenter)
+        self.main_layout.setContentsMargins(20, 30, 20, 30)
 
-        title = QLabel("Criar Novo Utilizador")
-        title_font = QFont("Arial", 24, QFont.Bold)
-        title.setFont(title_font)
-        title.setAlignment(Qt.AlignCenter)
-        title.setStyleSheet("color: #C0C0C0;font-weight: bold;")
-        main_layout.addWidget(title)
+        self.title = QLabel("Criar Novo Utilizador")
+        self.title_font = QFont("Arial", 24, QFont.Bold)
+        self.title.setFont(self.title_font)
+        self.title.setAlignment(Qt.AlignCenter)
+        self.title.setStyleSheet("color: #C0C0C0;font-weight: bold;")
+        self.main_layout.addWidget(self.title)
 
-        main_layout.addSpacing(15)
+        self.main_layout.addSpacing(15)
 
-        name_label = QLabel("Nome")
-        name_font = QFont("Arial", 12)
-        name_label.setFont(name_font)
-        name_label.setStyleSheet("color: #C0C0C0;font-weight: bold;")
-        name_input = QLineEdit()
-        name_input.setFixedSize(300, 40)
-        name_input.setPlaceholderText("Insira o nome")
-        name_input.setStyleSheet(Style.style_QlineEdit)
+        self.name_label = QLabel("Nome")
+        self.name_font = QFont("Arial", 12)
+        self.name_label.setFont(self.name_font)
+        self.name_label.setStyleSheet("color: #C0C0C0;font-weight: bold;")
+        self.name_input = QLineEdit()
+        self.name_input.setFixedSize(500, 40)
+        self.name_input.setPlaceholderText("Insira o nome")
+        self.name_input.setStyleSheet(Style.style_QlineEdit)
 
-        email_label = QLabel("Email")
-        email_label.setFont(name_font)
-        email_label.setStyleSheet("color: #C0C0C0; font-weight: bold;")
-        email_input = QLineEdit()
-        email_input.setFixedSize(300, 40)
-        email_input.setPlaceholderText("Insira o email")
-        email_input.setStyleSheet(Style.style_QlineEdit)
+        self.email_label = QLabel("Email")
+        self.email_label.setFont(self.name_font)
+        self.email_label.setStyleSheet("color: #C0C0C0; font-weight: bold;")
+        self.email_input = QLineEdit()
+        self.email_input.setFixedSize(500, 40)
+        self.email_input.setPlaceholderText("Insira o email")
+        self.email_input.setStyleSheet(Style.style_QlineEdit)
         
 
-        gender_label = QLabel("Genero")
-        gender_label.setFont(name_font)
-        gender_label.setStyleSheet("color: #C0C0C0; font-weight: bold;")
-        gender_input = QComboBox()
-        gender_input.setFixedSize(300, 40)
-        gender_input.addItem("Masculino", "M")
-        gender_input.addItem("Feminino", "F")
-        gender_input.setStyleSheet(Style.style_QComboBox)
+        self.gender_label = QLabel("Genero")
+        self.gender_label.setFont(self.name_font)
+        self.gender_label.setStyleSheet("color: #C0C0C0; font-weight: bold;")
+        self.gender_input = QComboBox()
+        self.gender_input.setFixedSize(500, 40)
+        self.gender_input.addItem("Masculino", "M")
+        self.gender_input.addItem("Feminino", "F")
+        self.gender_input.setStyleSheet(Style.style_QComboBox)
 
 
-        dob_label = QLabel("Data de Nascimento")
-        dob_label.setFont(name_font)
-        dob_label.setStyleSheet("color: #C0C0C0; font-weight: bold;")
-        dob_input = QDateEdit()
-        dob_input.setFixedSize(300, 40)
-        dob_input.setCalendarPopup(True)
-        dob_input.setDate(QDate.currentDate())
-        dob_input.setStyleSheet(Style.style_QDateEdit)
+        self.dob_label = QLabel("Data de Nascimento")
+        self.dob_label.setFont(self.name_font)
+        self.dob_label.setStyleSheet("color: #C0C0C0; font-weight: bold;")
+        self.dob_input = QDateEdit()
+        self.dob_input.setFixedSize(500, 40)
+        self.dob_input.setCalendarPopup(True)
+        self.dob_input.setDate(QDate.currentDate())
+        self.dob_input.setStyleSheet(Style.style_QDateEdit)
 
 
-        role_label = QLabel("Cargo")
-        role_label.setFont(name_font)
-        role_label.setStyleSheet("color: #C0C0C0; font-weight: bold;")
-        role_input = QComboBox()
-        role_input.setFixedSize(300, 40)
+        self.role_label = QLabel("Cargo")
+        self.role_label.setFont(self.name_font)
+        self.role_label.setStyleSheet("color: #C0C0C0; font-weight: bold;")
+        self.role_input = QComboBox()
+        self.role_input.setFixedSize(500, 40)
         
-        if DbRoles.success==True:
-             roles = DbRoles.data
-             role_input.clear()
-             for role in roles:
-                role_input.addItem(role.nome_role, role.role_id)
-        else:
-            Overlay.show_error(self, DbRoles.error_message)
-            
-        role_input.setStyleSheet(Style.style_QComboBox)
-        form_layout = QVBoxLayout()
-        form_layout.setSpacing(10)
-        form_layout.addWidget(name_label)
-        form_layout.addWidget(name_input)
-        form_layout.addWidget(email_label)
-        form_layout.addWidget(email_input)
-        form_layout.addWidget(gender_label)
-        form_layout.addWidget(gender_input)
-        form_layout.addWidget(dob_label)
-        form_layout.addWidget(dob_input)
-        form_layout.addWidget(role_label)
-        form_layout.addWidget(role_input)
+        self.role_input.setStyleSheet(Style.style_QComboBox)
+        self.form_layout = QVBoxLayout()
+        self.form_layout.setSpacing(10)
+        self.form_layout.addWidget(self.name_label)
+        self.form_layout.addWidget(self.name_input)
+        self.form_layout.addWidget(self.email_label)
+        self.form_layout.addWidget(self.email_input)
+        self.form_layout.addWidget(self.gender_label)
+        self.form_layout.addWidget(self.gender_input)
+        self.form_layout.addWidget(self.dob_label)
+        self.form_layout.addWidget(self.dob_input)
+        self.form_layout.addWidget(self.role_label)
+        self.form_layout.addWidget(self.role_input)
 
-        main_layout.addLayout(form_layout)
-        main_layout.addSpacing(20)
+        self.main_layout.addLayout(self.form_layout)
+        self.main_layout.addSpacing(20)
         
         
-        register_button = QPushButton("Registrar")
-        register_button.setFixedSize(150, 40)
-        register_button.setStyleSheet(Style.style_bt_QPushButton)
-        register_button.clicked.connect(lambda: register_user(self,
-            name_input.text(), email_input.text(), gender_input.currentData(), dob_input.date().toString("dd-MM-yyyy"), role_input.currentData()
+        self.register_button = QPushButton("Registrar")
+        self.register_button.setFixedSize(150, 40)
+        self.register_button.setStyleSheet(Style.style_bt_QPushButton)
+        self.register_button.clicked.connect(lambda: self.register_user(
+            self.name_input.text(), self.email_input.text(), self.gender_input.currentData(), self.dob_input.date().toString("dd-MM-yyyy"), 
+            self.role_input.currentData()
         ))
-
-        main_layout.addWidget(register_button, alignment=Qt.AlignCenter)
-        self.setLayout(main_layout)
         
-        def register_user(self, name, email, gender, dob, role):            
-            password=password_generator()
-            response= API_CreateUser(name, email, password , gender, dob, role)
+        asyncio.run(self.update_role())
+        self.main_layout.addWidget(self.register_button, alignment=Qt.AlignCenter)
+        self.setLayout(self.main_layout)
+        
+    def register_user(self, name, email, gender, dob, role):            
+        password=password_generator()
+        response= API_CreateUser(name, email, password , gender, dob, role)
+        if(response.success==True):
+            Overlay.show_success(self, response.data)
+            self.name_input.clear()
+            self.email_input.clear()
+            response=API_CreateUser_SendEmail(email,password)
             if(response.success==True):
-                Overlay.show_success(self, response.data)
-                name_input.clear()
-                email_input.clear()
-                response=API_CreateUser_SendEmail(email,password)
-                if(response.success==True):
-                    Overlay.show_information(self, response.data)
-                else:
-                    Overlay.show_error(self, response.error_message)
+                Overlay.show_information(self, response.data)
             else:
                 Overlay.show_error(self, response.error_message)
+        else:
+            Overlay.show_error(self, response.error_message)
+    async def update_role(self):
+        DbRoles = await API_GetRoles()
+        if DbRoles.success==True:
+            roles = DbRoles.data
+            self.role_input.clear()
+            for role in roles:
+                self.role_input.addItem(role.nome_role, role.role_id)
+        else:
+            Overlay.show_error(self, DbRoles.error_message)
 
 
 
@@ -133,10 +136,10 @@ def password_generator():
     digit = random.choice(string.digits)
     special = random.choice("!@#$%^&*()-_=+[]{}|;:,.<>?/")
     remaining = random.choices(string.ascii_letters + string.digits + "!@#$%^&*()-_=+[]{}|;:,.<>?/", k=5)
-    senha = list(upper + digit + special + ''.join(remaining))
-    random.shuffle(senha)
+    pw = list(upper + digit + special + ''.join(remaining))
+    random.shuffle(pw)
         
-    return ''.join(senha)
+    return ''.join(pw)
 
 
 
