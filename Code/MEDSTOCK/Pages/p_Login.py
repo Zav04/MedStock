@@ -1,15 +1,15 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QAction
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import Qt, QSize
-from APP.Ui_Functions import UIFunctions
+from APP.ui_functions import UIFunctions
 import os
-from APP.Ui_Styles import Style
+from APP.ui_styles import Style
 from Overlays.Overlay import Overlay
 from API.API_POST_Request import API_Login
-from pages.ResetPassword.Layout_ResetPassword import ResetPassword
+from Pages.ResetPassword.Layout_ResetPassword import ResetPassword
 
 def login_button_clicked(email_input, password_input, central_page, full_page):
-    from pages.Dashboard.Layout_Dashboard import Dashboard
+    from Pages.Dashboard.Layout_Dashboard import Dashboard
     email = email_input.text()
     password = password_input.text()
     response = API_Login(email, password)

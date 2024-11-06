@@ -1,13 +1,13 @@
 
 from PyQt5.QtWidgets import *
-from pages.p_Home import HomePage
+from Pages.p_Home import HomePage
 from APP.WindowFunctions import WindowFunctions
 from Overlays.Overlay import Overlay
-from pages.Dashboard.Ui_Dashboard import Ui_MainWindow
-from APP.Ui_Functions import UIFunctions
-from pages.Login.Layout_Login import Login
-from pages.p_Add_User import CreateUserPage
-from pages.p_Itens import ItemTablePage
+from Pages.Dashboard.ui_dashboard import Ui_MainWindow
+from APP.ui_functions import UIFunctions
+from Pages.Login.Layout_Login import Login
+from Pages.p_Add_user import CreateUserPage
+from Pages.p_Itens import ItemTablePage
 
 
 class Dashboard(QMainWindow):

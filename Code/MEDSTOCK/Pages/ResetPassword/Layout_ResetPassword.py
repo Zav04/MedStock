@@ -2,7 +2,7 @@
 from PyQt5.QtWidgets import QDialog
 from PyQt5.QtGui import QIcon
 from APP.WindowFunctions import WindowFunctions
-from pages.p_ResetPassword import ResetPasswordPage
+from Pages.p_ResetPassword import ResetPasswordPage
 from .Ui_ResetPassword import Ui_ResetPassword
 from PyQt5.QtCore import Qt
 

@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton,QAction
 from PyQt5.QtCore import Qt,pyqtSignal
-from APP.Ui_Styles import Style
+from APP.ui_styles import Style
 from Overlays.Overlay import Overlay
 from API.API_POST_Request import API_ResetPassword
 

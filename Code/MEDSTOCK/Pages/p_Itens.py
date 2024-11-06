@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QTableWidget, QTableWidgetItem, QHeaderView
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
-from APP.Ui_Styles import Style
+from APP.ui_styles import Style
 from Overlays.Overlay import Overlay
 from API.API_GET_Request import API_GetItems
 import asyncio

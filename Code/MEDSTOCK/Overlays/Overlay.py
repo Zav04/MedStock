@@ -2,7 +2,7 @@
 from Custom_Widgets.QCustomModals import QCustomModals
 from PyQt5.QtWidgets import QGraphicsDropShadowEffect
 from PyQt5.QtGui import QColor,QIcon,QPixmap
-from APP.Ui_Styles import Style
+from APP.ui_styles import Style
 
 class Overlay:
     @staticmethod

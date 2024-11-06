@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt, QDate
-from APP.Ui_Styles import Style
+from APP.ui_styles import Style
 from API.API_GET_Request import API_GetRoles
 from API.API_POST_Request import API_CreateUser, API_CreateUser_SendEmail
 from Overlays.Overlay import Overlay

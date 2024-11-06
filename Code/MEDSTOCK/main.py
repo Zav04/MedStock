@@ -1,6 +1,6 @@
 import sys
-from pages.Dashboard.Layout_Dashboard import Dashboard
-from pages.Login.Layout_Login import Login
+from Pages.Dashboard.Layout_Dashboard import Dashboard
+from Pages.Login.Layout_Login import Login
 from dotenv import load_dotenv
 from PyQt5.QtWidgets import QApplication
 import logging
