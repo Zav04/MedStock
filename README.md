@@ -1,4 +1,5 @@
-MedStock - Gestão de Stock para Farmácias Hospitalares
+# **MedStock - Gestão de Stock para Farmácias Hospitalares**
+
 
 
 ![Logo_With_BackGround](https://github.com/user-attachments/assets/ecec2fa5-30ec-43c5-a47f-153f2789a703)
@@ -18,7 +19,7 @@ Gestão de stock hospitalar para:<br />
     
 Tecnologias Utilizadas<br />
     - Python: Linguagem de programação principal.<br />
-    - Flet: Framework para construção da interface gráfica (UI).<br />
+    - PyQt: Framework para construção da interface gráfica (UI).<br />
     - FastAPI: Framework para a API backend.<br />
     - PostgreSQL: Base de dados relacional para gestão e permanecia dos dados.<br />
     
