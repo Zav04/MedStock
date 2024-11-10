@@ -196,15 +196,17 @@ class Style():
     style_Table = ("""
             QTableWidget {
                 gridline-color: #dddddd;
-                background-color: #C0C0C0;
+                background-color: transparent;
                 border: none;
+                text-align: center;
             }
             
             QTableWidget::item {
                 padding-left: 5px;
                 padding-right: 5px;
                 border-bottom: 3px solid #b5c6bf;
-                color:#FFFFFF;
+                color: rgb(0, 0, 0);
+                text-align: center;
             }
             
             QTableWidget::item:selected {
@@ -258,9 +260,6 @@ class Style():
             }
         """)
 
-    
-    
-    
     style_InformationModal = ("""
     InformationModal {
         border-radius: 10px;

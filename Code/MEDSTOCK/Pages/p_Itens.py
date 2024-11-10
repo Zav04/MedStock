@@ -1,27 +1,38 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QTableWidget, QTableWidgetItem, QHeaderView
-from PyQt5.QtGui import QFont
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QTableWidget, QTableWidgetItem, QHeaderView, QPushButton, QFileDialog
+from PyQt5.QtGui import QFont, QIcon
+from PyQt5.QtCore import Qt, QSize
 from APP.ui_styles import Style
 from Overlays.Overlay import Overlay
 from API.API_GET_Request import API_GetItems
+from APP.Generate_PDF import GeneratePdfItens
+from APP.ui_functions import UIFunctions
 import asyncio
+import os
 
 class ItemTablePage(QWidget):
     def __init__(self):
         super().__init__()
-
         self.main_layout = QVBoxLayout(self)
         self.main_layout.setAlignment(Qt.AlignCenter)
-        self.main_layout.setContentsMargins(20, 30, 20, 30)
+        self.main_layout.setContentsMargins(50, 50, 50, 50)
 
-        self.title = QLabel("Itens Disponíveis")
+        self.title = QLabel("ITENS DISPONÍVEIS")
         self.title_font = QFont("Arial", 24, QFont.Bold)
         self.title.setFont(self.title_font)
         self.title.setAlignment(Qt.AlignCenter)
         self.title.setStyleSheet("color: #C0C0C0; font-weight: bold;")
         self.main_layout.addWidget(self.title)
-
         self.main_layout.addSpacing(15)
+        
+        self.download_button = QPushButton()
+        self.download_button.setFixedSize(40, 40)
+        icon_path = os.path.abspath("./icons/MaterialIcons/picture_as_pdf.png")
+        #icon_recolor= UIFunctions.recolor_icon(icon_path, "#4CAF50")
+        self.download_button.setIcon(QIcon(icon_path))
+        self.download_button.setIconSize(QSize(30, 30))
+        self.download_button.setStyleSheet("background-color: transparent; border: 2px solid #F3F3F3;")
+        self.download_button.clicked.connect(self.choose_file_location)
+        self.main_layout.addWidget(self.download_button, alignment=Qt.AlignRight)
 
         self.table_widget = QTableWidget()
         self.table_widget.setColumnCount(4)
@@ -34,15 +45,13 @@ class ItemTablePage(QWidget):
         self.table_widget.setSelectionBehavior(QTableWidget.SelectRows)
         self.table_widget.setEditTriggers(QTableWidget.NoEditTriggers)
         self.table_widget.setStyleSheet(Style.style_Table)
-
         self.table_widget.setShowGrid(False)
         self.table_widget.setGridStyle(Qt.SolidLine)
 
         self.main_layout.addWidget(self.table_widget)
-
         asyncio.run(self.load_items())
 
-    async def load_items(self):
+    async def load_items(self):        
         response = await API_GetItems()
         if response.success:
             items = response.data
@@ -54,3 +63,15 @@ class ItemTablePage(QWidget):
                 self.table_widget.setItem(row, 3, QTableWidgetItem(str(item.quantidade_disponivel)))
         else:
             Overlay.show_error(self, response.error_message)
+
+    def choose_file_location(self):
+        options = QFileDialog.Options()
+        file_path, _ = QFileDialog.getSaveFileName(
+            self, 
+            "Guardar PDF", 
+            "", 
+            "PDF Files (*.pdf);;All Files (*)", 
+            options=options
+        )
+        if file_path:
+            GeneratePdfItens(self, self.table_widget, file_path)

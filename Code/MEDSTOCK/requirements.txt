@@ -6,3 +6,4 @@ requests
 pycairo 
 cairocffi
 shiboken2
+reportlab

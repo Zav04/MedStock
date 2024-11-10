@@ -21,7 +21,7 @@ class CreateUserPage(QWidget):
         self.main_layout.setAlignment(Qt.AlignCenter)
         self.main_layout.setContentsMargins(20, 30, 20, 30)
 
-        self.title = QLabel("Criar Novo Utilizador")
+        self.title = QLabel("CRIAR NOVO UTILIZADOR")
         self.title_font = QFont("Arial", 24, QFont.Bold)
         self.title.setFont(self.title_font)
         self.title.setAlignment(Qt.AlignCenter)
