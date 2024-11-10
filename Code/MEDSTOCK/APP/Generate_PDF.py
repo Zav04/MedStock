@@ -2,6 +2,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
 from PyQt5.QtWidgets import QTableWidget
+from PyQt5.QtGui import QIcon
 import os
 
 def GeneratePdfItens(self, table_widget: QTableWidget, file_path: str):
@@ -17,6 +18,7 @@ def GeneratePdfItens(self, table_widget: QTableWidget, file_path: str):
 
     draw_header()
     c.drawString(60, height - 80, "Relatório de Itens Disponíveis")
+    
     table_data = [["Nome", "Tipo", "Código", "Quantidade"]]
     for row in range(table_widget.rowCount()):
         row_data = [
@@ -27,11 +29,18 @@ def GeneratePdfItens(self, table_widget: QTableWidget, file_path: str):
         ]
         table_data.append(row_data)
 
+    icon_paths = {
+        "Medicamento": os.path.abspath("./icons/MaterialIcons/medicamento.png"),
+        "Vacinas": os.path.abspath("./icons/MaterialIcons/vacina.png"),
+        "Material Hospitalar": os.path.abspath("./icons/MaterialIcons/material_hospitalar.png"),
+        "Outros": os.path.abspath("./icons/MaterialIcons/outro.png")
+    }
+
     x_offset = 60
     y_offset = height - 100
     row_height = 20
     col_widths = [100, 130, 140, 110]
-    
+    icon_size = 12
     min_y_offset = 50
 
     for row, row_data in enumerate(table_data):
@@ -56,7 +65,20 @@ def GeneratePdfItens(self, table_widget: QTableWidget, file_path: str):
             c.setStrokeColor(colors.lightgrey)
             c.line(x_offset, y, x_offset + sum(col_widths), y)
             
-            text_x = x + col_widths[col] / 2 - c.stringWidth(cell_data, "Helvetica", 10) / 2
+            # Adiciona o ícone na primeira coluna
+            if col == 0 and row > 0:
+                tipo_item = row_data[1]  # Nome do tipo
+                icon_path = icon_paths.get(tipo_item)
+                if icon_path:
+                    icon_x = x + 5  # Ajuste o posicionamento conforme necessário
+                    icon_y = y + (row_height - icon_size) / 2
+                    c.drawImage(icon_path, icon_x, icon_y, width=icon_size, height=icon_size, mask='auto')
+                    text_x = x + icon_size + 10  # Posiciona o texto ao lado do ícone
+                else:
+                    text_x = x + col_widths[col] / 2 - c.stringWidth(cell_data, "Helvetica", 10) / 2
+            else:
+                text_x = x + col_widths[col] / 2 - c.stringWidth(cell_data, "Helvetica", 10) / 2
+            
             text_y = y + row_height / 4
             c.drawString(text_x, text_y, cell_data)
         

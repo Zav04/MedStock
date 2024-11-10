@@ -5,7 +5,6 @@ from APP.ui_styles import Style
 from Overlays.Overlay import Overlay
 from API.API_GET_Request import API_GetItems
 from APP.Generate_PDF import GeneratePdfItens
-from APP.ui_functions import UIFunctions
 import asyncio
 import os
 
@@ -27,7 +26,6 @@ class ItemTablePage(QWidget):
         self.download_button = QPushButton()
         self.download_button.setFixedSize(40, 40)
         icon_path = os.path.abspath("./icons/MaterialIcons/picture_as_pdf.png")
-        #icon_recolor= UIFunctions.recolor_icon(icon_path, "#4CAF50")
         self.download_button.setIcon(QIcon(icon_path))
         self.download_button.setIconSize(QSize(30, 30))
         self.download_button.setStyleSheet("background-color: transparent; border: 2px solid #F3F3F3;")
@@ -40,7 +38,6 @@ class ItemTablePage(QWidget):
         self.table_widget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.table_widget.verticalHeader().setVisible(False)
         self.table_widget.setShowGrid(True)
-        self.table_widget.setGridStyle(1)
         self.table_widget.setFont(QFont("Arial", 11))
         self.table_widget.setSelectionBehavior(QTableWidget.SelectRows)
         self.table_widget.setEditTriggers(QTableWidget.NoEditTriggers)
@@ -57,7 +54,20 @@ class ItemTablePage(QWidget):
             items = response.data
             self.table_widget.setRowCount(len(items))
             for row, item in enumerate(items):
-                self.table_widget.setItem(row, 0, QTableWidgetItem(item.nome_item))
+                icon = QIcon()
+                if item.nome_tipo == "Medicamento":
+                    icon = QIcon("./icons/MaterialIcons/medicamento.png")
+                elif item.nome_tipo == "Vacinas":
+                    icon = QIcon("./icons/MaterialIcons/vacina.png")
+                elif item.nome_tipo == "Material Hospitalar":
+                    icon = QIcon("./icons/MaterialIcons/material_hospitalar.png")
+                elif item.nome_tipo == "Outros":
+                    icon = QIcon("./icons/MaterialIcons/outro.png")
+
+                item_name_with_icon = QTableWidgetItem(item.nome_item)
+                item_name_with_icon.setIcon(icon)
+
+                self.table_widget.setItem(row, 0, item_name_with_icon)
                 self.table_widget.setItem(row, 1, QTableWidgetItem(item.nome_tipo))
                 self.table_widget.setItem(row, 2, QTableWidgetItem(item.codigo))
                 self.table_widget.setItem(row, 3, QTableWidgetItem(str(item.quantidade_disponivel)))
