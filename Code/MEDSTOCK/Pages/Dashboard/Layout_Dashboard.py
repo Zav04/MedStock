@@ -5,43 +5,50 @@ from APP.WindowFunctions import WindowFunctions
 from Overlays.Overlay import Overlay
 from Pages.Dashboard.ui_dashboard import Ui_MainWindow
 from APP.ui_functions import UIFunctions
+from Class.utilizador import Utilizador
 from Pages.Login.Layout_Login import Login
 from Pages.p_Add_user import CreateUserPage
 from Pages.p_Itens import ItemTablePage
+from Pages.p_Requerimento import RequerimentoTablePage
 
 
 class Dashboard(QMainWindow):
+    #TODO IMPLEMENTAR USER 
     def __init__(self):
         super(Dashboard, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-
+        self.user = Utilizador(nome="Bruno Oliveira", email="Bruno.bx04@gmail.com", 
+                            sexo="M", data_nascimento="1999-06-06", utilizador_id=12, role_id=1)
         WindowFunctions.removeTitleBar(self, True)
         WindowFunctions.setupWindow(self, 'MedStock', "icons/MedStock/favicon.png")
         WindowFunctions.enableWindowDragging(self, self.ui.frame_top)
         self.ui.btn_toggle_menu.clicked.connect(lambda: UIFunctions.toggleMenu(self, 400, True))
+        
         self.initPages()
         self.initMenus()
         self.show()
-
 
     def initPages(self):
 
         self.page_home = HomePage()
         self.page_add_user = CreateUserPage()
         self.page_stock = ItemTablePage()
+        self.page_requerimento = RequerimentoTablePage(self.user)
         self.ui.stackedWidget.addWidget(self.page_home)
         self.ui.stackedWidget.addWidget(self.page_add_user)
         self.ui.stackedWidget.addWidget(self.page_stock)
+        self.ui.stackedWidget.addWidget(self.page_requerimento)
         
         self.ui.stackedWidget.setCurrentWidget(self.page_home)
     
     #TODO VERIFICAR ISTO DE FORMA DINAMICA
     def initMenus(self):
-        UIFunctions.addNewMenu(self, "HOME", "btn_home", "url(:/16x16/icons/16x16/cil-home.png)", True)
-        UIFunctions.addNewMenu(self, "CRIAR NOVO UTILIZADOR", "btn_new_user", "url(:/16x16/icons/16x16/cil-user-follow.png)", True)
-        UIFunctions.addNewMenu(self, "ITENS STOCK", "btn_stock", "url(:/16x16/icons/16x16/cil-notes.png)", True)
+        UIFunctions.addNewMenu(self, "HOME", "btn_home", "url(:/20x20/icons/20x20/cil-home.png)", True)
+        UIFunctions.addNewMenu(self, "CRIAR NOVO UTILIZADOR", "btn_new_user", "url(:/20x20/icons/20x20/cil-user-follow.png)", True)
+        UIFunctions.addNewMenu(self, "ITENS STOCK", "btn_stock", "url(:/20x20/icons/20x20/cil-notes.png)", True)
         UIFunctions.addNewMenu(self, "LOG OUT", "btn_log_out", "url(:/16x16/icons/16x16/cil-account-logout.png)", False)
+        UIFunctions.addNewMenu(self, "REQUERIMENTOS", "btn_requerimento", "url(:/20x20/icons/20x20/cil-description.png)", True)
         UIFunctions.selectStandardMenu(self, "btn_home", UIFunctions.labelPage)
         self.ui.stackedWidget.setMinimumWidth(20)
 
@@ -71,6 +78,7 @@ class Dashboard(QMainWindow):
             "btn_home": (self.page_home, "Home"),
             "btn_new_user": (self.page_add_user, "Novo Utilizador"),
             "btn_stock": (self.page_stock, "Stock"),
+            "btn_requerimento": (self.page_requerimento, "Requerimento"),
             "btn_log_out": None
         }
         

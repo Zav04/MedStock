@@ -23,7 +23,6 @@ class WindowFunctions:
         """Enable window dragging by attaching mouse events to a specific frame."""
         window.dragPos = None
 
-        # Define the mouse event functions for moving the window
         def moveWindow(event):
             if event.buttons() == Qt.LeftButton:
                 window.move(window.pos() + event.globalPos() - window.dragPos)
@@ -33,12 +32,10 @@ class WindowFunctions:
         def handleMousePress(event):
             window.dragPos = event.globalPos()
 
-        # Assign the event functions only to the specified title bar frame
         if title_bar_frame:
             title_bar_frame.mouseMoveEvent = moveWindow
             title_bar_frame.mousePressEvent = handleMousePress
         else:
-            # Fall back to attaching the events directly to the window if no frame is specified
             window.mouseMoveEvent = moveWindow
             window.mousePressEvent = handleMousePress
 

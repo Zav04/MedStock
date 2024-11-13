@@ -7,8 +7,6 @@ import tempfile
 import os
 
 
-
-
 GLOBAL_STATE = 0
 GLOBAL_TITLE_BAR = True
 
@@ -27,7 +25,7 @@ class UIFunctions(QMainWindow):
             GLOBAL_STATE = 1
             self.ui.horizontalLayout.setContentsMargins(0, 0, 0, 0)
             self.ui.btn_maximize_restore.setToolTip("Restore")
-            self.ui.btn_maximize_restore.setIcon(QtGui.QIcon(u":/16x16/icons/16x16/cil-window-restore.png"))
+            self.ui.btn_maximize_restore.setIcon(QtGui.QIcon(u":/20x20/icons/20x20/cil-window-restore.png"))
             self.ui.frame_top_btns.setStyleSheet("background-color: rgb(27, 29, 35)")
             self.ui.frame_size_grip.hide()
         else:
@@ -36,7 +34,7 @@ class UIFunctions(QMainWindow):
             self.resize(self.width()+1, self.height()+1)
             self.ui.horizontalLayout.setContentsMargins(10, 10, 10, 10)
             self.ui.btn_maximize_restore.setToolTip("Maximize")
-            self.ui.btn_maximize_restore.setIcon(QtGui.QIcon(u":/16x16/icons/16x16/cil-window-maximize.png"))
+            self.ui.btn_maximize_restore.setIcon(QtGui.QIcon(u":/20x20/icons/20x20/cil-window-maximize.png"))
             self.ui.frame_top_btns.setStyleSheet("background-color: rgba(27, 29, 35, 200)")
             self.ui.frame_size_grip.show()
 

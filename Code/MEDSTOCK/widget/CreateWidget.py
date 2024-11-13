@@ -91,7 +91,7 @@
 # "	border: 2px solid rgb(43, 50, 61);\n"
 # "}")
 #         icon3 = QIcon()
-#         icon3.addFile(u":/16x16/icons/16x16/cil-folder-open.png", QSize(), QIcon.Normal, QIcon.Off)
+#         icon3.addFile(u":/20x20/icons/20x20/cil-folder-open.png", QSize(), QIcon.Normal, QIcon.Off)
 #         self.pushButton.setIcon(icon3)
 
 #         self.gridLayout.addWidget(self.pushButton, 0, 1, 1, 1)
@@ -274,7 +274,7 @@
 # "	background-color: rgb(52, 58, 71);\n"
 # "}")
 #         icon4 = QIcon()
-#         icon4.addFile(u":/16x16/icons/16x16/cil-link.png", QSize(), QIcon.Normal, QIcon.Off)
+#         icon4.addFile(u":/20x20/icons/20x20/cil-link.png", QSize(), QIcon.Normal, QIcon.Off)
 #         self.commandLinkButton.setIcon(icon4)
 
 #         self.gridLayout_2.addWidget(self.commandLinkButton, 1, 6, 1, 1)

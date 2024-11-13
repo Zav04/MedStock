@@ -138,7 +138,7 @@ class Ui_Login(object):
 "	background-color: #4CAF50;\n"
 "}")
         icon = QIcon()
-        icon.addFile(u":/16x16/icons/16x16/cil-window-minimize.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon.addFile(u":/20x20/icons/20x20/cil-window-minimize.png", QSize(), QIcon.Normal, QIcon.Off)
         self.btn_minimize.setIcon(icon)
 
         self.horizontalLayout_5.addWidget(self.btn_minimize)
@@ -160,7 +160,7 @@ class Ui_Login(object):
 "	background-color: #4CAF50;\n"
 "}")
         icon1 = QIcon()
-        icon1.addFile(u":/16x16/icons/16x16/cil-window-maximize.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon1.addFile(u":/20x20/icons/20x20/cil-window-maximize.png", QSize(), QIcon.Normal, QIcon.Off)
         self.btn_maximize_restore.setIcon(icon1)
 
         self.horizontalLayout_5.addWidget(self.btn_maximize_restore)
@@ -182,7 +182,7 @@ class Ui_Login(object):
 "	background-color: #4CAF50;\n"
 "}")
         icon2 = QIcon()
-        icon2.addFile(u":/16x16/icons/16x16/cil-x.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon2.addFile(u":/20x20/icons/20x20/cil-x.png", QSize(), QIcon.Normal, QIcon.Off)
         self.btn_close.setIcon(icon2)
 
         self.horizontalLayout_5.addWidget(self.btn_close)

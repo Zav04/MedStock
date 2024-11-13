@@ -48,7 +48,7 @@ class ItemTablePage(QWidget):
         self.main_layout.addWidget(self.table_widget)
         asyncio.run(self.load_items())
 
-    async def load_items(self):        
+    async def load_items(self):    
         response = await API_GetItems()
         if response.success:
             items = response.data
@@ -85,3 +85,4 @@ class ItemTablePage(QWidget):
         )
         if file_path:
             GeneratePdfItens(self, self.table_widget, file_path)
+            Overlay.show_information(self, "PDF guardado na localização "+file_path)

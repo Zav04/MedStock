@@ -138,7 +138,7 @@ class Ui_ResetPassword(QDialog):
 "	background-color: #4CAF50;\n"
 "}")
         icon2 = QIcon()
-        icon2.addFile(u":/16x16/icons/16x16/cil-x.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon2.addFile(u":/20x20/icons/20x20/cil-x.png", QSize(), QIcon.Normal, QIcon.Off)
         self.btn_close.setIcon(icon2)
         self.horizontalLayout_5.addWidget(self.btn_close)
         self.horizontalLayout_4.addWidget(self.frame_btns_right, 0, Qt.AlignRight)
