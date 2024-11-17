@@ -1,10 +1,10 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QAction
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import Qt, QSize
-from APP.ui_functions import UIFunctions
+from APP.UI.ui_functions import UIFunctions
 import os
-from APP.ui_styles import Style
-from Overlays.Overlay import Overlay
+from APP.UI.ui_styles import Style
+from APP.Overlays.Overlay import Overlay
 from API.API_POST_Request import API_Login
 from Pages.ResetPassword.Layout_ResetPassword import ResetPassword
 

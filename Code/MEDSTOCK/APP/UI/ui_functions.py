@@ -1,4 +1,4 @@
-from APP.ui_styles import Style
+from APP.UI.ui_styles import Style
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import (QPropertyAnimation,QSize,Qt)
 from PyQt5.QtGui import (QColor,QFont,QPixmap,QIcon)

@@ -5,7 +5,7 @@ RETURNS TABLE(
     nome_utilizador_pedido VARCHAR,
     status INT,
     urgente BOOLEAN,
-    itens_pedidos VARCHAR,
+    itens_pedidos JSON,
     data_pedido TIMESTAMP,
     nome_utilizador_confirmacao VARCHAR,
     data_confirmacao TIMESTAMP,
@@ -21,9 +21,16 @@ BEGIN
         r.status::INT,
         r.urgente,
         (
-            SELECT STRING_AGG(CONCAT(i.nome_item, ' (Quantidade: ', ir.quantidade, ')'), ', ')::VARCHAR
+            SELECT JSON_AGG(
+                JSON_BUILD_OBJECT(
+                    'nome_item', i.nome_item,
+                    'quantidade', ir.quantidade,
+                    'tipo_item', t.nome_tipo
+                )
+            )
             FROM Item_Requerimento ir
             INNER JOIN Item i ON ir.ItemItem_id = i.item_id
+            INNER JOIN Tipo_Item t ON i.tipo_id = t.tipo_id
             WHERE ir.Requerimentorequerimento_id = r.requerimento_id
         ) AS itens_pedidos,
         r.data_pedido,
@@ -45,4 +52,3 @@ BEGIN
         r.user_id_pedido = user_id;
 END;
 $$ LANGUAGE plpgsql;
-

@@ -1,10 +1,10 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QTableWidget, QTableWidgetItem, QHeaderView, QPushButton, QFileDialog
 from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import Qt, QSize
-from APP.ui_styles import Style
-from Overlays.Overlay import Overlay
+from APP.UI.ui_styles import Style
+from APP.Overlays.Overlay import Overlay
 from API.API_GET_Request import API_GetItems
-from APP.Generate_PDF import GeneratePdfItens
+from APP.PDF.Generate_PDF import GeneratePdfItens
 import asyncio
 import os
 

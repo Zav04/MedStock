@@ -1,10 +1,10 @@
 
 from PyQt5.QtWidgets import *
 from Pages.p_Home import HomePage
-from APP.WindowFunctions import WindowFunctions
-from Overlays.Overlay import Overlay
+from APP.UI.WindowFunctions import WindowFunctions
+from APP.Overlays.Overlay import Overlay
 from Pages.Dashboard.ui_dashboard import Ui_MainWindow
-from APP.ui_functions import UIFunctions
+from APP.UI.ui_functions import UIFunctions
 from Class.utilizador import Utilizador
 from Pages.Login.Layout_Login import Login
 from Pages.p_Add_user import CreateUserPage
@@ -30,7 +30,6 @@ class Dashboard(QMainWindow):
         self.show()
 
     def initPages(self):
-
         self.page_home = HomePage()
         self.page_add_user = CreateUserPage()
         self.page_stock = ItemTablePage()
@@ -39,7 +38,6 @@ class Dashboard(QMainWindow):
         self.ui.stackedWidget.addWidget(self.page_add_user)
         self.ui.stackedWidget.addWidget(self.page_stock)
         self.ui.stackedWidget.addWidget(self.page_requerimento)
-        
         self.ui.stackedWidget.setCurrentWidget(self.page_home)
     
     #TODO VERIFICAR ISTO DE FORMA DINAMICA

@@ -328,6 +328,51 @@ class Style():
             background: none;
         }
     """)
+    
+    style_ScrollBar = ("""
+            QScrollArea {
+                border: none;
+                background: transparent;
+            }        
+        QScrollBar:vertical, QScrollBar:horizontal {
+            border: none;
+            background: #757575;
+            width: 14px;
+            margin: 21px 0 21px 0;
+            border-radius: 0px;
+        }
+        QScrollBar::handle:vertical, QScrollBar::handle:horizontal {
+            background: #b5c6bf;
+            min-height: 25px;
+            border-radius: 7px;
+        }
+        QScrollBar::add-line:vertical, QScrollBar::add-line:horizontal {
+            border: none;
+            background: #757575;
+            height: 20px;
+            border-bottom-left-radius: 7px;
+            border-bottom-right-radius: 7px;
+            subcontrol-position: bottom;
+            subcontrol-origin: margin;
+        }
+        QScrollBar::sub-line:vertical, QScrollBar::sub-line:horizontal {
+            border: none;
+            background: #757575;
+            height: 20px;
+            border-top-left-radius: 7px;
+            border-top-right-radius: 7px;
+            subcontrol-position: top;
+            subcontrol-origin: margin;
+        }
+        QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical,
+        QScrollBar::up-arrow:horizontal, QScrollBar::down-arrow:horizontal {
+            background: none;
+        }
+        QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical,
+        QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+            background: none;
+        }
+        """)
 
 
     style_InformationModal = ("""

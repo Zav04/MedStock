@@ -11,8 +11,9 @@ class StatusLabel(QWidget):
         
         label = QLabel(status_text)
         label.setAlignment(Qt.AlignCenter)
+        label.setMinimumSize(250, 30)
         label.setStyleSheet("color: white;")
-        label.setFont(QFont("Arial", 10, QFont.Bold))
+        label.setFont(QFont("Arial", 16, QFont.Bold))
         
         layout = QHBoxLayout()
         layout.addWidget(label)
@@ -31,7 +32,7 @@ def get_status_description(status):
     }
     return status_mapping.get(status, ("Status Desconhecido", QColor("grey")))
 
-def add_status_to_table(table_widget, row,column, status):
+def add_status_lable(status):
     status_text, color = get_status_description(status)
-    status_label = StatusLabel(status_text, color)
-    table_widget.setCellWidget(row, column, status_label)
+    return StatusLabel(status_text, color)
+
