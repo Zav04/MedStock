@@ -6,6 +6,7 @@ import os
 from APP.UI.ui_styles import Style
 from APP.Overlays.Overlay import Overlay
 from API.API_POST_Request import API_Login
+from API.API_GET_Request import API_GetUserByEmail
 from Pages.ResetPassword.Layout_ResetPassword import ResetPassword
 
 def login_button_clicked(email_input, password_input, central_page, full_page):
@@ -14,10 +15,15 @@ def login_button_clicked(email_input, password_input, central_page, full_page):
     password = password_input.text()
     response = API_Login(email, password)
     if response.success:
-        full_page.close()
-        dashboard = Dashboard()
-        dashboard.show()
-        Overlay.show_success(central_page, "Login Bem-Sucedido")
+        user = API_GetUserByEmail(email)
+        if user.success:
+            user = user.data
+            full_page.close()
+            dashboard = Dashboard(user=user)
+            dashboard.show()
+            Overlay.show_success(central_page, "Login Bem-Sucedido")
+        else:
+            Overlay.show_error(central_page, user.error_message)
     else:
         Overlay.show_error(central_page, response.error_message)
 

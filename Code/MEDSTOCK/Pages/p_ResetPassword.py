@@ -34,8 +34,6 @@ class ResetPasswordPage(QDialog):
         send_button.setStyleSheet(Style.style_bt_QPushButton)
         send_button.clicked.connect(self.send_reset_password)
         layout.addWidget(send_button, alignment=Qt.AlignCenter)
-        
-        
 
     def send_reset_password(self):
         email = self.email_input.text()

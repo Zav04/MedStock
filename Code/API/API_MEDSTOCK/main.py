@@ -7,6 +7,8 @@ from REQUESTS.CREATE_USER.POST_Create_User import router as POST_create_user_rou
 from REQUESTS.ROLES.GET_Roles import router as GET_roles_router
 from REQUESTS.ITENS.GET_Itens import router as GET_itens_router
 from REQUESTS.REQUERIMENTO.GET_REQUERIMENTO import router as GET_requerimento_router
+from REQUESTS.LOGIN.GET_Login import router as GET_login_router
+from REQUESTS.SETORES.GET_Setor import router as GET_setor_router
 api = FastAPI()
 
 api.add_middleware(
@@ -23,6 +25,8 @@ api.include_router(POST_create_user_router)
 api.include_router(GET_roles_router)
 api.include_router(GET_itens_router)
 api.include_router(GET_requerimento_router)
+api.include_router(GET_login_router)
+api.include_router(GET_setor_router)
 
 if __name__ == "__main__":
     #uvicorn.run("main:api", reload=True)

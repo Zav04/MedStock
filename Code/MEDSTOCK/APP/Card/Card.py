@@ -3,13 +3,14 @@ from PyQt5.QtGui import QFont, QIcon, QCursor,QPixmap
 from PyQt5.QtCore import Qt, QSize
 from datetime import datetime
 from Class.requerimento import Requerimento
+from Class.utilizador import Utilizador
 from APP.UI.ui_functions import UIFunctions
 import os
 from APP.Label.Label import add_status_lable
 
 
 class RequerimentoCard(QWidget):
-    def __init__(self, requerimento: Requerimento):
+    def __init__(self, user:Utilizador, requerimento: Requerimento):
         super().__init__()
         self.requerimento = requerimento
         self.expanded = False

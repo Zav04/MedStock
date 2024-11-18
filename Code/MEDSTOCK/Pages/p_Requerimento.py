@@ -11,7 +11,7 @@ import asyncio
 
 
 
-class RequerimentoTablePage(QWidget):
+class RequerimentoPage(QWidget):
     def __init__(self, user: Utilizador):
         super().__init__()
         self.user = user
@@ -67,6 +67,7 @@ class RequerimentoTablePage(QWidget):
 
             for requerimento in requerimentos:
                 card = RequerimentoCard(
+                    user=self.user,
                     requerimento=requerimento,
                 )
                 self.scroll_layout.addWidget(card)

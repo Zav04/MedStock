@@ -1,6 +1,6 @@
 CREATE TABLE Utilizador (utilizador_id BIGSERIAL NOT NULL, nome varchar(255) NOT NULL, email varchar(255) NOT NULL, sexo varchar(1) NOT NULL, data_nascimento date NOT NULL, role_id int8 NOT NULL, PRIMARY KEY (utilizador_id));
 CREATE TABLE Item (item_id BIGSERIAL NOT NULL, nome_item varchar(255) NOT NULL, tipo_id int8 NOT NULL, codigo varchar(255) NOT NULL, quantidade_disponivel int8 NOT NULL, PRIMARY KEY (Item_id));
-CREATE TABLE Setor_Hospital (setor_id BIGSERIAL NOT NULL, nome_setor varchar(255) NOT NULL, localizacao varchar(255) NOT NULL, responsavel_id int8 NOT NULL, PRIMARY KEY (setor_id));
+CREATE TABLE Setor_Hospital (setor_id BIGSERIAL NOT NULL, nome_setor varchar(255) NOT NULL, localizacao varchar(255) NOT NULL, responsavel_id int8, PRIMARY KEY (setor_id));
 CREATE TABLE Tipo_Item (tipo_id BIGSERIAL NOT NULL, nome_tipo varchar(255) NOT NULL, PRIMARY KEY (tipo_id));
 CREATE TABLE Role (role_id BIGSERIAL NOT NULL, nome_role varchar(255) NOT NULL, PRIMARY KEY (role_id));
 CREATE TABLE Requerimento (requerimento_id BIGSERIAL NOT NULL, setor_id int8 NOT NULL, user_id_pedido int8 NOT NULL, user_id_confirmacao int8, user_id_envio int8, data_pedido timestamp NOT NULL, data_confirmacao timestamp, data_envio timestamp, status int8 NOT NULL,urgente bool NOT NULL,PRIMARY KEY (requerimento_id));
