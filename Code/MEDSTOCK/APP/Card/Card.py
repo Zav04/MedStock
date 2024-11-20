@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QFrame
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QFrame,QFileDialog
 from PyQt5.QtGui import QFont, QIcon, QCursor,QPixmap
 from PyQt5.QtCore import Qt, QSize
 from datetime import datetime
@@ -7,6 +7,8 @@ from Class.utilizador import Utilizador
 from APP.UI.ui_functions import UIFunctions
 import os
 from APP.Label.Label import add_status_lable
+from APP.Overlays.Overlay import Overlay
+from APP.PDF.Generate_PDF import GeneratePdfRequerimento
 
 
 class RequerimentoCard(QWidget):
@@ -63,13 +65,17 @@ class RequerimentoCard(QWidget):
         actions_layout.setSpacing(10)
         actions_layout.setAlignment(Qt.AlignRight)
 
-        if requerimento.status == 0:
+        if requerimento.status == 0 or user.role_nome=="Gestor Responsável" :
             delete_button = QPushButton()
             recolored_icon_delete = QIcon(UIFunctions.recolor_icon(os.path.abspath("./icons/MaterialIcons/close.png"), "#f54251"))
             delete_button.setIcon(recolored_icon_delete)
             delete_button.setIconSize(QSize(24, 24))
             delete_button.setCursor(QCursor(Qt.PointingHandCursor))
             delete_button.setStyleSheet(self.button_style("#f54251"))
+            if(user.role_nome=="Gestor Responsável"):
+                delete_button.clicked.connect(lambda: self.delete_item_callback(requerimento))
+            else:
+                delete_button.clicked.connect(lambda: self.delete_item_callback(requerimento))
             #delete_button.clicked.connect(lambda: delete_item_callback(requerimento))
             actions_layout.addWidget(delete_button, alignment=Qt.AlignRight)
 
@@ -78,7 +84,7 @@ class RequerimentoCard(QWidget):
         download_button.setIconSize(QSize(24, 24))
         download_button.setCursor(QCursor(Qt.PointingHandCursor))
         download_button.setStyleSheet(self.button_style("#f54251"))
-        #download_button.clicked.connect(lambda: download_pdf_callback(requerimento))
+        download_button.clicked.connect(lambda: self.choose_file_location_GeneratePdfItens())
         actions_layout.addWidget(download_button, alignment=Qt.AlignRight)
 
         self.details_button = QPushButton()
@@ -200,6 +206,22 @@ class RequerimentoCard(QWidget):
         self.expanded = not self.expanded
         self.details_frame.setVisible(self.expanded)
         self.container.setMaximumHeight(300 if self.expanded else 120)
+        
+    
+    def choose_file_location_GeneratePdfItens(self):
+        
+        options = QFileDialog.Options()
+        file_path, _ = QFileDialog.getSaveFileName(
+            self, 
+            "Guardar PDF", 
+            "", 
+            "PDF Files (*.pdf);;All Files (*)", 
+            options=options
+        )
+        if file_path:
+            GeneratePdfRequerimento(file_path, self.requerimento)
+            Overlay.show_information(self, "PDF guardado na localização "+file_path)
+
 
     @staticmethod
     def button_style(color):

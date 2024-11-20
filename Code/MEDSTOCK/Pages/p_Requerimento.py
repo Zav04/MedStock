@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt
 from APP.UI.ui_styles import Style
 from APP.Overlays.Overlay import Overlay
 from Class.utilizador import Utilizador
-from API.API_GET_Request import API_GetRequerimentosByUser
+from API.API_GET_Request import API_GetRequerimentosByUser,API_GetRequerimentosByResponsavel
 from APP.Card.Card import RequerimentoCard
 from APP.UI.ui_styles import Style
 import asyncio
@@ -40,7 +40,7 @@ class RequerimentoPage(QWidget):
 
         # Configurar a página inicial
         self.setLayout(self.main_layout)
-        asyncio.run(self.load_requerimentos(self.user.utilizador_id))
+        asyncio.run(self.load_requerimentos(self.user))
 
     def setup_header(self):
         """Configura o cabeçalho fixo no topo da página."""
@@ -60,11 +60,15 @@ class RequerimentoPage(QWidget):
         self.main_layout.addLayout(title_layout)
         self.main_layout.addSpacing(15)
 
-    async def load_requerimentos(self, user_id):
-        response = await API_GetRequerimentosByUser(user_id)
+    async def load_requerimentos(self, user: Utilizador):
+
+        if(user.role_nome=="Gestor Responsável"):
+            response = await API_GetRequerimentosByResponsavel(user.utilizador_id)
+        else:
+            response = await API_GetRequerimentosByUser(user.utilizador_id)
+
         if response.success:
             requerimentos = response.data
-
             for requerimento in requerimentos:
                 card = RequerimentoCard(
                     user=self.user,

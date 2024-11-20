@@ -29,7 +29,7 @@ class ItemTablePage(QWidget):
         self.download_button.setIcon(QIcon(icon_path))
         self.download_button.setIconSize(QSize(30, 30))
         self.download_button.setStyleSheet("background-color: transparent; border: 2px solid #F3F3F3;")
-        self.download_button.clicked.connect(self.choose_file_location)
+        self.download_button.clicked.connect(self.choose_file_location_GeneratePdfItens)
         self.main_layout.addWidget(self.download_button, alignment=Qt.AlignRight)
 
         self.table_widget = QTableWidget()
@@ -74,7 +74,7 @@ class ItemTablePage(QWidget):
         else:
             Overlay.show_error(self, response.error_message)
 
-    def choose_file_location(self):
+    def choose_file_location_GeneratePdfItens(self):
         options = QFileDialog.Options()
         file_path, _ = QFileDialog.getSaveFileName(
             self, 
