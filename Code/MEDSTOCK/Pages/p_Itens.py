@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QTableWidget, QTableWidgetItem, QHeaderView, QPushButton, QFileDialog
 from PyQt5.QtGui import QFont, QIcon
-from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtCore import Qt, QSize, QTimer
 from APP.UI.ui_styles import Style
 from APP.Overlays.Overlay import Overlay
 from API.API_GET_Request import API_GetItems
@@ -48,7 +48,9 @@ class ItemTablePage(QWidget):
         self.main_layout.addWidget(self.table_widget)
         asyncio.run(self.load_items())
 
-    async def load_items(self):    
+        QTimer.singleShot(0, lambda: asyncio.ensure_future(self.load_items()))
+
+    async def load_items(self):
         response = await API_GetItems()
         if response.success:
             items = response.data

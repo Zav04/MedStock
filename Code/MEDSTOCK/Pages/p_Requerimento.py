@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QTableWidget, QTableWidgetItem, QHeaderView, QPushButton, QFileDialog, QHBoxLayout, QAbstractItemView, QScrollArea
 from PyQt5.QtGui import QFont
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 from APP.UI.ui_styles import Style
 from APP.Overlays.Overlay import Overlay
 from Class.utilizador import Utilizador
@@ -16,18 +16,14 @@ class RequerimentoPage(QWidget):
         super().__init__()
         self.user = user
 
-        # Layout principal
         self.main_layout = QVBoxLayout(self)
 
-        # Cabeçalho fixo
         self.setup_header()
 
-        # Cria a área de rolagem
         self.scroll_area = QScrollArea(self)
         self.scroll_area.setWidgetResizable(True)
         self.scroll_area.setStyleSheet(Style.style_ScrollBar)
 
-        # Conteúdo da área de rolagem
         self.scroll_content = QWidget()
         self.scroll_layout = QVBoxLayout(self.scroll_content)
         self.scroll_layout.setContentsMargins(20, 20, 20, 20)
@@ -35,15 +31,12 @@ class RequerimentoPage(QWidget):
 
         self.scroll_area.setWidget(self.scroll_content)
 
-        # Adiciona a área de rolagem ao layout principal
         self.main_layout.addWidget(self.scroll_area)
 
-        # Configurar a página inicial
         self.setLayout(self.main_layout)
-        asyncio.run(self.load_requerimentos(self.user))
+        QTimer.singleShot(0, self.schedule_load_requerimentos)
 
     def setup_header(self):
-        """Configura o cabeçalho fixo no topo da página."""
         title_layout = QHBoxLayout()
         self.title = QLabel("REQUERIMENTOS")
         self.title_font = QFont("Arial", 24, QFont.Bold)
@@ -56,24 +49,38 @@ class RequerimentoPage(QWidget):
         self.create_button.setStyleSheet(Style.style_bt_QPushButton)
         title_layout.addWidget(self.create_button, alignment=Qt.AlignRight)
 
-        # Adiciona o cabeçalho ao layout principal
         self.main_layout.addLayout(title_layout)
         self.main_layout.addSpacing(15)
 
-    async def load_requerimentos(self, user: Utilizador):
+    def schedule_load_requerimentos(self):
+        asyncio.ensure_future(self.load_requerimentos(self.user))
 
-        if(user.role_nome=="Gestor Responsável"):
+    async def load_requerimentos(self, user: Utilizador):
+        if user.role_nome == "Gestor Responsável":
             response = await API_GetRequerimentosByResponsavel(user.utilizador_id)
         else:
             response = await API_GetRequerimentosByUser(user.utilizador_id)
 
         if response.success:
+            self.clear_layout(self.scroll_layout)
             requerimentos = response.data
             for requerimento in requerimentos:
-                card = RequerimentoCard(
-                    user=self.user,
-                    requerimento=requerimento,
-                )
-                self.scroll_layout.addWidget(card)
+                QTimer.singleShot(0, lambda req=requerimento: self.add_requerimento_card(req))
         else:
             Overlay.show_error(self, response.error_message)
+
+    def add_requerimento_card(self, requerimento):
+        card = RequerimentoCard(
+            user=self.user,
+            requerimento=requerimento,
+        )
+        self.scroll_layout.addWidget(card)
+    
+    def clear_layout(self, layout):
+        while layout.count():
+            child = layout.takeAt(0)
+            if child.widget():
+                child.widget().deleteLater()
+    
+    def reload_requerimentos(self):
+        asyncio.ensure_future(self.load_requerimentos(self.user))

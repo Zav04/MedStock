@@ -7,3 +7,4 @@ pycairo
 cairocffi
 shiboken2
 reportlab
+qasync

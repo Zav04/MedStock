@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import (
     QWidget, QLabel, QLineEdit, QVBoxLayout, QPushButton, QComboBox, QDateEdit
 )
 from PyQt5.QtGui import QFont
-from PyQt5.QtCore import Qt, QDate
+from PyQt5.QtCore import Qt, QDate, QTimer
 from APP.UI.ui_styles import Style
 from API.API_GET_Request import API_GetRoles, API_GetSectors
 from API.API_POST_Request import API_CreateUser, API_CreateUser_SendEmail,API_CreateGestor
@@ -104,8 +104,8 @@ class CreateUserPage(QWidget):
         self.register_button.clicked.connect(self.register_user)
         self.main_layout.addWidget(self.register_button, alignment=Qt.AlignCenter)
 
-        asyncio.run(self.update_role())
-        asyncio.run(self.update_sectors())
+        asyncio.ensure_future(self.update_role())
+        asyncio.ensure_future(self.update_sectors())
         self.setLayout(self.main_layout)
         
     def register_user(self):            
@@ -147,8 +147,6 @@ class CreateUserPage(QWidget):
             else:
                 Overlay.show_error(self, response.error_message)
         
-
-
     def check_role(self):
         selected_role = self.role_input.currentText()
         if selected_role == "Gestor Responsável":
@@ -161,20 +159,26 @@ class CreateUserPage(QWidget):
     async def update_role(self):
         DbRoles = await API_GetRoles()
         if DbRoles.success:
-            self.role_input.clear()
-            for role in DbRoles.data:
-                self.role_input.addItem(role.nome_role, role.role_id)
+            QTimer.singleShot(0, lambda: self.create_roles(DbRoles.data))
         else:
             Overlay.show_error(self, DbRoles.error_message)
+
+    def create_roles(self, roles):
+        self.role_input.clear()
+        for role in roles:
+            self.role_input.addItem(role.nome_role, role.role_id)
 
     async def update_sectors(self):
         response = await API_GetSectors()
         if response.success:
-            self.sector_input.clear()
-            for sector in response.data:
-                self.sector_input.addItem(sector.nome_setor + " - " + sector.localizacao, sector.setor_id)
+            QTimer.singleShot(0, lambda: self.create_sectors(response.data))
         else:
             Overlay.show_error(self, response.error_message)
+
+    def create_sectors(self, sectors):
+        self.sector_input.clear()
+        for sector in sectors:
+            self.sector_input.addItem(f"{sector.nome_setor} - {sector.localizacao}", sector.setor_id)
 
 def password_generator():
     upper = random.choice(string.ascii_uppercase)
@@ -184,11 +188,3 @@ def password_generator():
     pw = list(upper + digit + special + ''.join(remaining))
     random.shuffle(pw)
     return ''.join(pw)
-
-
-
-
-
-
-
-
