@@ -180,3 +180,4 @@ class UIFunctions(QMainWindow):
         colored_pixmap.save(temp_icon_path, "PNG")
         
         return temp_icon_path
+

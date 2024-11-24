@@ -115,7 +115,6 @@ class LoginPage(QWidget):
         dialog.exec_()
 
     def toggle_password_visibility(self, password_input):
-        """Alterna a visibilidade da senha e ajusta o ícone de acordo."""
         self.is_password_visible = not self.is_password_visible
         if self.is_password_visible:
             password_input.setEchoMode(QLineEdit.Normal)
@@ -125,7 +124,6 @@ class LoginPage(QWidget):
             self.toggle_action.setIcon(self.recolored_icon if password_input.hasFocus() else self.original_icon)
 
     def create_focus_event(self, password_input, focus_in):
-        """Define o ícone de visibilidade correto ao ganhar/perder foco."""
         def event(event):
             if focus_in:
                 icon = self.recolored_icon if not self.is_password_visible else self.visible_icon
