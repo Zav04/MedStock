@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QTableWidget, QTableWidgetItem, QHeaderView, QPushButton, QFileDialog
 from PyQt5.QtGui import QFont, QIcon
-from PyQt5.QtCore import Qt, QSize, QTimer
+from PyQt5.QtCore import Qt, QSize, QTimer, QEventLoop
 from APP.UI.ui_styles import Style
 from APP.Overlays.Overlay import Overlay
 from API.API_GET_Request import API_GetItems
@@ -46,36 +46,49 @@ class ItemTablePage(QWidget):
         self.table_widget.setGridStyle(Qt.SolidLine)
 
         self.main_layout.addWidget(self.table_widget)
-        asyncio.run(self.load_items())
+        
+        self.update_timer = QTimer(self)
+        self.update_timer.timeout.connect(self.check_for_updates)
+        self.update_timer.start(60000)
+        self.current_items = []
 
-        QTimer.singleShot(0, lambda: asyncio.ensure_future(self.load_items()))
+        asyncio.ensure_future(self.load_items())
+
 
     async def load_items(self):
         response = await API_GetItems()
-        self.table_widget.clearContents()
         if response.success:
             items = response.data
+            self.update_table(items)
+        else:
+            Overlay.show_error(self, response.error_message)
+
+    def update_table(self, items):
+        if items != self.current_items:
+            self.current_items = items
             self.table_widget.setRowCount(len(items))
+            self.table_widget.clearContents()
+
             for row, item in enumerate(items):
-                icon = QIcon()
-                if item.nome_tipo == "Medicamento":
-                    icon = QIcon("./icons/MaterialIcons/medicamento.png")
-                elif item.nome_tipo == "Vacinas":
-                    icon = QIcon("./icons/MaterialIcons/vacina.png")
-                elif item.nome_tipo == "Material Hospitalar":
-                    icon = QIcon("./icons/MaterialIcons/material_hospitalar.png")
-                elif item.nome_tipo == "Outros":
-                    icon = QIcon("./icons/MaterialIcons/outro.png")
-
-                item_name_with_icon = QTableWidgetItem(item.nome_item)
-                item_name_with_icon.setIcon(icon)
-
-                self.table_widget.setItem(row, 0, item_name_with_icon)
+                item_name = QTableWidgetItem(item.nome_item)
+                item_name.setIcon(self.get_item_icon(item.nome_tipo))
+                self.table_widget.setItem(row, 0, item_name)
                 self.table_widget.setItem(row, 1, QTableWidgetItem(item.nome_tipo))
                 self.table_widget.setItem(row, 2, QTableWidgetItem(item.codigo))
                 self.table_widget.setItem(row, 3, QTableWidgetItem(str(item.quantidade_disponivel)))
+
+    def get_item_icon(self, tipo):
+        if tipo == "Medicamento":
+            return QIcon("./icons/MaterialIcons/medicamento.png")
+        elif tipo == "Vacinas":
+            return QIcon("./icons/MaterialIcons/vacina.png")
+        elif tipo == "Material Hospitalar":
+            return QIcon("./icons/MaterialIcons/material_hospitalar.png")
         else:
-            Overlay.show_error(self, response.error_message)
+            return QIcon("./icons/MaterialIcons/outro.png")
+
+    def check_for_updates(self):
+        asyncio.ensure_future(self.load_items())
 
     def choose_file_location_GeneratePdfItens(self):
         options = QFileDialog.Options()

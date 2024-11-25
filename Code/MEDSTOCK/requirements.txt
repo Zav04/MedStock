@@ -8,3 +8,4 @@ cairocffi
 shiboken2
 reportlab
 qasync
+pyinstaller

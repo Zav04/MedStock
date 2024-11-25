@@ -21,7 +21,12 @@ class RequerimentoPage(QWidget):
         self.user = user
         self.main_layout = QVBoxLayout(self)
         self.setup_RequerimentoPage()
+        self.current_requerimentos = []
         QTimer.singleShot(0, self.load_requerimentos_wrapper)
+        
+        self.update_timer = QTimer(self)
+        self.update_timer.timeout.connect(self.load_requerimentos_wrapper)
+        self.update_timer.start(60000)
 
     def setup_RequerimentoPage(self):
         title_layout = QHBoxLayout()
@@ -61,7 +66,6 @@ class RequerimentoPage(QWidget):
 
     async def show_create_requerimento_page(self):
         self.clear_layout(self.main_layout)
-
         create_page_layout = QVBoxLayout()
 
         back_button = QPushButton()
@@ -120,7 +124,6 @@ class RequerimentoPage(QWidget):
 
         self.main_layout.addLayout(create_page_layout)
 
-
     async def fetch_items(self, left_layout):
         response = await API_GetItems()
         if response.success:
@@ -174,10 +177,13 @@ class RequerimentoPage(QWidget):
             response = await API_GetRequerimentosByUser(user.utilizador_id)
 
         if response.success:
-            self.clear_layout(self.scroll_layout)
-            requerimentos = response.data
-            for requerimento in requerimentos:
-                QTimer.singleShot(0, lambda req=requerimento: self.add_requerimento_card(req))
+            new_requerimentos = response.data
+
+            if new_requerimentos != self.current_requerimentos:
+                self.current_requerimentos = new_requerimentos
+                self.clear_layout(self.scroll_layout)
+                for requerimento in new_requerimentos:
+                    QTimer.singleShot(0, lambda req=requerimento: self.add_requerimento_card(req))
         else:
             Overlay.show_error(self, response.error_message)
 
@@ -203,15 +209,11 @@ class RequerimentoPage(QWidget):
         for sector in sectors:
             self.sector_input.addItem(f"{sector.nome_setor} - {sector.localizacao}", sector.setor_id)
 
-
-            
     def load_requerimentos_wrapper(self):
         asyncio.ensure_future(self.load_requerimentos(self.user))
     
-    
     def update_sectors_wrapper(self):
         asyncio.ensure_future(self.update_sectors())
-    
     
     def show_create_requerimento_page_wrapper(self):
         asyncio.ensure_future(self.show_create_requerimento_page())
