@@ -34,7 +34,6 @@ class ScanActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scan)
 
-        // Initialize views
         btnVoltar = findViewById(R.id.btnVoltar)
         btnFinalizar = findViewById(R.id.btnFinalizar)
         scannerView = findViewById(R.id.scanner_view)
@@ -113,7 +112,7 @@ class ScanActivity : AppCompatActivity() {
 
     private fun stopScanning() {
         isScanning = false
-        scannerView.pause()  // Pauses the scanner after one scan
+        scannerView.pause()
         pausedSymbol.visibility = View.VISIBLE
         Toast.makeText(this, "Scanner parado. Toque no Scan para continuar.", Toast.LENGTH_SHORT).show()
     }

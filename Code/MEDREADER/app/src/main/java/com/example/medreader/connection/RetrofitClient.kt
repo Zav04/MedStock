@@ -6,7 +6,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 
 object RetrofitClient {
-    // IP da Máquina(PC)
     // Não sei como ligar de outra forma
     private const val BASE_URL = "http://192.168.1.188:8000/"
 

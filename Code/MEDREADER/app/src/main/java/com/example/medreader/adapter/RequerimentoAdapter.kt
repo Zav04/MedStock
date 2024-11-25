@@ -50,7 +50,7 @@ class RequerimentoAdapter(
             val date = inputFormat.parse(requerimento.data_pedido)
             outputFormat.format(date)
         } catch (e: Exception) {
-            requerimento.data_pedido // Retorna o valor original em caso de erro
+            requerimento.data_pedido
         }
 
         holder.tvDataPedido.text = "Data: $formattedDate"

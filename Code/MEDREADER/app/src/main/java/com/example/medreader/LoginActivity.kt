@@ -24,11 +24,9 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var loginButton: Button
     private lateinit var progressBar: ProgressBar
     private lateinit var showPasswordButton: ImageButton
-
-    // Código para solicitação de permissão
     private val CAMERA_PERMISSION_REQUEST_CODE = 100
 
-    // Credenciais
+    // USERNAME PASSWORD
     private val validUsername = "123"
     private val validPassword = "123"
 
@@ -88,7 +86,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    // Função para verificar e solicitar a permissão da câmera
     private fun checkCameraPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)
@@ -103,52 +100,3 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 }
-
-
-
-
-//    // Interface Retrofit para o login
-//    interface APIService {
-//        @POST("MedStock_Login/")
-//        fun login(@Body loginRequest: LoginRequest): Call<LoginResponse>
-//    }
-//
-//    // Dados para enviar ao backend
-//    data class LoginRequest(val email: String, val password: String)
-//    data class LoginResponse(val response: Boolean, val error: String?, val data: Any?)
-//
-//    private fun createRetrofit(): APIService {
-//        val retrofit = Retrofit.Builder()
-//            .baseUrl("http://127.0.0.1:8000")
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .build()
-//        return retrofit.create(APIService::class.java)
-//    }
-//
-//    private fun performLogin(email: String, password: String) {
-//        val apiService = createRetrofit()
-//        val loginRequest = LoginRequest(email, password)
-//
-//        // Chamada ao backend para realizar o login
-//        apiService.login(loginRequest).enqueue(object : Callback<LoginResponse> {
-//            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
-//                progressBar.visibility = View.GONE
-//
-//                if (response.isSuccessful && response.body()?.response == true) {
-//                    // Se o login for bem-sucedido, redireciona para a atividade QRScan
-//                    val intent = Intent(this@LoginActivity, QRScanActivity::class.java)
-//                    startActivity(intent)
-//                    finish()
-//                } else {
-//                    // Exibe a mensagem de erro
-//                    Toast.makeText(this@LoginActivity, response.body()?.error ?: "Erro desconhecido", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-//                progressBar.visibility = View.GONE
-//                Toast.makeText(this@LoginActivity, "Erro de conexão: ${t.message}", Toast.LENGTH_SHORT).show()
-//            }
-//        })
-//    }
-//}

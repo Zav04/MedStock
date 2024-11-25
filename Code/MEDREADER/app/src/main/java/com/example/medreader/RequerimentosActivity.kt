@@ -19,7 +19,7 @@ class RequerimentosActivity : AppCompatActivity() {
     private lateinit var btnAtualizar: Button
     private lateinit var recyclerView: RecyclerView
 
-    // User que para já tem tudo
+    // User que tem tudo
     val userId = 12
 
     override fun onCreate(savedInstanceState: Bundle?) {
