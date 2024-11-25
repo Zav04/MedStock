@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:background="@color/white"
+    android:layout_marginBottom="16dp">
+
+    <TextView
+        android:id="@+id/tvRequerimentoId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Requerimento ID"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvSetorNome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Setor Nome"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tvNomeUtilizador"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nome do Utilizador"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tvDataPedido"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Data do Pedido"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tvUrgente"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Urgente"
+        android:textColor="@android:color/holo_red_dark"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/btnComecarScan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Começar Scan"
+        android:layout_gravity="end" />
+
+</LinearLayout>

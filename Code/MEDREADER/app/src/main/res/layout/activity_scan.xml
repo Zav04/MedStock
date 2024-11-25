@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Lista de Itens Pedido + Quantidade -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:background="#EFEFEF"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:id="@+id/tvItensPedido"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="4dp"
+            android:text="Itens Pedido"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <!-- RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewItensPedido"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:scrollbars="vertical"
+            android:overScrollMode="always"
+            android:fadeScrollbars="false"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+    <!-- QRCode/Barcode Reader -->
+    <FrameLayout
+        android:id="@+id/cameraContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        android:background="#CCCCCC"
+        android:gravity="center"
+        android:layout_weight="1">
+
+        <!-- BarcodeScannerView para captura do QRCode -->
+        <com.journeyapps.barcodescanner.BarcodeView
+            android:id="@+id/scanner_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"/>
+
+        <ImageView
+            android:id="@+id/pausedSymbol"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerInParent="true"
+            android:contentDescription="Scanner Paused"
+            android:src="@drawable/ic_pause" />
+    </FrameLayout>
+
+    <!-- Lista de Itens Lidos -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="233dp"
+        android:layout_marginBottom="16dp"
+        android:background="#EFEFEF"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/tvItensLidos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="4dp"
+            android:text="Itens Lidos Corretamente"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <!-- RecyclerView para os itens lidos -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewItensLidos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fadeScrollbars="false"
+            android:overScrollMode="always"
+            android:scrollbars="vertical"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+    <!-- Botões -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal">
+
+        <!-- Botão Voltar -->
+        <Button
+            android:id="@+id/btnVoltar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@android:color/holo_green_dark"
+            android:text="Voltar"
+            android:textColor="@android:color/white" />
+
+        <!-- Espaço entre os botões -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.1" />
+
+        <!-- Botão Finalizar -->
+        <Button
+            android:id="@+id/btnFinalizar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@android:color/holo_green_dark"
+            android:text="Finalizar"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
+</LinearLayout>
