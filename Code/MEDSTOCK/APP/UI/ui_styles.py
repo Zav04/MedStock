@@ -57,6 +57,7 @@ class Style():
         background-position: left center;
         background-repeat: no-repeat;
         border: 2px solid #b5c6bf;
+        border-radius: 8px;
         border-left: none;
         border-right: none;
         background-color: #b5c6bf;
@@ -79,6 +80,26 @@ class Style():
     }
     """
     )
+    
+    style_bt_QPushButton_Delete = """
+    QPushButton {
+        background-color: #D32F2F;
+        border: 2px solid #B71C1C;
+        border-radius: 8px;
+        color: white;
+        font-size: 20px;
+        font-weight: bold;
+        padding: 8px 16px;
+    }
+    QPushButton:hover {
+        background-color: #E53935;
+        border-color: #B71C1C;
+    }
+    QPushButton:pressed {
+        background-color: #B71C1C;
+        border-color: #7F0000;
+    }
+    """
     
     style_QComboBox = (
         """
@@ -270,6 +291,20 @@ class Style():
             background: none;
         }
         """)
+    
+    style_SpinBox = ("""
+        QSpinBox {
+            background-color: transparent;
+            border: none;
+            font: 12pt "Arial";
+            color: rgb(0, 0, 0);
+            padding: 0 10px; /* Espaçamento interno */
+        }
+        QSpinBox::up-arrow, QSpinBox::down-arrow {
+            width: 16px; /* Aumenta o tamanho das setas */
+            height: 16px;
+        }
+    """)
 
 
     style_InformationModal = ("""

@@ -11,7 +11,7 @@ class StatusLabel(QWidget):
         
         label = QLabel(status_text)
         label.setAlignment(Qt.AlignCenter)
-        label.setMinimumSize(250, 30)
+        label.setMinimumSize(300, 30)
         label.setStyleSheet("color: white;")
         label.setFont(QFont("Arial", 16, QFont.Bold))
         
@@ -28,7 +28,8 @@ def get_status_description(status):
         3: ("Pronto para Entrega", QColor("blue")),
         4: ("Finalizado", QColor("green")),
         5: ("Recusado", QColor("red")),
-        6: ("Canelado", QColor("red"))
+        6: ("Stand-By", QColor("orange")),
+        7: ("Canelado", QColor("red"))
     }
     return status_mapping.get(status, ("Status Desconhecido", QColor("grey")))
 

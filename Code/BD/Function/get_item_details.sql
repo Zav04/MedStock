@@ -1,5 +1,6 @@
 CREATE OR REPLACE FUNCTION get_item_details()
 RETURNS TABLE (
+    item_id BIGINT,
     nome_item VARCHAR,
     nome_tipo VARCHAR,
     codigo VARCHAR,
@@ -7,7 +8,8 @@ RETURNS TABLE (
 ) AS $$
 BEGIN
     RETURN QUERY
-    SELECT 
+    SELECT
+        i.item_id, 
         i.nome_item,
         t.nome_tipo,
         i.codigo,

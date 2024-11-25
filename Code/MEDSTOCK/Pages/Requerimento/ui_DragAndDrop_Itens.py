@@ -1,26 +1,40 @@
-from PyQt5.QtWidgets import QLabel, QVBoxLayout, QWidget, QTableWidget, QTableWidgetItem, QSpinBox, QAbstractItemView, QHeaderView
-from PyQt5.QtGui import QPixmap, QDrag, QPainter, QFont
-from PyQt5.QtCore import QMimeData, Qt
+from PyQt5.QtWidgets import QLabel, QVBoxLayout, QWidget, QTableWidget, QTableWidgetItem, QSpinBox, QAbstractItemView, QHeaderView, QPushButton
+from PyQt5.QtGui import QPixmap, QDrag, QPainter, QFont, QIcon
+from PyQt5.QtCore import QMimeData, Qt,QSize
 from APP.UI.ui_functions import UIFunctions
 from APP.UI.ui_styles import Style
 
 
 class DraggableLabel(QWidget):
-    def __init__(self, text, item_name):
+    def __init__(self, item_id, nome_item, tipo, quantidade_disponivel):
         super().__init__()
-        self.item_name = item_name
+        self.item_id = item_id
+        self.nome_item = nome_item
+        self.tipo = tipo
+        self.quantidade_disponivel = quantidade_disponivel
 
         container = QWidget(self)
         container_layout = QVBoxLayout(container)
         container_layout.setContentsMargins(10, 10, 10, 10)
         container_layout.setAlignment(Qt.AlignCenter)
 
+        if tipo == "Medicamento":
+            icon_path = "./icons/MaterialIcons/medicamento.png"
+        elif tipo == "Vacinas":
+            icon_path = "./icons/MaterialIcons/vacina.png"
+        elif tipo == "Material Hospitalar":
+            icon_path = "./icons/MaterialIcons/material_hospitalar.png"
+        elif tipo == "Outros":
+            icon_path = "./icons/MaterialIcons/outro.png"
+        else:
+            icon_path = "./icons/MaterialIcons/default.png"
+
         self.icon_label = QLabel()
-        self.icon_label.setPixmap(QPixmap("./icons/MaterialIcons/assignment_turned.png").scaled(64, 64, Qt.KeepAspectRatio))
+        self.icon_label.setPixmap(QPixmap(icon_path).scaled(64, 64, Qt.KeepAspectRatio))
         self.icon_label.setAlignment(Qt.AlignCenter)
         self.icon_label.setStyleSheet("border: none;")
 
-        self.text_label = QLabel(text)
+        self.text_label = QLabel(f"{self.nome_item}")
         self.text_label.setAlignment(Qt.AlignCenter)
         self.text_label.setStyleSheet("color: black; font-weight: bold; font: 14pt Arial; border: none;")
 
@@ -41,14 +55,14 @@ class DraggableLabel(QWidget):
         if event.button() == Qt.LeftButton:
             pixmap = self.create_combined_pixmap()
             mime_data = QMimeData()
-            mime_data.setText(self.item_name)
+            mime_data.setText(f"{self.item_id}|{self.nome_item}|{self.quantidade_disponivel}")
 
             drag = QDrag(self)
             drag.setMimeData(mime_data)
             drag.setPixmap(pixmap)
             drag.setHotSpot(event.pos())
             drag.exec_(Qt.MoveAction)
-    
+
     def create_combined_pixmap(self):
         combined_pixmap = QPixmap(self.width(), self.height())
         combined_pixmap.fill(Qt.transparent)
@@ -75,24 +89,52 @@ class DropZone(QTableWidget):
         self.setStyleSheet(Style.style_Table)
         self.setShowGrid(False)
         self.setGridStyle(Qt.SolidLine)
-        #self.setAcceptDrops(True)
+        self.selected_row = None
 
-    def add_item_to_list(self, item_name):
+        self.delete_button = QPushButton("Excluir Item")
+        self.delete_button.setIcon(QIcon(UIFunctions.recolor_icon("./icons/MaterialIcons/delete_forever.png", "#FFFFFF")))
+        self.delete_button.setIconSize(QSize(30, 30))
+        self.delete_button.setFixedSize(200, 40)
+        self.delete_button.setStyleSheet(Style.style_bt_QPushButton_Delete)
+        self.delete_button.hide()
+        self.delete_button.clicked.connect(self.delete_selected_row)
+        self.itemSelectionChanged.connect(self.show_delete_button)
+
+
+    def add_item_to_list(self, item_id, item_name, quantidade_disponivel):
         for row in range(self.rowCount()):
             if self.item(row, 0).text() == item_name:
                 spinbox = self.cellWidget(row, 1)
-                spinbox.setValue(spinbox.value() + 1)
+                spinbox.setValue(min(spinbox.value() + 1, quantidade_disponivel))
                 return
 
         row = self.rowCount()
         self.insertRow(row)
-        self.setItem(row, 0, QTableWidgetItem(item_name))
+
+        item_widget = QTableWidgetItem(item_name)
+        item_widget.setData(Qt.UserRole, item_id)
+        self.setItem(row, 0, item_widget)
 
         spinbox = QSpinBox()
+        spinbox.setStyleSheet(Style.style_SpinBox)
         spinbox.setValue(1)
         spinbox.setMinimum(1)
-        spinbox.setMaximum(999999)
+        spinbox.setMaximum(quantidade_disponivel)
         self.setCellWidget(row, 1, spinbox)
+
+    def show_delete_button(self):
+        selected_items = self.selectedItems()
+        if selected_items:
+            self.selected_row = self.currentRow()
+            self.delete_button.show()
+        else:
+            self.delete_button.hide()
+
+    def delete_selected_row(self):
+        if self.selected_row is not None:
+            self.removeRow(self.selected_row)
+            self.selected_row = None
+            self.delete_button.hide()
 
 
 class DropLabel(QLabel):
@@ -100,20 +142,32 @@ class DropLabel(QLabel):
         super().__init__()
         self.drop_zone = drop_zone
 
-        shopping_cart = "./icons/MaterialIcons/shopping_cart.png"
-        color_icon = UIFunctions.recolor_icon(shopping_cart, "#4CAF50")
-        self.setPixmap(QPixmap(color_icon).scaled(100, 100, Qt.KeepAspectRatio))
+        self.default_icon = "./icons/MaterialIcons/shopping_cart.png"
+        self.hover_icon = "./icons/MaterialIcons/shopping_cart_hover.png"
+        self.update_icon(self.default_icon)
+
         self.setAlignment(Qt.AlignCenter)
         self.setStyleSheet("border: 2px dashed #4CAF50; padding: 10px;")
         self.setAcceptDrops(True)
 
+    def update_icon(self, icon_path):
+        color_icon = UIFunctions.recolor_icon(icon_path, "#4CAF50")
+        self.setPixmap(QPixmap(color_icon).scaled(100, 100, Qt.KeepAspectRatio))
+
     def dragEnterEvent(self, event):
         if event.mimeData().hasText():
+            self.update_icon(self.hover_icon)
             event.accept()
         else:
             event.ignore()
 
+    def dragLeaveEvent(self, event):
+        self.update_icon(self.default_icon)
+
     def dropEvent(self, event):
-        item_name = event.mimeData().text()
-        self.drop_zone.add_item_to_list(item_name)
-        event.accept()
+        if event.mimeData().hasText():
+            data = event.mimeData().text().split("|")
+            item_id, item_name, quantidade_disponivel = data[0], data[1], int(data[2])
+            self.drop_zone.add_item_to_list(item_id,item_name, quantidade_disponivel)
+            self.update_icon(self.default_icon)
+            event.accept()

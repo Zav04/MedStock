@@ -52,6 +52,7 @@ async def API_GetItems():
                 response_by_api = response.json().get("response", [])
                 if response_by_api == True:
                     items = [Itens(
+                        item["item_id"],
                         item["nome_item"],
                         item["nome_tipo"],
                         item["codigo"],
