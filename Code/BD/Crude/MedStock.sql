@@ -1,9 +1,9 @@
 CREATE TABLE Utilizador (utilizador_id BIGSERIAL NOT NULL, nome varchar(255) NOT NULL, email varchar(255) NOT NULL, sexo varchar(1) NOT NULL, data_nascimento date NOT NULL, role_id int8 NOT NULL, PRIMARY KEY (utilizador_id));
-CREATE TABLE Item (item_id BIGSERIAL NOT NULL, nome_item varchar(255) NOT NULL, tipo_id int8 NOT NULL, codigo varchar(255) NOT NULL, quantidade_disponivel int8 NOT NULL, PRIMARY KEY (Item_id));
+CREATE TABLE Item (Item_id BIGSERIAL NOT NULL, nome_item varchar(255) NOT NULL, tipo_id int8 NOT NULL, codigo varchar(255) NOT NULL, quantidade_disponivel int8 NOT NULL, PRIMARY KEY (Item_id));
 CREATE TABLE Setor_Hospital (setor_id BIGSERIAL NOT NULL, nome_setor varchar(255) NOT NULL, localizacao varchar(255) NOT NULL, responsavel_id int8, PRIMARY KEY (setor_id));
 CREATE TABLE Tipo_Item (tipo_id BIGSERIAL NOT NULL, nome_tipo varchar(255) NOT NULL, PRIMARY KEY (tipo_id));
 CREATE TABLE Role (role_id BIGSERIAL NOT NULL, nome_role varchar(255) NOT NULL, PRIMARY KEY (role_id));
-CREATE TABLE Requerimento (requerimento_id BIGSERIAL NOT NULL, setor_id int8 NOT NULL, user_id_pedido int8 NOT NULL, user_id_confirmacao int8, user_id_envio int8, data_pedido timestamp NOT NULL, data_confirmacao timestamp, data_envio timestamp, status int8 NOT NULL,urgente bool NOT NULL,PRIMARY KEY (requerimento_id));
+CREATE TABLE Requerimento (requerimento_id BIGSERIAL NOT NULL, setor_id int8 NOT NULL, user_id_pedido int8, user_id_confirmacao int8, user_id_preparacao int8 NOT NULL, user_id_envio int8, data_pedido timestamp NOT NULL, data_confirmacao timestamp, data_preparacao timestamp, data_envio timestamp, status int8 NOT NULL, urgente bool NOT NULL, PRIMARY KEY (requerimento_id));
 CREATE TABLE Item_Requerimento (ItemItem_id int8 NOT NULL, Requerimentorequerimento_id int8 NOT NULL, quantidade int8 NOT NULL, PRIMARY KEY (ItemItem_id, Requerimentorequerimento_id));
 ALTER TABLE Utilizador ADD CONSTRAINT FKUtilizador385847 FOREIGN KEY (role_id) REFERENCES Role (role_id);
 ALTER TABLE Item ADD CONSTRAINT FKItem233865 FOREIGN KEY (tipo_id) REFERENCES Tipo_Item (tipo_id);
@@ -14,3 +14,4 @@ ALTER TABLE Requerimento ADD CONSTRAINT FKRequerimen422347 FOREIGN KEY (user_id_
 ALTER TABLE Setor_Hospital ADD CONSTRAINT FKSetor_Hosp67912 FOREIGN KEY (responsavel_id) REFERENCES Utilizador (utilizador_id);
 ALTER TABLE Item_Requerimento ADD CONSTRAINT FKItem_Reque42990 FOREIGN KEY (ItemItem_id) REFERENCES Item (Item_id);
 ALTER TABLE Item_Requerimento ADD CONSTRAINT FKItem_Reque432429 FOREIGN KEY (Requerimentorequerimento_id) REFERENCES Requerimento (requerimento_id);
+ALTER TABLE Requerimento ADD CONSTRAINT FKRequerimen659260 FOREIGN KEY (user_id_preparacao) REFERENCES Utilizador (utilizador_id);
