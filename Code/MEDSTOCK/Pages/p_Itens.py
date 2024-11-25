@@ -52,6 +52,7 @@ class ItemTablePage(QWidget):
 
     async def load_items(self):
         response = await API_GetItems()
+        self.table_widget.clearContents()
         if response.success:
             items = response.data
             self.table_widget.setRowCount(len(items))

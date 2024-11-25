@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QLabel, QVBoxLayout, QWidget, QTableWidget, QTableWidgetItem, QSpinBox, QAbstractItemView, QHeaderView, QPushButton
+from PyQt5.QtWidgets import QLabel, QVBoxLayout, QWidget, QTableWidget, QTableWidgetItem, QSpinBox,  QHeaderView, QPushButton
 from PyQt5.QtGui import QPixmap, QDrag, QPainter, QFont, QIcon
 from PyQt5.QtCore import QMimeData, Qt,QSize
 from APP.UI.ui_functions import UIFunctions
@@ -89,6 +89,7 @@ class DropZone(QTableWidget):
         self.setStyleSheet(Style.style_Table)
         self.setShowGrid(False)
         self.setGridStyle(Qt.SolidLine)
+        self.setSelectionMode(QTableWidget.SingleSelection)
         self.selected_row = None
 
         self.delete_button = QPushButton("Excluir Item")
@@ -148,6 +149,7 @@ class DropLabel(QLabel):
 
         self.setAlignment(Qt.AlignCenter)
         self.setStyleSheet("border: 2px dashed #4CAF50; padding: 10px;")
+        self.setFixedWidth(690)
         self.setAcceptDrops(True)
 
     def update_icon(self, icon_path):

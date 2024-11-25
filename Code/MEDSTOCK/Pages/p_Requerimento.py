@@ -109,12 +109,12 @@ class RequerimentoPage(QWidget):
 
         asyncio.create_task(self.update_sectors())
 
-        save_button = QPushButton("Salvar Requerimento")
-        save_button.setFixedSize(500, 40)
-        save_button.setStyleSheet(Style.style_bt_QPushButton)
-        save_button.clicked.connect(lambda: self.create_requerimento(drop_zone))
+        create_button = QPushButton("Criar Requerimento")
+        create_button.setFixedSize(500, 40)
+        create_button.setStyleSheet(Style.style_bt_QPushButton)
+        create_button.clicked.connect(lambda: self.create_requerimento(drop_zone))
 
-        content_layout.addWidget(save_button, alignment=Qt.AlignCenter)
+        content_layout.addWidget(create_button, alignment=Qt.AlignCenter)
 
         create_page_layout.addLayout(content_layout)
 
