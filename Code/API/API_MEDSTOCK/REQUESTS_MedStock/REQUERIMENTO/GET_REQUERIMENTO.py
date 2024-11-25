@@ -25,7 +25,9 @@ async def MedStock_GetRequerimentosByUser(user_id: int, db=Depends(get_db_MEDSTO
                 "nome_utilizador_confirmacao": row.nome_utilizador_confirmacao,
                 "data_confirmacao": row.data_confirmacao,
                 "nome_utilizador_envio": row.nome_utilizador_envio,
-                "data_envio": row.data_envio
+                "data_envio": row.data_envio,
+                "nome_utilizador_preparacao": row.nome_utilizador_preparacao,
+                "data_preparacao": row.data_preparacao
             }
             requerimentos.append(requerimento)
         
@@ -48,8 +50,8 @@ async def MedStock_GetRequerimentosByUser(user_id: int, db=Depends(get_db_MEDSTO
             "response": False,
             "error": error_messages
         }
-        
-        
+
+
 @router.get("/MedStock_GetRequerimentosByResponsavel/")
 async def MedStock_GetRequerimentosByResponsavel(responsavel_id: int, db=Depends(get_db_MEDSTOCK)):
     try:
@@ -70,7 +72,9 @@ async def MedStock_GetRequerimentosByResponsavel(responsavel_id: int, db=Depends
                 "nome_utilizador_confirmacao": row.nome_utilizador_confirmacao,
                 "data_confirmacao": row.data_confirmacao,
                 "nome_utilizador_envio": row.nome_utilizador_envio,
-                "data_envio": row.data_envio
+                "data_envio": row.data_envio,
+                "nome_utilizador_preparacao": row.nome_utilizador_preparacao,
+                "data_preparacao": row.data_preparacao
             }
             requerimentos.append(requerimento)
         
@@ -93,3 +97,4 @@ async def MedStock_GetRequerimentosByResponsavel(responsavel_id: int, db=Depends
             "response": False,
             "error": error_messages
         }
+

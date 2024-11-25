@@ -109,7 +109,9 @@ async def API_GetRequerimentosByUser(user_id: int):
                             nome_utilizador_confirmacao=item["nome_utilizador_confirmacao"],
                             data_confirmacao=item["data_confirmacao"],
                             nome_utilizador_envio=item["nome_utilizador_envio"],
-                            data_envio=item["data_envio"]
+                            data_envio=item["data_envio"],
+                            nome_utilizador_preparacao=item.get("nome_utilizador_preparacao"),
+                            data_preparacao=item.get("data_preparacao")
                         )
                         requerimentos.append(requerimento)
 
@@ -124,7 +126,8 @@ async def API_GetRequerimentosByUser(user_id: int):
                 return APIResponse(success=False, error_message=f"Erro inesperado: {response.status_code}")
         except httpx.RequestError as e:
             return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
-        
+
+
 
 async def API_GetRequerimentosByResponsavel(user_id: int):
     URL = os.getenv('API_URL') + os.getenv('API_GetRequerimentosByResponsavel') + f"?responsavel_id={user_id}"
@@ -161,7 +164,9 @@ async def API_GetRequerimentosByResponsavel(user_id: int):
                             nome_utilizador_confirmacao=item["nome_utilizador_confirmacao"],
                             data_confirmacao=item["data_confirmacao"],
                             nome_utilizador_envio=item["nome_utilizador_envio"],
-                            data_envio=item["data_envio"]
+                            data_envio=item["data_envio"],
+                            nome_utilizador_preparacao=item.get("nome_utilizador_preparacao"),
+                            data_preparacao=item.get("data_preparacao")
                         )
                         requerimentos.append(requerimento)
 
@@ -176,6 +181,7 @@ async def API_GetRequerimentosByResponsavel(user_id: int):
                 return APIResponse(success=False, error_message=f"Erro inesperado: {response.status_code}")
         except httpx.RequestError as e:
             return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
+
 
 
 def API_GetUserByEmail(email: str):

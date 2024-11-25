@@ -10,7 +10,9 @@ RETURNS TABLE(
     nome_utilizador_confirmacao VARCHAR,
     data_confirmacao TIMESTAMP,
     nome_utilizador_envio VARCHAR,
-    data_envio TIMESTAMP
+    data_envio TIMESTAMP,
+    nome_utilizador_preparacao VARCHAR,
+    data_preparacao TIMESTAMP
 ) AS $$
 BEGIN
     RETURN QUERY 
@@ -37,7 +39,9 @@ BEGIN
         u_confirmacao.nome AS nome_utilizador_confirmacao,
         r.data_confirmacao,
         u_envio.nome AS nome_utilizador_envio,
-        r.data_envio
+        r.data_envio,
+        u_preparacao.nome AS nome_utilizador_preparacao,
+        r.data_preparacao
     FROM 
         Requerimento r
     INNER JOIN 
@@ -48,7 +52,12 @@ BEGIN
         Utilizador u_confirmacao ON r.user_id_confirmacao = u_confirmacao.utilizador_id
     LEFT JOIN 
         Utilizador u_envio ON r.user_id_envio = u_envio.utilizador_id
+    LEFT JOIN 
+        Utilizador u_preparacao ON r.user_id_preparacao = u_preparacao.utilizador_id
     WHERE 
         r.user_id_pedido = user_id;
 END;
 $$ LANGUAGE plpgsql;
+
+
+SELECT * FROM get_requerimentos_by_user(12)

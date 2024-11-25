@@ -89,7 +89,7 @@ def GeneratePdfItens(self, table_widget: QTableWidget, file_path: str):
     c.save()
 
 
-def GeneratePdfRequerimento(file_path: str, requerimento):
+def GeneratePdfRequerimento(file_path: str, requerimento: Requerimento):
     width, height = A4
     c = canvas.Canvas(file_path, pagesize=A4)
 
@@ -119,7 +119,7 @@ def GeneratePdfRequerimento(file_path: str, requerimento):
         c.drawString(60, y_offset, f"{label}:")
         label_width = c.stringWidth(f"{label}:", "Helvetica-Bold", 12)
         c.setFont("Helvetica", 10)
-        c.drawString(60 + label_width + 5, y_offset, value)
+        c.drawString(60 + label_width + 2, y_offset, value)
         y_offset -= 20 
         
     if requerimento.nome_utilizador_confirmacao and requerimento.data_confirmacao:
@@ -129,7 +129,20 @@ def GeneratePdfRequerimento(file_path: str, requerimento):
             f"{requerimento.nome_utilizador_confirmacao} "
             f"em {datetime.strptime(requerimento.data_confirmacao, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
         )
-        label_width = c.stringWidth("Confirmado por:", "Helvetica-Bold", 12) + 5
+        label_width = c.stringWidth("Confirmado por:", "Helvetica-Bold", 12) + 2
+        c.setFont("Helvetica", 10)
+        c.drawString(60 + label_width, y_offset, confirmacao_str)
+        y_offset -= 20
+        
+    
+    if requerimento.nome_utilizador_preparacao and requerimento.data_preparacao:
+        c.setFont("Helvetica-Bold", 12)
+        c.drawString(60, y_offset, "Preparado por:")
+        confirmacao_str = (
+            f"{requerimento.nome_utilizador_preparacao} "
+            f"em {datetime.strptime(requerimento.data_preparacao, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+        )
+        label_width = c.stringWidth("Preparado por:", "Helvetica-Bold", 12) + 2
         c.setFont("Helvetica", 10)
         c.drawString(60 + label_width, y_offset, confirmacao_str)
         y_offset -= 20
@@ -141,9 +154,9 @@ def GeneratePdfRequerimento(file_path: str, requerimento):
             f"{requerimento.nome_utilizador_envio} "
             f"em {datetime.strptime(requerimento.data_envio, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
         )
-        label_width = c.stringWidth("Enviado por:", "Helvetica-Bold", 10) + 5
+        label_width = c.stringWidth("Enviado por:", "Helvetica-Bold", 12) + 2
         c.setFont("Helvetica", 10)
-        c.drawString(70 + label_width, y_offset, envio_str)
+        c.drawString(60 + label_width, y_offset, envio_str)
         y_offset -= 20
 
     y_offset -= 10

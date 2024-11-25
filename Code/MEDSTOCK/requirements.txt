@@ -3,9 +3,11 @@ numpy==1.24
 PyQt5
 QT-PyQt-PySide-Custom-Widgets
 requests
+httpx
 pycairo 
 cairocffi
 shiboken2
 reportlab
 qasync
 pyinstaller
+py2exe

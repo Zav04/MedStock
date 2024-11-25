@@ -24,7 +24,7 @@ def get_status_description(status):
     status_mapping = {
         0: ("A Espera de Aprovação", QColor("grey")),
         1: ("Na Lista de Espera", QColor("orange")),
-        2: ("Em Preparação", QColor("yellow")),
+        2: ("Em Preparação", QColor("#bcbf06")),
         3: ("Pronto para Entrega", QColor("blue")),
         4: ("Finalizado", QColor("green")),
         5: ("Recusado", QColor("red")),

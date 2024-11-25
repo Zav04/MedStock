@@ -14,8 +14,10 @@ class Requerimento:
                  itens_pedidos: List[ItemPedido],
                  nome_utilizador_confirmacao: Optional[str] = None,
                  nome_utilizador_envio: Optional[str] = None,
+                 nome_utilizador_preparacao: Optional[str] = None,
                  data_confirmacao: Optional[datetime] = None, 
-                 data_envio: Optional[datetime] = None):
+                 data_envio: Optional[datetime] = None,
+                 data_preparacao: Optional[datetime] = None):
         
         self.requerimento_id = requerimento_id
         self.setor_nome_localizacao = setor_nome_localizacao
@@ -26,5 +28,7 @@ class Requerimento:
         self.itens_pedidos = itens_pedidos
         self.nome_utilizador_confirmacao = nome_utilizador_confirmacao
         self.nome_utilizador_envio = nome_utilizador_envio
+        self.nome_utilizador_preparacao = nome_utilizador_preparacao
         self.data_confirmacao = data_confirmacao
         self.data_envio = data_envio
+        self.data_preparacao = data_preparacao
