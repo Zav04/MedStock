@@ -136,6 +136,7 @@ class DropZone(QTableWidget):
             self.removeRow(self.selected_row)
             self.selected_row = None
             self.delete_button.hide()
+            self.clearSelection()
 
 
 class DropLabel(QLabel):
