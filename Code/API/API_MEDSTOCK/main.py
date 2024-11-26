@@ -11,6 +11,7 @@ from REQUESTS_MedStock.LOGIN.GET_Login import router as GET_login_router
 from REQUESTS_MedStock.SETORES.GET_Setor import router as GET_setor_router
 from REQUEST_MedReader.LOGIN.POST_Login import router as POST_login_router_MedReader
 from REQUEST_MedReader.REQUERIMENTO.GET_REQUERIMENTO import router as GET_requerimento_router_MedReader
+from REQUEST_MedReader.REQUERIMENTO.PUT_REQUERIMENTO import router as PUT_requerimento_router_MedReader
 api = FastAPI()
 
 api.add_middleware(
@@ -31,6 +32,7 @@ api.include_router(GET_login_router)
 api.include_router(GET_setor_router)
 api.include_router(POST_login_router_MedReader)
 api.include_router(GET_requerimento_router_MedReader)
+api.include_router(PUT_requerimento_router_MedReader)
 
 if __name__ == "__main__":
     #uvicorn.run("main:api", reload=True)
