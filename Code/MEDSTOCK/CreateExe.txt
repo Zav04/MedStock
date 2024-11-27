@@ -1,1 +1,2 @@
 pyinstaller --onefile --name "MedStockApp" main.py
+pyrcc5 files.qrc -o files_rc.py

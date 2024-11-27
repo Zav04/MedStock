@@ -32,7 +32,7 @@ async def MedStock_Reset_Password(Reset_Email: C_ResetPassword, db=Depends(get_d
                 "response": status,
                 "error": "Credenciais Invalidas"
                 }
-        return {"response": result}
+        return {"response": result, "data": "Email enviado com sucesso"}
     
     except SQLAlchemyError as e:
         error_msg = str(e.__dict__['orig']).split('\n')[0]

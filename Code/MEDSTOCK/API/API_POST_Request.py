@@ -3,6 +3,7 @@ import httpx
 import asyncio
 from Class.API_Response import APIResponse
 
+
 def API_Login(email, password):
     URL = os.getenv('API_URL') + os.getenv('API_Login')
     payload = {
@@ -93,7 +94,7 @@ def API_CreateUser(nome, email, password, sexo, data_nascimento, role):
         return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
     
 
-def API_CreateGestor(nome, email, password, sexo, data_nascimento, role,setor):
+async def API_CreateGestor(nome, email, password, sexo, data_nascimento, role,setor):
     URL = os.getenv('API_URL') + os.getenv('API_CreateUserGestorResponsavel')
     payload = {
         "nome": nome,
@@ -123,6 +124,39 @@ def API_CreateGestor(nome, email, password, sexo, data_nascimento, role,setor):
         else:
             print("Erro inesperado:", response.status_code)
             return APIResponse(success=False, error_message="Erro inesperado")
+    except httpx.RequestError as e:
+        return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
+
+def API_CreateRequerimento(user_id_pedido, setor_id,urgente, requerimento_items):
+
+    URL = os.getenv('API_URL') + os.getenv('API_CreateRequerimento')
+
+    payload = {
+        "user_id_pedido": user_id_pedido,
+        "setor_id": setor_id,
+        "urgente": urgente,
+        "requerimento_items": requerimento_items
+    }
+
+    try:
+        response = httpx.post(URL, json=payload, headers={"Content-Type": "application/json"})
+        if response.status_code == 200:
+            success = response.json().get("response", {})
+            
+            if not success:
+                error_message = response.json().get("error", "Erro desconhecido")
+                return APIResponse(success=False, error_message=error_message)
+            else:
+                data = response.json().get("data", {})
+                return APIResponse(success=True, data=data)
+
+        elif response.status_code == 400:
+            error_message = response.json().get("error", "Erro de validação desconhecido")
+            return APIResponse(success=False, error_message=error_message)
+
+        else:
+            return APIResponse(success=False, error_message=f"Erro inesperado: {response.status_code}")
+
     except httpx.RequestError as e:
         return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
 

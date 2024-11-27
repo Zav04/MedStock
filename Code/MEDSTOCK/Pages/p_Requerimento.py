@@ -1,14 +1,14 @@
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout,
-    QFrame, QScrollArea, QGridLayout, QComboBox
+    QFrame, QScrollArea, QGridLayout, QComboBox, QCheckBox
 )
 from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import Qt, QTimer, QSize
 from APP.UI.ui_styles import Style
 from APP.Overlays.Overlay import Overlay
 from Class.utilizador import Utilizador
-from API.API_GET_Request import API_GetRequerimentosByUser, API_GetRequerimentosByResponsavel
-from API.API_GET_Request import API_GetSectors, API_GetItems
+from API.API_GET_Request import API_GetRequerimentosByUser, API_GetRequerimentosByResponsavel,API_GetSectors, API_GetItems
+from API.API_POST_Request import API_CreateRequerimento
 from APP.Card.Card import RequerimentoCard
 from APP.UI.ui_functions import UIFunctions
 from Pages.Requerimento.ui_DragAndDrop_Itens import DraggableLabel, DropZone, DropLabel
@@ -106,17 +106,29 @@ class RequerimentoPage(QWidget):
 
         content_layout.addLayout(horizontal_content_layout)
 
+        sector_urgent_layout = QHBoxLayout()
+        sector_urgent_layout.setAlignment(Qt.AlignCenter)
+
         self.sector_input = QComboBox()
-        self.sector_input.setFixedSize(500, 40)
+        self.sector_input.setFixedSize(400, 40)
         self.sector_input.setStyleSheet(Style.style_QComboBox)
-        content_layout.addWidget(self.sector_input, alignment=Qt.AlignCenter)
+        
+        self.urgent_input = QCheckBox("Urgente")
+        self.urgent_input.setChecked(False)
+        self.urgent_input.setStyleSheet(Style.style_checkbox)
+
+        sector_urgent_layout.addWidget(self.sector_input)
+        sector_urgent_layout.addSpacing(20)
+        sector_urgent_layout.addWidget(self.urgent_input)
+
+        content_layout.addLayout(sector_urgent_layout)
 
         asyncio.create_task(self.update_sectors())
 
         create_button = QPushButton("Criar Requerimento")
         create_button.setFixedSize(500, 40)
         create_button.setStyleSheet(Style.style_bt_QPushButton)
-        create_button.clicked.connect(lambda: self.create_requerimento(drop_zone))
+        create_button.clicked.connect(lambda: self.create_requerimento(user_id_pedido=self.user.utilizador_id, urgent=self.urgent_input.isChecked(), drop_zone=drop_zone))
 
         content_layout.addWidget(create_button, alignment=Qt.AlignCenter)
 
@@ -149,26 +161,28 @@ class RequerimentoPage(QWidget):
         else:
             Overlay.show_error(self, response.error_message)
 
-    def create_requerimento(self, drop_zone):
+    def create_requerimento(self, user_id_pedido,urgent, drop_zone):
         requerimento_items = []
         for row in range(drop_zone.rowCount()):
             item_widget = drop_zone.item(row, 0)
-            item_id = item_widget.data(Qt.UserRole)
-            item_name = item_widget.text()
+            item_id = int(item_widget.data(Qt.UserRole))
             quantidade = drop_zone.cellWidget(row, 1).value()
-            requerimento_items.append({
-                "item_id": item_id,
-                "item_name": item_name,
-                "quantidade": quantidade
-            })
+            requerimento_items.append({"item_id": item_id, "quantidade": quantidade})
 
-        setor_selecionado = self.sector_input.currentText()
         setor_id = self.sector_input.currentData()
+        
+        if urgent:
+            urgent = True
+        else:
+            urgent = False
 
-        print(f"Setor Selecionado: {setor_selecionado} (ID: {setor_id})")
-        print("Itens do Requerimento:", requerimento_items)
+        response = API_CreateRequerimento(user_id_pedido, setor_id,urgent, requerimento_items)
+        if response.success:
+            self.reload_requerimentos()
+            Overlay.show_success(self, "Requerimento criado com sucesso!")
+        else:
+            Overlay.show_error(self, response.error_message)
 
-        self.reload_requerimentos()
 
     async def load_requerimentos(self, user: Utilizador):
         if user.role_nome == "Gestor Responsável":
@@ -178,6 +192,12 @@ class RequerimentoPage(QWidget):
 
         if response.success:
             new_requerimentos = response.data
+
+            if user.role_nome == "Gestor Responsável":
+                new_requerimentos = sorted(new_requerimentos, key=lambda x: x.requerimento_id, reverse=False)
+            else:
+                new_requerimentos = sorted(new_requerimentos, key=lambda x: x.requerimento_id, reverse=True)
+
 
             if new_requerimentos != self.current_requerimentos:
                 self.current_requerimentos = new_requerimentos
@@ -217,7 +237,7 @@ class RequerimentoPage(QWidget):
     
     def show_create_requerimento_page_wrapper(self):
         asyncio.ensure_future(self.show_create_requerimento_page())
-    
+        
     def clear_layout(self, layout):
         while layout.count():
             child = layout.takeAt(0)
