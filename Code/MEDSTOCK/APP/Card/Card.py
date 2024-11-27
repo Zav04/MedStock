@@ -183,15 +183,15 @@ class RequerimentoCard(QWidget):
             
         
         if requerimento.nome_utilizador_preparacao and requerimento.data_preparacao:
-            envio_label = QLabel()
-            envio_label.setText(
+            preparacao_label = QLabel()
+            preparacao_label.setText(
                 f"<span style='font-size:16px; font-weight:bold; color:#000000;'>"
                 f"Preparado por:</span> "
                 f"<span style='font-size:14px; color:#555555;'>{requerimento.nome_utilizador_preparacao}</span> "
                 f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(requerimento.data_preparacao, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
             )
-            envio_label.setFont(QFont("Arial"))
-            details_layout.addWidget(envio_label)
+            preparacao_label.setFont(QFont("Arial"))
+            details_layout.addWidget(preparacao_label)
 
         if requerimento.nome_utilizador_envio and requerimento.data_envio:
             envio_label = QLabel()

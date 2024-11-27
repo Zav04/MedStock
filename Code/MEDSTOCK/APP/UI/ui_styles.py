@@ -33,6 +33,35 @@ class Style():
     """
     )
     
+    style_checkbox = """
+    QCheckBox {
+        spacing: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        color: rgb(0, 0, 0);
+        background-color: transparent;
+        border: none;
+        padding: 5px;
+        border-radius: 4px;
+    }
+    QCheckBox::indicator {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #dbd7d7;
+        background-color: #FFFFFF;
+        border-radius: 3px;
+    }
+    QCheckBox::indicator:hover {
+        border: 2px solid #4CAF50;
+    }
+    QCheckBox::indicator:checked {
+        border: 2px solid #4CAF50;
+        background-color: #4CAF50;
+        image: url(:/icons/MaterialIcons/done_outline.png);
+    }
+    """
+
+    
     style_QlineEdit = ("""
             QLineEdit {
                 background-color: rgb(255, 255, 255);

@@ -10,7 +10,7 @@ BEGIN
     SET 
         status = 3,
         user_id_preparacao = p_user_id,
-        data_preparacao = CURRENT_TIMESTAMP
+        data_preparacao = CURRENT_TIMESTAMP(0)
     WHERE 
         requerimento_id = p_requerimento_id;
     

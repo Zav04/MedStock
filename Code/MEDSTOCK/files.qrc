@@ -437,5 +437,6 @@
     <file>icons/MaterialIcons/visibility_off.png</file>
     <file>icons/MaterialIcons/visibility.png</file>
     <file>icons/MaterialIcons/warning.png</file>
+    <file>icons/MaterialIcons/done_outline.png</file>
   </qresource>
 </RCC>
