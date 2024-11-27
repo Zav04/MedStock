@@ -94,7 +94,7 @@ def API_CreateUser(nome, email, password, sexo, data_nascimento, role):
         return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
     
 
-async def API_CreateGestor(nome, email, password, sexo, data_nascimento, role,setor):
+def API_CreateGestor(nome, email, password, sexo, data_nascimento, role,setor):
     URL = os.getenv('API_URL') + os.getenv('API_CreateUserGestorResponsavel')
     payload = {
         "nome": nome,
