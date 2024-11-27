@@ -11,25 +11,18 @@
         android:id="@+id/tvNomeItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:text="Nome do Item"
         android:textSize="16sp"
-        android:textStyle="bold"
-        android:ellipsize="end"
-        android:maxLines="1" />
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tvQuantidadeItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:text="Quantidade"
-        android:textSize="14sp"
-        android:layout_marginTop="4dp" />
+        android:textSize="14sp" />
 
-    <TextView
-        android:id="@+id/tvTipoItem"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tipo"
-        android:textSize="14sp"
-        android:layout_marginTop="4dp" />
 </LinearLayout>

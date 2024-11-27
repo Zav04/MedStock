@@ -29,12 +29,10 @@ class ItemPedidoAdapter(private var itemList: List<ItemPedido>) :
     inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val textNomeItem: TextView = itemView.findViewById(R.id.tvNomeItem)
         private val textQuantidadeItem: TextView = itemView.findViewById(R.id.tvQuantidadeItem)
-        private val textTipoItem: TextView = itemView.findViewById(R.id.tvTipoItem)
 
         fun bind(item: ItemPedido) {
             textNomeItem.text = item.nome_item
-            textQuantidadeItem.text = item.quantidade.toString()
-            textTipoItem.text = item.tipo_item
+            textQuantidadeItem.text = "Quantidade: ${item.quantidade}"
         }
     }
 }

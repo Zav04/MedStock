@@ -24,10 +24,10 @@ class RequerimentoAdapter(
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvRequerimentoId: TextView = itemView.findViewById(R.id.tvRequerimentoId)
-        val tvSetorNome: TextView = itemView.findViewById(R.id.tvSetorNome)
-        val tvNomeUtilizador: TextView = itemView.findViewById(R.id.tvNomeUtilizador)
-        val tvDataPedido: TextView = itemView.findViewById(R.id.tvDataPedido)
-        val tvUrgente: TextView = itemView.findViewById(R.id.tvUrgente)
+//        val tvSetorNome: TextView = itemView.findViewById(R.id.tvSetorNome)
+//        val tvNomeUtilizador: TextView = itemView.findViewById(R.id.tvNomeUtilizador)
+//        val tvDataPedido: TextView = itemView.findViewById(R.id.tvDataPedido)
+//        val tvUrgente: TextView = itemView.findViewById(R.id.tvUrgente)
         val btnComecarScan: Button = itemView.findViewById(R.id.btnComecarScan)
     }
 
@@ -40,36 +40,37 @@ class RequerimentoAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val requerimento = requerimentos[position]
 
-        holder.tvRequerimentoId.text = "ID: ${requerimento.requerimento_id}"
-        holder.tvSetorNome.text = "Setor: ${requerimento.setor_nome_localizacao}"
-        holder.tvNomeUtilizador.text = "Utilizador: ${requerimento.nome_utilizador_pedido}"
-
-        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
-        val outputFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
-        val formattedDate = try {
-            val date = inputFormat.parse(requerimento.data_pedido)
-            outputFormat.format(date)
-        } catch (e: Exception) {
-            requerimento.data_pedido
-        }
-
-        holder.tvDataPedido.text = "Data: $formattedDate"
-
-        if (requerimento.urgente) {
-            holder.tvUrgente.visibility = View.VISIBLE
-            holder.tvUrgente.text = "Urgente!"
-
-            holder.tvUrgente.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
-            holder.tvUrgente.setTypeface(null, Typeface.BOLD)
-        } else {
-            holder.tvUrgente.visibility = View.GONE
-        }
+        holder.tvRequerimentoId.text = "Requerimento: ${requerimento.requerimento_id}"
+//        holder.tvSetorNome.text = "Setor: ${requerimento.setor_nome_localizacao}"
+//        holder.tvNomeUtilizador.text = "Utilizador: ${requerimento.nome_utilizador_pedido}"
+//
+//        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+//        val outputFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+//        val formattedDate = try {
+//            val date = inputFormat.parse(requerimento.data_pedido)
+//            outputFormat.format(date)
+//        } catch (e: Exception) {
+//            requerimento.data_pedido
+//        }
+//
+//        holder.tvDataPedido.text = "Data: $formattedDate"
+//
+//        if (requerimento.urgente) {
+//            holder.tvUrgente.visibility = View.VISIBLE
+//            holder.tvUrgente.text = "Urgente!"
+//
+//            holder.tvUrgente.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
+//            holder.tvUrgente.setTypeface(null, Typeface.BOLD)
+//        } else {
+//            holder.tvUrgente.visibility = View.GONE
+//        }
 
         holder.btnComecarScan.setOnClickListener {
             val intent = Intent(context, ScanActivity::class.java)
             intent.putExtra("requerimentoId", requerimento.requerimento_id)
             context.startActivity(intent)
         }
+
     }
 
     override fun getItemCount(): Int = requerimentos.size

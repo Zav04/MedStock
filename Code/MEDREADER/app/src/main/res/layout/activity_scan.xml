@@ -10,10 +10,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp"
+        android:layout_marginBottom="16dp"
         android:background="#EFEFEF"
-        android:layout_marginBottom="16dp">
+        android:orientation="vertical"
+        android:padding="8dp">
 
         <TextView
             android:id="@+id/tvItensPedido"
@@ -24,22 +24,22 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <!-- RecyclerView -->
+        <!-- RecyclerView com Scroll ativado -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewItensPedido"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:scrollbars="vertical"
-            android:overScrollMode="always"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:fadeScrollbars="false"
-            android:layout_weight="1"/>
+            android:overScrollMode="always"
+            android:scrollbars="vertical" />
     </LinearLayout>
 
     <!-- QRCode/Barcode Reader -->
     <FrameLayout
         android:id="@+id/cameraContainer"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:layout_marginBottom="16dp"
         android:background="#CCCCCC"
         android:gravity="center"
@@ -64,7 +64,7 @@
     <!-- Lista de Itens Lidos -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="233dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:background="#EFEFEF"
         android:orientation="vertical"
@@ -75,19 +75,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="4dp"
-            android:text="Itens Lidos Corretamente"
+            android:text="Itens Lidos"
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <!-- RecyclerView para os itens lidos -->
+        <!-- RecyclerView com Scroll ativado -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewItensLidos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:fadeScrollbars="false"
             android:overScrollMode="always"
-            android:scrollbars="vertical"
-            android:layout_weight="1"/>
+            android:scrollbars="vertical" />
     </LinearLayout>
 
     <!-- Botões -->

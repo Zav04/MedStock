@@ -31,14 +31,17 @@ class ItemLidoAdapter(private val itemList: MutableList<ItemLido>) :
         return itemList.size
     }
 
+    fun addItem(item: ItemLido) {
+        itemList.add(item)
+        notifyItemInserted(itemList.size - 1)
+    }
+
     inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val textItemNome: TextView = itemView.findViewById(R.id.itemName)
         private val spinnerQuantidade: Spinner = itemView.findViewById(R.id.quantitySpinner)
 
         fun bind(item: ItemLido) {
             textItemNome.text = item.nome_item
-
-            // VERIFICAR A LOGICA DE OPÇÕES DA QUANTIDADE
             quantityOptions = Array(999) { i -> (i + 1).toString() }
 
             val adapter = ArrayAdapter(itemView.context, android.R.layout.simple_spinner_item, quantityOptions)

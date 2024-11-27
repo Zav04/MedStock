@@ -19,9 +19,6 @@ class RequerimentosActivity : AppCompatActivity() {
     private lateinit var btnAtualizar: Button
     private lateinit var recyclerView: RecyclerView
 
-    // User que tem tudo
-    val userId = 12
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_requerimentos)
@@ -29,15 +26,15 @@ class RequerimentosActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         btnAtualizar = findViewById(R.id.btnAtualizar)
 
-        fetchRequerimentos(userId)
+        fetchRequerimentos()
 
         btnAtualizar.setOnClickListener {
-            fetchRequerimentos(userId)
+            fetchRequerimentos()
         }
     }
 
-    private fun fetchRequerimentos(userId: Int) {
-        RetrofitClient.api.getRequerimentosByUser(userId).enqueue(object : Callback<APIResponse<List<Requerimento>>> {
+    private fun fetchRequerimentos() {
+        RetrofitClient.requeimentosApi.getRequerimentos().enqueue(object : Callback<APIResponse<List<Requerimento>>> {
             override fun onResponse(
                 call: Call<APIResponse<List<Requerimento>>>,
                 response: Response<APIResponse<List<Requerimento>>>
@@ -45,10 +42,15 @@ class RequerimentosActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val apiResponse = response.body()
                     val requerimentos = apiResponse?.data ?: emptyList()
-                    val requerimentosOrdenados = requerimentos.sortedWith(
-                        compareByDescending<Requerimento> { it.urgente }
-                            .thenBy { it.data_pedido }
-                    )
+
+                    val requerimentosOrdenados = requerimentos.sortedBy { it.requerimento_id }
+
+//                    // Ordenar os requerimentos por prioridade e data
+//                    val requerimentosOrdenados = requerimentos.sortedWith(
+//                        compareByDescending<Requerimento> { it.urgente }
+//                            .thenBy { it.data_pedido }
+//                    )
+//
                     recyclerView.adapter = RequerimentoAdapter(this@RequerimentosActivity, requerimentosOrdenados)
                 } else {
                     Toast.makeText(
@@ -58,6 +60,7 @@ class RequerimentosActivity : AppCompatActivity() {
                     ).show()
                 }
             }
+
             override fun onFailure(call: Call<APIResponse<List<Requerimento>>>, t: Throwable) {
                 Toast.makeText(this@RequerimentosActivity, "Erro: ${t.message}", Toast.LENGTH_LONG).show()
             }

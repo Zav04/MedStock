@@ -15,7 +15,13 @@ import com.journeyapps.barcodescanner.DefaultDecoderFactory
 import com.example.medreader.adapter.ItemPedidoAdapter
 import com.example.medreader.adapter.ItemLidoAdapter
 import com.example.medreader.models.ItemPedido
+import com.example.medreader.connection.RetrofitClient
+import com.example.medreader.models.APIResponse
 import com.example.medreader.models.ItemLido
+import com.example.medreader.models.Requerimento
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class ScanActivity : AppCompatActivity() {
@@ -29,6 +35,8 @@ class ScanActivity : AppCompatActivity() {
     private val itemLidosList = mutableListOf<ItemLido>()
     private var isScanning: Boolean = false
     private lateinit var pausedSymbol: ImageView
+    private var requerimentos: List<Requerimento> = listOf()
+    private lateinit var itemLidoAdapter: ItemLidoAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,16 +48,17 @@ class ScanActivity : AppCompatActivity() {
         recyclerViewItensPedido = findViewById(R.id.recyclerViewItensPedido)
         recyclerViewItensLidos = findViewById(R.id.recyclerViewItensLidos)
         recyclerViewItensPedido.layoutManager = LinearLayoutManager(this)
-        recyclerViewItensPedido.adapter = ItemPedidoAdapter(itemPedidoList)
         recyclerViewItensLidos.layoutManager = LinearLayoutManager(this)
-        recyclerViewItensLidos.adapter = ItemLidoAdapter(itemLidosList)
         pausedSymbol = findViewById(R.id.pausedSymbol)
+        itemLidoAdapter = ItemLidoAdapter(itemLidosList)
+        recyclerViewItensLidos.adapter = itemLidoAdapter
 
-        simulateItensPedido()
+        fetchRequerimentos()
         startScanning()
 
         val formats = listOf(com.google.zxing.BarcodeFormat.QR_CODE)
         val decoderFactory: DecoderFactory = DefaultDecoderFactory(formats)
+
         scannerView.decoderFactory = decoderFactory
         scannerView.decodeContinuous { result ->
             if (isScanning) {
@@ -78,28 +87,60 @@ class ScanActivity : AppCompatActivity() {
         }
     }
 
-    // ITENS SIMULADOS
-    private fun simulateItensPedido() {
-        itemPedidoList.add(ItemPedido("Medicamento A", 10, "Medicamento"))
-        itemPedidoList.add(ItemPedido("Material B", 5, "Material"))
-        itemPedidoList.add(ItemPedido("Vacina C", 3, "Vacina"))
+    private fun fetchRequerimentos() {
+        val call = RetrofitClient.requeimentosApi.getRequerimentos()
+        call.enqueue(object : Callback<APIResponse<List<Requerimento>>> {
+            override fun onResponse(
+                call: Call<APIResponse<List<Requerimento>>>,
+                response: Response<APIResponse<List<Requerimento>>>
+            ) {
+                if (response.isSuccessful && response.body()?.response == true) {
+                    requerimentos = response.body()?.data ?: listOf()
+                    val intentRequerimentoId = intent.getIntExtra("requerimentoId", -1)
+
+                    val requerimentoSelecionado = requerimentos.find { it.requerimento_id == intentRequerimentoId }
+                    if (requerimentoSelecionado != null) {
+                        carregarItensRequerimento(requerimentoSelecionado)
+                    } else {
+                        Toast.makeText(this@ScanActivity, "Requerimento não encontrado", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(this@ScanActivity, "Erro ao carregar os requerimentos", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<APIResponse<List<Requerimento>>>, t: Throwable) {
+                Toast.makeText(this@ScanActivity, "Falha na comunicação com o servidor", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun carregarItensRequerimento(requerimento: Requerimento) {
+        itemPedidoList.clear()
+
+        requerimento.itens_pedidos?.forEach { item ->
+            itemPedidoList.add(ItemPedido(item.nome_item, item.codigo, item.quantidade))
+        }
+
+        recyclerViewItensPedido.adapter = ItemPedidoAdapter(itemPedidoList)
         recyclerViewItensPedido.adapter?.notifyDataSetChanged()
     }
 
     private fun processarQRCode(qrCode: String) {
-        val existingItem = itemPedidoList.find { it.nome_item == qrCode }
+        val existingItem = itemPedidoList.find { it.codigo == qrCode }
 
         if (existingItem == null) {
             dialogoItemNaoExiteLista()
         } else {
-            val existingLido = itemLidosList.find { it.nome_item == qrCode }
+            val existingLido = itemLidosList.find { it.codigo == existingItem.codigo }
 
             if (existingLido != null) {
                 Toast.makeText(this, "Item já foi lido.", Toast.LENGTH_SHORT).show()
             } else {
-                itemLidosList.add(ItemLido(qrCode, 1))
-                recyclerViewItensLidos.adapter?.notifyDataSetChanged()
-                Toast.makeText(this, "QR Code Lido: $qrCode", Toast.LENGTH_SHORT).show()
+                val itemLido = ItemLido(existingItem.nome_item, existingItem.codigo, 1)
+                itemLidosList.add(itemLido)
+                itemLidoAdapter.notifyItemInserted(itemLidosList.size - 1)
+                Toast.makeText(this, "QR Code Lido: ${existingItem.nome_item}", Toast.LENGTH_SHORT).show()
             }
         }
     }

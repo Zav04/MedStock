@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -16,6 +15,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.medreader.connection.RetrofitClient
+import com.example.medreader.models.LoginRequest
+import com.example.medreader.models.LoginResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
 
@@ -24,11 +29,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var loginButton: Button
     private lateinit var progressBar: ProgressBar
     private lateinit var showPasswordButton: ImageButton
-    private val CAMERA_PERMISSION_REQUEST_CODE = 100
-
-    // USERNAME PASSWORD
-    private val validUsername = "123"
-    private val validPassword = "123"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,40 +40,57 @@ class LoginActivity : AppCompatActivity() {
         progressBar = findViewById(R.id.progressBar)
         showPasswordButton = findViewById(R.id.show_password_button)
 
-        usernameEditText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_NEXT) {
-                passwordEditText.requestFocus()
-                return@setOnEditorActionListener true
-            }
-            false
-        }
-
         showPasswordButton.setOnClickListener {
             togglePasswordVisibility()
         }
 
         loginButton.setOnClickListener {
-            progressBar.visibility = View.VISIBLE
-
             val username = usernameEditText.text.toString()
             val password = passwordEditText.text.toString()
 
             if (username.isBlank() || password.isBlank()) {
                 Toast.makeText(this, "Preencha todos os campos!", Toast.LENGTH_SHORT).show()
-                progressBar.visibility = View.GONE
             } else {
-                if (username == validUsername && password == validPassword) {
-                    Toast.makeText(this, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, RequerimentosActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                } else {
-                    Toast.makeText(this, "Credenciais inválidas!", Toast.LENGTH_SHORT).show()
-                    progressBar.visibility = View.GONE
-                }
+                performLogin(username, password)
             }
         }
-        checkCameraPermission()
+    }
+
+    private fun performLogin(username: String, password: String) {
+        progressBar.visibility = View.VISIBLE
+
+        val loginRequest = LoginRequest(username, password)
+
+        RetrofitClient.loginApi.loginUser(loginRequest).enqueue(object : Callback<LoginResponse> {
+            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                progressBar.visibility = View.GONE
+                if (response.isSuccessful) {
+                    val loginResponse = response.body()
+                    if (loginResponse != null && loginResponse.response) {
+                        val intent = Intent(this@LoginActivity, RequerimentosActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        Toast.makeText(
+                            this@LoginActivity,
+                            loginResponse?.error ?: "Erro ao realizar login.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } else {
+                    Toast.makeText(
+                        this@LoginActivity,
+                        "Erro no servidor: ${response.message()}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                progressBar.visibility = View.GONE
+                Toast.makeText(this@LoginActivity, "Erro de conexão: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun togglePasswordVisibility() {
@@ -83,20 +100,6 @@ class LoginActivity : AppCompatActivity() {
         } else {
             passwordEditText.transformationMethod = PasswordTransformationMethod.getInstance()
             showPasswordButton.setImageResource(R.drawable.ic_eye_close)
-        }
-    }
-
-    private fun checkCameraPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED
-            ) {
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(android.Manifest.permission.CAMERA),
-                    CAMERA_PERMISSION_REQUEST_CODE
-                )
-            }
         }
     }
 }
