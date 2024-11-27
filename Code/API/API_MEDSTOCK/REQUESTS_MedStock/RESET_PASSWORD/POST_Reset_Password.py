@@ -2,7 +2,7 @@ from sqlalchemy.sql import text
 from fastapi import Depends, APIRouter
 from sqlalchemy.exc import SQLAlchemyError
 from dependencies import get_db_MEDSTOCK
-from Models.Reset_Password import C_ResetPassword
+from Models.C_Reset_Password import C_ResetPassword
 from Firebase.FireBase import resetpassword
 
 router = APIRouter()

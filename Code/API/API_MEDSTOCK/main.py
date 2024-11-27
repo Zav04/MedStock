@@ -13,6 +13,7 @@ from REQUESTS_MedStock.REQUERIMENTO.POST_REQUERIMENTO import router as POST_requ
 from REQUEST_MedReader.LOGIN.POST_Login import router as POST_login_router_MedReader
 from REQUEST_MedReader.REQUERIMENTO.GET_REQUERIMENTO import router as GET_requerimento_router_MedReader
 from REQUEST_MedReader.REQUERIMENTO.PUT_REQUERIMENTO import router as PUT_requerimento_router_MedReader
+from REQUESTS_MedStock.REQUERIMENTO.PUT_REQUERIMENTO import router as PUT_requerimento_router
 api = FastAPI()
 
 api.add_middleware(
@@ -32,6 +33,7 @@ api.include_router(GET_requerimento_router)
 api.include_router(POST_requerimento_router)
 api.include_router(GET_login_router)
 api.include_router(GET_setor_router)
+api.include_router(PUT_requerimento_router)
 
 
 

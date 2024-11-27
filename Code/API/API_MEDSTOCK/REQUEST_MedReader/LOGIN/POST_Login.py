@@ -3,7 +3,7 @@ from REQUESTS_MedStock.LOGIN.GET_Login import MedStock_GetUserByEmail
 from fastapi import Depends, APIRouter
 from sqlalchemy.exc import SQLAlchemyError
 from dependencies import get_db_MEDSTOCK
-from Models.Login import C_Login
+from Models.C_Login import C_Login
 
 router = APIRouter()
 

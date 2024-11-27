@@ -53,6 +53,7 @@ class Dashboard(QMainWindow):
         self.ui.stackedWidget.addWidget(self.page_stock)
         self.ui.stackedWidget.addWidget(self.page_requerimento)
         self.ui.stackedWidget.setCurrentWidget(self.page_home)
+        
     
     #TODO VERIFICAR ISTO DE FORMA DINAMICA
     def initMenus(self, role: str):

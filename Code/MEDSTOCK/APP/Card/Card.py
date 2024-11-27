@@ -9,13 +9,15 @@ import os
 from APP.Label.Label import add_status_lable
 from APP.Overlays.Overlay import Overlay
 from APP.PDF.Generate_PDF import GeneratePdfRequerimento
+from API.API_PUT_Request import API_CancelRequerimento
 
 
 class RequerimentoCard(QWidget):
-    def __init__(self, user:Utilizador, requerimento: Requerimento):
+    def __init__(self, user:Utilizador, requerimento: Requerimento, update_callback=None):
         super().__init__()
         self.requerimento = requerimento
         self.expanded = False
+        self.callbackUpdate = update_callback
 
         self.setLayout(QVBoxLayout())
         self.layout().setContentsMargins(10, 10, 10, 10)
@@ -73,10 +75,9 @@ class RequerimentoCard(QWidget):
             delete_button.setCursor(QCursor(Qt.PointingHandCursor))
             delete_button.setStyleSheet(self.button_style("#f54251"))
             if(user.role_nome=="Gestor Responsável"):
-                delete_button.clicked.connect(lambda: self.delete_item_callback(requerimento))
-            else:
-                delete_button.clicked.connect(lambda: self.delete_item_callback(requerimento))
-            #delete_button.clicked.connect(lambda: delete_item_callback(requerimento))
+                delete_button.clicked.connect(lambda: self.reject_requerimento(requerimento))
+            elif user.role_nome!="Farmacêutico":
+                delete_button.clicked.connect(lambda: self.cancel_requerimento(requerimento))
             actions_layout.addWidget(delete_button, alignment=Qt.AlignRight)
 
         download_button = QPushButton()
@@ -212,13 +213,29 @@ class RequerimentoCard(QWidget):
         if requerimento.urgente and requerimento.status <=3:
             self.container.setStyleSheet("background-color: #f8d7da; border: 1px solid #f5c2c7; border-radius: 8px;")
 
-
+    def cancel_requerimento(self, requerimento: Requerimento):
+        response = API_CancelRequerimento(requerimento.requerimento_id)
+        if response.success:
+            Overlay.show_information(self, f'Requerimento{requerimento.requerimento_id} foi cancelado')
+            self.callbackUpdate()
+        else:
+            Overlay.show_error(self, response.error_message)
+        
+    # def reject_requerimento(self, requerimento):
+    #     response = API_RejectRequerimento(requerimento.requerimento_id)
+    #     if response.success: 
+    #         Overlay.show_information(self, f'Requerimento{requerimento.requerimento_id} foi Rejeitado')
+    #         RequerimentoPage.reload_requerimentos()
+    #     else:
+    #         Overlay.show_error(self, response.error_message)
+    
+    
 
     def toggle_details(self):
         self.expanded = not self.expanded
         self.details_frame.setVisible(self.expanded)
         self.container.setMaximumHeight(300 if self.expanded else 120)
-        
+
     
     def choose_file_location_GeneratePdfItens(self):
         

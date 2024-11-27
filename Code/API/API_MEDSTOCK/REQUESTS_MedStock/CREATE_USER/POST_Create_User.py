@@ -2,9 +2,9 @@ from sqlalchemy.sql import text
 from fastapi import Depends, APIRouter
 from sqlalchemy.exc import SQLAlchemyError
 from dependencies import get_db_MEDSTOCK
-from Models.Create_User import C_Create_User
-from Models.Create_Gestor_Responsavel import C_Create_Gestor_Responsavel
-from Models.Create_User_Email import C_Create_User_Email
+from Models.C_Create_User import C_Create_User
+from Models.C_Create_Gestor_Responsavel import C_Create_Gestor_Responsavel
+from Models.C_Create_User_Email import C_Create_User_Email
 from Firebase.FireBase import singup
 from datetime import datetime
 from send_email import enviarEmailRegistro

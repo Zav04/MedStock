@@ -2,7 +2,7 @@ from sqlalchemy.sql import text
 from fastapi import Depends, APIRouter
 from sqlalchemy.exc import SQLAlchemyError
 from dependencies import get_db_MEDSTOCK
-from Models.Login import C_Login
+from Models.C_Login import C_Login
 from Firebase.FireBase import login
 
 router = APIRouter()

@@ -3,7 +3,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.sql import text
 from datetime import datetime
 from dependencies import get_db_MEDSTOCK
-from Models.Update_Requerimento_Preparacao import C_UpdateRequerimentoPreparacao
+from Models.C_Update_Requerimento_Preparacao import C_UpdateRequerimentoPreparacao
 
 router = APIRouter()
 

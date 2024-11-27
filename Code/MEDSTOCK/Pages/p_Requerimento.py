@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import (
     QFrame, QScrollArea, QGridLayout, QComboBox, QCheckBox
 )
 from PyQt5.QtGui import QFont, QIcon
-from PyQt5.QtCore import Qt, QTimer, QSize
+from PyQt5.QtCore import Qt, QTimer, QSize, pyqtSignal
 from APP.UI.ui_styles import Style
 from APP.Overlays.Overlay import Overlay
 from Class.utilizador import Utilizador
@@ -23,6 +23,7 @@ class RequerimentoPage(QWidget):
         self.setup_RequerimentoPage()
         self.current_requerimentos = []
         QTimer.singleShot(0, self.load_requerimentos_wrapper)
+        
         
         self.update_timer = QTimer(self)
         self.update_timer.timeout.connect(self.load_requerimentos_wrapper)
@@ -208,7 +209,7 @@ class RequerimentoPage(QWidget):
             Overlay.show_error(self, response.error_message)
 
     def add_requerimento_card(self, requerimento):
-        card = RequerimentoCard(user=self.user, requerimento=requerimento)
+        card = RequerimentoCard(user=self.user, requerimento=requerimento, update_callback=self.reload_requerimentos)
         self.scroll_layout.addWidget(card)
 
     def reload_requerimentos(self):
