@@ -1,9 +1,9 @@
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout,
-    QFrame, QScrollArea, QGridLayout, QComboBox, QCheckBox
+    QFrame, QScrollArea, QGridLayout, QComboBox, QCheckBox,QSizePolicy,QLineEdit
 )
 from PyQt5.QtGui import QFont, QIcon
-from PyQt5.QtCore import Qt, QTimer, QSize, pyqtSignal
+from PyQt5.QtCore import Qt, QTimer, QSize
 from APP.UI.ui_styles import Style
 from APP.Overlays.Overlay import Overlay
 from Class.utilizador import Utilizador
@@ -20,6 +20,7 @@ class RequerimentoPage(QWidget):
         super().__init__()
         self.user = user
         self.main_layout = QVBoxLayout(self)
+        self.firstTime = True
         self.setup_RequerimentoPage()
         self.current_requerimentos = []
         QTimer.singleShot(0, self.load_requerimentos_wrapper)
@@ -48,6 +49,37 @@ class RequerimentoPage(QWidget):
             self.create_button.hide()
 
         self.main_layout.addLayout(title_layout)
+        self.main_layout.addSpacing(50)
+        
+        filter_layout = QHBoxLayout()
+        filter_layout.setContentsMargins(0, 0, 0, 0)
+        filter_layout.setSpacing(10)
+
+        filter_buttons = [
+            ("Todos", "Todos"),
+            ("Urgente", "Urgente"),
+            ("Espera de Aprovação", "Status_0"),
+            ("Na Lista de Espera", "Status_1"),
+            ("Em Preparação", "Status_2"),
+            ("Pronto para Entrega", "Status_3"),
+            ("Finalizado", "Status_4"),
+            ("Recusado", "Status_5"),
+            ("Stand-By", "Status_6"),
+            ("Cancelado", "Status_7"),
+        ]
+
+        self.filter_buttons = {}
+        for label, key in filter_buttons:
+            button = QPushButton(label)
+            button.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+            button.setStyleSheet(Style.style_bt_QPushButton_Filter)
+            button.clicked.connect(lambda checked, k=key: self.apply_filter(k))
+            self.filter_buttons[key] = button
+            filter_layout.addWidget(button)
+        
+        self.set_filter_selected(self.filter_buttons["Todos"])
+
+        self.main_layout.addLayout(filter_layout)
         self.main_layout.addSpacing(15)
 
         self.scroll_area = QScrollArea(self)
@@ -67,6 +99,7 @@ class RequerimentoPage(QWidget):
 
     async def show_create_requerimento_page(self):
         self.clear_layout(self.main_layout)
+        self.all_items = []
         create_page_layout = QVBoxLayout()
 
         back_button = QPushButton()
@@ -79,16 +112,26 @@ class RequerimentoPage(QWidget):
         create_page_layout.addWidget(back_button, alignment=Qt.AlignLeft)
 
         content_layout = QVBoxLayout()
+        
+        create_page_layout.setSpacing(20)
+        self.filter_line_edit = QLineEdit()
+        self.filter_line_edit.setPlaceholderText("Digite para filtrar os itens...")
+        self.filter_line_edit.setFixedHeight(30)
+        self.filter_line_edit.setFixedWidth(650)
+        self.filter_line_edit.setStyleSheet(Style.style_QlineEdit)
+        self.filter_line_edit.textChanged.connect(self.apply_item_filter)
+        self.filter_line_edit.setAlignment(Qt.AlignLeft)
+        content_layout.addWidget(self.filter_line_edit)
 
         left_frame = QFrame()
-        left_layout = QGridLayout()
-        left_frame.setLayout(left_layout)
+        self.left_layout = QGridLayout()
+        left_frame.setLayout(self.left_layout)
 
         left_scroll_area = QScrollArea()
         left_scroll_area.setWidgetResizable(True)
         left_scroll_area.setWidget(left_frame)
 
-        asyncio.create_task(self.fetch_items(left_layout))
+        asyncio.create_task(self.fetch_items(self.left_layout))
 
         right_frame = QFrame()
         right_layout = QVBoxLayout()
@@ -140,27 +183,36 @@ class RequerimentoPage(QWidget):
     async def fetch_items(self, left_layout):
         response = await API_GetItems()
         if response.success:
-            items = response.data
-            for i in reversed(range(left_layout.count())):
-                widget = left_layout.itemAt(i).widget()
-                if widget:
-                    widget.deleteLater()
-
-            row, col = 0, 0
-            for item in items:
-                item_label = DraggableLabel(
-                    item_id=item.item_id,
-                    nome_item=item.nome_item,
-                    tipo=item.nome_tipo,
-                    quantidade_disponivel=item.quantidade_disponivel
-                )
-                left_layout.addWidget(item_label, row, col)
-                col += 1
-                if col > 2:
-                    col = 0
-                    row += 1
+            self.all_items = response.data  # Store all items
+            self.update_item_display(self.all_items)  # Display all items initially
         else:
             Overlay.show_error(self, response.error_message)
+
+    def apply_item_filter(self):
+        filter_text = self.filter_line_edit.text().lower()
+        filtered_items = [
+            item for item in self.all_items if filter_text in item.nome_item.lower()
+        ]
+        self.update_item_display(filtered_items)
+    def update_item_display(self, items):
+        for i in reversed(range(self.left_layout.count())):
+            widget = self.left_layout.itemAt(i).widget()
+            if widget:
+                widget.deleteLater()
+
+        row, col = 0, 0
+        for item in items:
+            item_label = DraggableLabel(
+                item_id=item.item_id,
+                nome_item=item.nome_item,
+                tipo=item.nome_tipo,
+                quantidade_disponivel=item.quantidade_disponivel
+            )
+            self.left_layout.addWidget(item_label, row, col)
+            col += 1
+            if col > 2:
+                col = 0
+                row += 1
 
     def create_requerimento(self, user_id_pedido,urgent, drop_zone):
         requerimento_items = []
@@ -186,6 +238,7 @@ class RequerimentoPage(QWidget):
 
 
     async def load_requerimentos(self, user: Utilizador):
+        
         if user.role_nome == "Gestor Responsável":
             response = await API_GetRequerimentosByResponsavel(user.utilizador_id)
         else:
@@ -198,13 +251,32 @@ class RequerimentoPage(QWidget):
                 new_requerimentos = sorted(new_requerimentos, key=lambda x: x.requerimento_id, reverse=False)
             else:
                 new_requerimentos = sorted(new_requerimentos, key=lambda x: x.requerimento_id, reverse=True)
+                
+            new_requerimentos_strings = [
+                f"{req.requerimento_id}-{req.setor_nome_localizacao}-{req.nome_utilizador_pedido}-{req.status}-{req.urgente}-"
+                f"{sorted((item.nome_item, item.quantidade, item.tipo_item) for item in req.itens_pedidos)}-"
+                f"{req.data_pedido}-{req.nome_utilizador_confirmacao}-{req.data_confirmacao}-{req.nome_utilizador_envio}-"
+                f"{req.data_envio}-{req.nome_utilizador_preparacao}-{req.data_preparacao}"
+                for req in new_requerimentos
+            ]
 
-
-            if new_requerimentos != self.current_requerimentos:
+            current_requerimentos_strings = [
+                f"{req.requerimento_id}-{req.setor_nome_localizacao}-{req.nome_utilizador_pedido}-{req.status}-{req.urgente}-"
+                f"{sorted((item.nome_item, item.quantidade, item.tipo_item) for item in req.itens_pedidos)}-"
+                f"{req.data_pedido}-{req.nome_utilizador_confirmacao}-{req.data_confirmacao}-{req.nome_utilizador_envio}-"
+                f"{req.data_envio}-{req.nome_utilizador_preparacao}-{req.data_preparacao}"
+                for req in self.current_requerimentos
+            ]
+            
+            if new_requerimentos_strings != current_requerimentos_strings:
                 self.current_requerimentos = new_requerimentos
                 self.clear_layout(self.scroll_layout)
                 for requerimento in new_requerimentos:
                     QTimer.singleShot(0, lambda req=requerimento: self.add_requerimento_card(req))
+                if not self.firstTime:
+                    Overlay.show_information(self, "Requerimentos atualizados!")
+                else:
+                    self.firstTime = False
         else:
             Overlay.show_error(self, response.error_message)
 
@@ -215,7 +287,9 @@ class RequerimentoPage(QWidget):
     def reload_requerimentos(self):
         self.clear_layout(self.main_layout)
         self.setup_RequerimentoPage()
-        QTimer.singleShot(0, self.load_requerimentos_wrapper)
+        self.clear_layout(self.scroll_layout)
+        for requerimento in self.current_requerimentos:
+            QTimer.singleShot(0, lambda req=requerimento: self.add_requerimento_card(req))
 
     async def update_sectors(self):
         response = await API_GetSectors()
@@ -246,4 +320,31 @@ class RequerimentoPage(QWidget):
                 child.widget().deleteLater()
             elif child.layout():
                 self.clear_layout(child.layout())
+
+                
+    def apply_filter(self, filter_key):
+        selected_button = self.filter_buttons.get(filter_key)
+        if selected_button:
+            self.set_filter_selected(selected_button)
+
+        if filter_key == "Todos":
+            filtered_requerimentos = self.current_requerimentos
+        elif filter_key == "Urgente":
+            filtered_requerimentos = [req for req in self.current_requerimentos if req.urgente]
+        elif filter_key.startswith("Status_"):
+            status = int(filter_key.split("_")[1])
+            filtered_requerimentos = [req for req in self.current_requerimentos if req.status == status]
+        else:
+            filtered_requerimentos = self.current_requerimentos
+
+        self.clear_layout(self.scroll_layout)
+        for requerimento in filtered_requerimentos:
+            self.add_requerimento_card(requerimento)
+
+    def set_filter_selected(self, selected_button):
+        for button in self.filter_buttons.values():
+            button.setStyleSheet(Style.style_bt_QPushButton_Filter)
+
+        selected_button.setStyleSheet(Style.style_bt_QPushButton_Filter_Selected)
+
 

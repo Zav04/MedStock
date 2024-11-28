@@ -110,6 +110,60 @@ class Style():
     """
     )
     
+    
+    style_bt_QPushButton_Filter = (
+    """
+    QPushButton {
+        background-position: left center;
+        background-repeat: no-repeat;
+        border: 2px solid #b5c6bf;
+        border-radius: 8px;
+        border-left: none;
+        border-right: none;
+        background-color: #b5c6bf;
+        text-align: center;
+        font-size: 14px;
+        font-weight: bold;
+        color: rgb(255,255,255);
+    }
+    QPushButton:hover {
+        background-color: #81C784;
+        border-left: none;
+        border-right: none;
+        color: rgb(255,255,255);
+    }
+    QPushButton:pressed {
+        background-color: #4CAF50;
+        border-left: none;
+        border-right: none;
+        color: rgb(255,255,255);
+    }
+    """
+    )
+    
+    style_bt_QPushButton_Filter_Selected = (
+    """
+    QPushButton {
+        background-color: #4CAF50; /* Verde destacado */
+        border: 2px solid #388E3C;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        font-size: 14px;
+    }
+    QPushButton:hover {
+        background-color: #81C784; /* Verde mais claro */
+        border: 2px solid #388E3C;
+        color: white;
+    }
+    QPushButton:pressed {
+        background-color: #388E3C;
+        border: 2px solid #1B5E20;
+        color: white;
+    }
+    """
+)
+    
     style_bt_QPushButton_Delete = """
     QPushButton {
         background-color: #D32F2F;
@@ -461,8 +515,4 @@ class Style():
             max-height: 20px;
             margin-right: 12px;
         }""")
-    
-    
-    
-    
 
