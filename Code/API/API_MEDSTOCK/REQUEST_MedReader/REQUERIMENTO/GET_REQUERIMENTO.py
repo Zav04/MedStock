@@ -14,6 +14,7 @@ async def get_requerimentos(db=Depends(get_db_MEDSTOCK)):
         for row in result:
             requerimentos.append({
                 "requerimento_id": row.requerimento_id,
+                "urgente": row.urgente,
                 "itens_pedidos": row.itens_pedidos
             })
 

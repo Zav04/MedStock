@@ -1,12 +1,14 @@
 CREATE OR REPLACE FUNCTION get_requerimentos_for_medreader()
 RETURNS TABLE(
     requerimento_id BIGINT,
+    urgente BOOLEAN,
     itens_pedidos JSON
 ) AS $$
 BEGIN
     RETURN QUERY 
     SELECT 
         r.requerimento_id,
+        r.urgente,
         (
             SELECT JSON_AGG(
                 JSON_BUILD_OBJECT(
