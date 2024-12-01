@@ -3,19 +3,14 @@ package com.example.medreader.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
+import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.medreader.models.ItemLido
 import com.example.medreader.R
 
-
-class ItemLidoAdapter(private val itemList: MutableList<ItemLido>) :
+class ItemLidoAdapter(private val itemList: MutableList<ItemLido>, private val verificarItens: () -> Boolean) :
     RecyclerView.Adapter<ItemLidoAdapter.ItemViewHolder>() {
-
-    private lateinit var quantityOptions: Array<String>
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_lido, parent, false)
@@ -31,32 +26,28 @@ class ItemLidoAdapter(private val itemList: MutableList<ItemLido>) :
         return itemList.size
     }
 
-    fun addItem(item: ItemLido) {
-        itemList.add(item)
-        notifyItemInserted(itemList.size - 1)
-    }
-
     inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val textItemNome: TextView = itemView.findViewById(R.id.itemName)
-        private val spinnerQuantidade: Spinner = itemView.findViewById(R.id.quantitySpinner)
+        private val textNomeItem: TextView = itemView.findViewById(R.id.nomeItemLido)
+        private val textQuantidade: TextView = itemView.findViewById(R.id.quantidadeLida)
+        private val decreaseButton: Button = itemView.findViewById(R.id.decreaseButton)
+        private val increaseButton: Button = itemView.findViewById(R.id.increaseButton)
 
         fun bind(item: ItemLido) {
-            textItemNome.text = item.nome_item
-            quantityOptions = Array(999) { i -> (i + 1).toString() }
+            textNomeItem.text = item.nome_item
+            textQuantidade.text = item.quantidade_lida.toString()
 
-            val adapter = ArrayAdapter(itemView.context, android.R.layout.simple_spinner_item, quantityOptions)
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spinnerQuantidade.adapter = adapter
-
-            val initialPosition = item.quantidade_lida - 1
-            spinnerQuantidade.setSelection(if (initialPosition >= 0) initialPosition else 0)
-
-            spinnerQuantidade.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                    item.quantidade_lida = quantityOptions[position].toInt()
+            decreaseButton.setOnClickListener {
+                if (item.quantidade_lida > 1) {
+                    item.quantidade_lida--
+                    textQuantidade.text = item.quantidade_lida.toString()
+                    verificarItens()
                 }
+            }
 
-                override fun onNothingSelected(parent: AdapterView<*>) {}
+            increaseButton.setOnClickListener {
+                item.quantidade_lida++
+                textQuantidade.text = item.quantidade_lida.toString()
+                verificarItens()
             }
         }
     }

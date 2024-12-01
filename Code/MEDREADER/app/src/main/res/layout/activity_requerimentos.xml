@@ -13,7 +13,6 @@
         android:textStyle="bold"
         android:layout_marginBottom="8dp"/>
 
-    <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewRequerimentos"
         android:layout_width="match_parent"
@@ -28,6 +27,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:backgroundTint="@android:color/holo_green_dark"
+        android:textColor="@android:color/white"
         android:text="Atualizar Lista" />
 
 </LinearLayout>

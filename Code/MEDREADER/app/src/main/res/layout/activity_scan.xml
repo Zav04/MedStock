@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -24,7 +23,6 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <!-- RecyclerView com Scroll ativado -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewItensPedido"
             android:layout_width="match_parent"
@@ -45,7 +43,6 @@
         android:gravity="center"
         android:layout_weight="1">
 
-        <!-- BarcodeScannerView para captura do QRCode -->
         <com.journeyapps.barcodescanner.BarcodeView
             android:id="@+id/scanner_view"
             android:layout_width="match_parent"
@@ -79,7 +76,6 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <!-- RecyclerView com Scroll ativado -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewItensLidos"
             android:layout_width="match_parent"
@@ -96,7 +92,6 @@
         android:layout_height="48dp"
         android:orientation="horizontal">
 
-        <!-- Botão Voltar -->
         <Button
             android:id="@+id/btnVoltar"
             android:layout_width="0dp"
@@ -106,21 +101,19 @@
             android:text="Voltar"
             android:textColor="@android:color/white" />
 
-        <!-- Espaço entre os botões -->
         <View
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.1" />
 
-        <!-- Botão Finalizar -->
         <Button
             android:id="@+id/btnFinalizar"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="37dp"
             android:layout_weight="1"
-            android:backgroundTint="@android:color/holo_green_dark"
+            android:background="@drawable/button_scan"
+            android:enabled="false"
             android:text="Finalizar"
             android:textColor="@android:color/white" />
     </LinearLayout>
-
 </LinearLayout>

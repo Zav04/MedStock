@@ -13,21 +13,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.medreader.models.Requerimento
 import com.example.medreader.R
 import com.example.medreader.ScanActivity
-import java.text.SimpleDateFormat
-import java.util.Locale
-
 
 class RequerimentoAdapter(
     private val context: Context,
-    private val requerimentos: List<Requerimento>
+    private val requerimentos: List<Requerimento>,
+    private val pedidosUrgentesPendentes: Boolean
 ) : RecyclerView.Adapter<RequerimentoAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tvRequerimentoId: TextView = itemView.findViewById(R.id.tvRequerimentoId)
-//        val tvSetorNome: TextView = itemView.findViewById(R.id.tvSetorNome)
-//        val tvNomeUtilizador: TextView = itemView.findViewById(R.id.tvNomeUtilizador)
-//        val tvDataPedido: TextView = itemView.findViewById(R.id.tvDataPedido)
-//        val tvUrgente: TextView = itemView.findViewById(R.id.tvUrgente)
+        val requerimentoId: TextView = itemView.findViewById(R.id.requerimentoId)
+        val urgente: TextView = itemView.findViewById(R.id.urgente)
         val btnComecarScan: Button = itemView.findViewById(R.id.btnComecarScan)
     }
 
@@ -40,30 +35,17 @@ class RequerimentoAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val requerimento = requerimentos[position]
 
-        holder.tvRequerimentoId.text = "Requerimento: ${requerimento.requerimento_id}"
-//        holder.tvSetorNome.text = "Setor: ${requerimento.setor_nome_localizacao}"
-//        holder.tvNomeUtilizador.text = "Utilizador: ${requerimento.nome_utilizador_pedido}"
-//
-//        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
-//        val outputFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
-//        val formattedDate = try {
-//            val date = inputFormat.parse(requerimento.data_pedido)
-//            outputFormat.format(date)
-//        } catch (e: Exception) {
-//            requerimento.data_pedido
-//        }
-//
-//        holder.tvDataPedido.text = "Data: $formattedDate"
-//
-//        if (requerimento.urgente) {
-//            holder.tvUrgente.visibility = View.VISIBLE
-//            holder.tvUrgente.text = "Urgente!"
-//
-//            holder.tvUrgente.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
-//            holder.tvUrgente.setTypeface(null, Typeface.BOLD)
-//        } else {
-//            holder.tvUrgente.visibility = View.GONE
-//        }
+        holder.requerimentoId.text = "Requerimento: ${requerimento.requerimento_id}"
+        if (requerimento.urgente) {
+            holder.urgente.visibility = View.VISIBLE
+            holder.urgente.text = "Urgente!"
+            holder.urgente.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
+            holder.urgente.setTypeface(null, Typeface.BOLD)
+            holder.btnComecarScan.isEnabled = true
+        } else {
+            holder.urgente.visibility = View.GONE
+            holder.btnComecarScan.isEnabled = !pedidosUrgentesPendentes
+        }
 
         holder.btnComecarScan.setOnClickListener {
             val intent = Intent(context, ScanActivity::class.java)
@@ -72,6 +54,5 @@ class RequerimentoAdapter(
         }
 
     }
-
     override fun getItemCount(): Int = requerimentos.size
 }

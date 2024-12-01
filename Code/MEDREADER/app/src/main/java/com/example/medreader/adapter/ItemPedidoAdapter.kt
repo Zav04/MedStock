@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.medreader.models.ItemPedido
 import com.example.medreader.R
 
-
 class ItemPedidoAdapter(private var itemList: List<ItemPedido>) :
     RecyclerView.Adapter<ItemPedidoAdapter.ItemViewHolder>() {
 
@@ -27,8 +26,8 @@ class ItemPedidoAdapter(private var itemList: List<ItemPedido>) :
     }
 
     inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val textNomeItem: TextView = itemView.findViewById(R.id.tvNomeItem)
-        private val textQuantidadeItem: TextView = itemView.findViewById(R.id.tvQuantidadeItem)
+        private val textNomeItem: TextView = itemView.findViewById(R.id.nomeItem)
+        private val textQuantidadeItem: TextView = itemView.findViewById(R.id.quantidadeItem)
 
         fun bind(item: ItemPedido) {
             textNomeItem.text = item.nome_item

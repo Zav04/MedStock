@@ -68,10 +68,12 @@ dependencies {
     // Dependências para o BarcodeScanner
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation("com.google.android.gms:play-services-vision:20.1.3")
+    implementation("com.google.zxing:core:3.4.1")
 
     // Dependências para o Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.retrofit2:adapter-rxjava2:2.9.0")
 
     // Dependências para a API
     implementation("com.squareup.okhttp3:okhttp:4.11.0")

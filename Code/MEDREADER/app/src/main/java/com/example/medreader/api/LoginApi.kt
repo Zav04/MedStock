@@ -1,11 +1,10 @@
 package com.example.medreader.api
 
-import com.example.medreader.models.LoginRequest
-import com.example.medreader.models.LoginResponse
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST
-
+import com.example.medreader.models.LoginRequest
+import com.example.medreader.models.LoginResponse
 
 interface LoginApi {
 

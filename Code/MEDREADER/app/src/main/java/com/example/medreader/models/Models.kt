@@ -1,4 +1,5 @@
 package com.example.medreader.models
+
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
@@ -20,10 +21,10 @@ data class LoginResponse(
 )
 
 data class UserData(
-    val id: Int,
-    val name: String,
+    val utilizador_id: Int,
+    val nome: String,
     val email: String,
-    val role: String
+    val role_id: Int
 )
 
 data class UpdateRequerimentoRequest(
@@ -33,7 +34,8 @@ data class UpdateRequerimentoRequest(
 
 data class Requerimento(
     val requerimento_id: Int,
-    val itens_pedidos: List<ItemPedido>
+    val itens_pedidos: List<ItemPedido>,
+    val urgente: Boolean
 )
 
 @Parcelize

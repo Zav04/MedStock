@@ -1,8 +1,6 @@
 package com.example.medreader
 
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
@@ -13,14 +11,10 @@ import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.example.medreader.connection.RetrofitClient
 import com.example.medreader.models.LoginRequest
 import com.example.medreader.models.LoginResponse
 import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
 
@@ -61,28 +55,28 @@ class LoginActivity : AppCompatActivity() {
 
         val loginRequest = LoginRequest(username, password)
 
-        RetrofitClient.loginApi.loginUser(loginRequest).enqueue(object : Callback<LoginResponse> {
-            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+        val call = RetrofitClient.loginApi.loginUser(loginRequest)
+        call.enqueue(object : retrofit2.Callback<LoginResponse> {
+            override fun onResponse(call: Call<LoginResponse>, response: retrofit2.Response<LoginResponse>) {
                 progressBar.visibility = View.GONE
                 if (response.isSuccessful) {
                     val loginResponse = response.body()
-                    if (loginResponse != null && loginResponse.response) {
+                    if (loginResponse?.response == true) {
+                        val userId = loginResponse.data?.utilizador_id
+                        if (userId != null) {
+                            val sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE)
+                            val editor = sharedPreferences.edit()
+                            editor.putInt("user_id", userId)
+                            editor.apply()
+                        }
                         val intent = Intent(this@LoginActivity, RequerimentosActivity::class.java)
                         startActivity(intent)
                         finish()
                     } else {
-                        Toast.makeText(
-                            this@LoginActivity,
-                            loginResponse?.error ?: "Erro ao realizar login.",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(this@LoginActivity, loginResponse?.error ?: "Erro ao realizar login.", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    Toast.makeText(
-                        this@LoginActivity,
-                        "Erro no servidor: ${response.message()}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(this@LoginActivity, "Erro: ${response.message()}", Toast.LENGTH_SHORT).show()
                 }
             }
 

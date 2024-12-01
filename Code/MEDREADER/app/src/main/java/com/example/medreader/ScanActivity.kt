@@ -19,10 +19,11 @@ import com.example.medreader.connection.RetrofitClient
 import com.example.medreader.models.APIResponse
 import com.example.medreader.models.ItemLido
 import com.example.medreader.models.Requerimento
+import com.example.medreader.models.UpdateRequerimentoRequest
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
+import com.google.zxing.BarcodeFormat
 
 class ScanActivity : AppCompatActivity() {
 
@@ -50,20 +51,29 @@ class ScanActivity : AppCompatActivity() {
         recyclerViewItensPedido.layoutManager = LinearLayoutManager(this)
         recyclerViewItensLidos.layoutManager = LinearLayoutManager(this)
         pausedSymbol = findViewById(R.id.pausedSymbol)
-        itemLidoAdapter = ItemLidoAdapter(itemLidosList)
+        itemLidoAdapter = ItemLidoAdapter(itemLidosList) { verificarItens() }
         recyclerViewItensLidos.adapter = itemLidoAdapter
+        recyclerViewItensLidos.adapter?.notifyDataSetChanged()
+        btnFinalizar.isEnabled = false
 
         fetchRequerimentos()
         startScanning()
 
-        val formats = listOf(com.google.zxing.BarcodeFormat.QR_CODE)
-        val decoderFactory: DecoderFactory = DefaultDecoderFactory(formats)
+        val formats = listOf(
+            BarcodeFormat.QR_CODE,
+            BarcodeFormat.CODE_128,
+            BarcodeFormat.CODE_39,
+            BarcodeFormat.UPC_A,
+            BarcodeFormat.EAN_13
+        )
 
+        val decoderFactory: DecoderFactory = DefaultDecoderFactory(formats)
         scannerView.decoderFactory = decoderFactory
+
         scannerView.decodeContinuous { result ->
             if (isScanning) {
-                val qrCode = result.text
-                processarQRCode(qrCode)
+                val codigo = result.text
+                processarCodigo(codigo)
                 stopScanning()
             }
         }
@@ -80,9 +90,29 @@ class ScanActivity : AppCompatActivity() {
 
         btnFinalizar.setOnClickListener {
             if (verificarItens()) {
-                Toast.makeText(this, "Pedido finalizado com sucesso!", Toast.LENGTH_SHORT).show()
-            } else {
-                dialogoItensNaoScanneados()
+                val sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE)
+                val userId = sharedPreferences.getInt("user_id", -1)
+                val requerimentoId = intent.getIntExtra("requerimentoId", -1)
+                val updateRequest = UpdateRequerimentoRequest(user_id = userId, requerimento_id = requerimentoId)
+                val call = RetrofitClient.requeimentosApi.updateRequerimentoPreparacao(updateRequest)
+
+                call.enqueue(object : Callback<APIResponse<String>> {
+                    override fun onResponse(
+                        call: Call<APIResponse<String>>,
+                        response: Response<APIResponse<String>>
+                    ) {
+                        if (response.isSuccessful && response.body()?.response == true) {
+                            Toast.makeText(this@ScanActivity, "Pedido finalizado com sucesso!", Toast.LENGTH_SHORT).show()
+                            finish()
+                        } else {
+                            Toast.makeText(this@ScanActivity, "Erro ao finalizar o pedido: ${response.body()?.error}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<APIResponse<String>>, t: Throwable) {
+                        Toast.makeText(this@ScanActivity, "Falha na comunicação com o servidor", Toast.LENGTH_SHORT).show()
+                    }
+                })
             }
         }
     }
@@ -108,7 +138,6 @@ class ScanActivity : AppCompatActivity() {
                     Toast.makeText(this@ScanActivity, "Erro ao carregar os requerimentos", Toast.LENGTH_SHORT).show()
                 }
             }
-
             override fun onFailure(call: Call<APIResponse<List<Requerimento>>>, t: Throwable) {
                 Toast.makeText(this@ScanActivity, "Falha na comunicação com o servidor", Toast.LENGTH_SHORT).show()
             }
@@ -126,21 +155,29 @@ class ScanActivity : AppCompatActivity() {
         recyclerViewItensPedido.adapter?.notifyDataSetChanged()
     }
 
-    private fun processarQRCode(qrCode: String) {
-        val existingItem = itemPedidoList.find { it.codigo == qrCode }
+    private fun processarCodigo(codigo: String) {
+        val item = itemPedidoList.find { it.codigo == codigo }
 
-        if (existingItem == null) {
+        if (item == null) {
             dialogoItemNaoExiteLista()
         } else {
-            val existingLido = itemLidosList.find { it.codigo == existingItem.codigo }
+            val existingLido = itemLidosList.find { it.codigo == item.codigo }
 
             if (existingLido != null) {
-                Toast.makeText(this, "Item já foi lido.", Toast.LENGTH_SHORT).show()
+                if (existingLido.quantidade_lida < item.quantidade) {
+                    existingLido.quantidade_lida++
+                    itemLidoAdapter.notifyDataSetChanged()
+                    Toast.makeText(this, "Quantidade atualizada: ${existingLido.quantidade_lida}/${item.quantidade}", Toast.LENGTH_SHORT).show()
+                    verificarItens()
+                } else {
+                    Toast.makeText(this, "Quantidade máxima já atingida para o item ${item.nome_item}", Toast.LENGTH_SHORT).show()
+                }
             } else {
-                val itemLido = ItemLido(existingItem.nome_item, existingItem.codigo, 1)
+                val itemLido = ItemLido(item.nome_item, item.codigo, 1)
                 itemLidosList.add(itemLido)
                 itemLidoAdapter.notifyItemInserted(itemLidosList.size - 1)
-                Toast.makeText(this, "QR Code Lido: ${existingItem.nome_item}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Código Lido: ${item.nome_item}", Toast.LENGTH_SHORT).show()
+                verificarItens()
             }
         }
     }
@@ -159,18 +196,11 @@ class ScanActivity : AppCompatActivity() {
     }
 
     private fun verificarItens(): Boolean {
-        return itemPedidoList.all { pedidoItem ->
-            val itemLido = itemLidosList.find { it.nome_item == pedidoItem.nome_item }
+        val todosItensLidos = itemPedidoList.all { pedidoItem -> val itemLido = itemLidosList.find { it.codigo == pedidoItem.codigo }
             itemLido?.quantidade_lida == pedidoItem.quantidade
         }
-    }
-
-    private fun dialogoItensNaoScanneados() {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Erro")
-        builder.setMessage("Não pode finalizar o pedido. Ainda existem itens na lista de pedidos do requerimento que não passaram pelo Scan !!")
-        builder.setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
-        builder.show()
+        btnFinalizar.isEnabled = todosItensLidos
+        return todosItensLidos
     }
 
     private fun dialogoItemNaoExiteLista() {
