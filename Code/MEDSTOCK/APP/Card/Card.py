@@ -9,7 +9,9 @@ import os
 from APP.Label.Label import add_status_lable
 from APP.Overlays.Overlay import Overlay
 from APP.PDF.Generate_PDF import GeneratePdfRequerimento
-from API.API_PUT_Request import API_CancelRequerimento
+from API.API_PUT_Request import API_CancelRequerimento, API_AcceptRequerimento, API_RejectRequerimento
+from API.API_GET_Request import API_GetEmailDetails
+from API.API_POST_Request import API_SendEmailAvaliation
 
 
 class RequerimentoCard(QWidget):
@@ -18,6 +20,7 @@ class RequerimentoCard(QWidget):
         self.requerimento = requerimento
         self.expanded = False
         self.callbackUpdate = update_callback
+        self.minimumHeight_Card = 180
 
         self.setLayout(QVBoxLayout())
         self.layout().setContentsMargins(10, 10, 10, 10)
@@ -27,7 +30,7 @@ class RequerimentoCard(QWidget):
         self.container = QFrame()
         self.container.setFrameShape(QFrame.StyledPanel)
         self.container.setStyleSheet("background-color: #F3F3F3; border: 1px solid #ddd; border-radius: 8px;")
-        self.container.setMaximumHeight(120)
+        self.container.setMaximumHeight(self.minimumHeight_Card)
         self.container_layout = QVBoxLayout(self.container)
         self.container_layout.setContentsMargins(15, 15, 15, 15)
         self.container_layout.setSpacing(5)
@@ -67,7 +70,7 @@ class RequerimentoCard(QWidget):
         actions_layout.setSpacing(10)
         actions_layout.setAlignment(Qt.AlignRight)
 
-        if requerimento.status == 0 or user.role_nome=="Gestor Responsável" :
+        if requerimento.status == 0 and user.role_nome=="Gestor Responsável" or user.role_nome=="Farmacêutico" :
             delete_button = QPushButton()
             recolored_icon_delete = QIcon(UIFunctions.recolor_icon(os.path.abspath("./icons/MaterialIcons/close.png"), "#f54251"))
             delete_button.setIcon(recolored_icon_delete)
@@ -75,10 +78,21 @@ class RequerimentoCard(QWidget):
             delete_button.setCursor(QCursor(Qt.PointingHandCursor))
             delete_button.setStyleSheet(self.button_style("#f54251"))
             if(user.role_nome=="Gestor Responsável"):
-                delete_button.clicked.connect(lambda: self.reject_requerimento(requerimento))
+                delete_button.clicked.connect(lambda: self.reject_requerimento(user,requerimento))
             elif user.role_nome!="Farmacêutico":
-                delete_button.clicked.connect(lambda: self.cancel_requerimento(requerimento))
+                delete_button.clicked.connect(lambda: self.cancel_requerimento(user,requerimento))
             actions_layout.addWidget(delete_button, alignment=Qt.AlignRight)
+        
+        
+        if requerimento.status == 0 and user.role_nome=="Gestor Responsável" :
+            accept_button = QPushButton()
+            recolored_accept_button = QIcon(UIFunctions.recolor_icon(os.path.abspath("./icons/MaterialIcons/check.png"), "#b5c6bf"))
+            accept_button.setIcon(recolored_accept_button)
+            accept_button.setIconSize(QSize(24, 24))
+            accept_button.setCursor(QCursor(Qt.PointingHandCursor))
+            accept_button.setStyleSheet(self.button_style("#f54251"))
+            accept_button.clicked.connect(lambda: self.accept_requerimento(user,requerimento))
+            actions_layout.addWidget(accept_button, alignment=Qt.AlignRight)
 
         download_button = QPushButton()
         download_button.setIcon(QIcon("./icons/MaterialIcons/picture_as_pdf.png"))
@@ -175,7 +189,7 @@ class RequerimentoCard(QWidget):
             confirmacao_label = QLabel()
             confirmacao_label.setText(
                 f"<span style='font-size:16px; font-weight:bold; color:#000000;'>"
-                f"Confirmado por:</span> "
+                f"Avaliado por:</span> "
                 f"<span style='font-size:14px; color:#555555;'>{requerimento.nome_utilizador_confirmacao}</span> "
                 f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(requerimento.data_confirmacao, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
             )
@@ -210,7 +224,7 @@ class RequerimentoCard(QWidget):
         self.layout().addWidget(self.container)
         
         
-        if requerimento.urgente and requerimento.status <=3:
+        if requerimento.urgente:
             self.container.setStyleSheet("background-color: #f8d7da; border: 1px solid #f5c2c7; border-radius: 8px;")
 
     def cancel_requerimento(self, requerimento: Requerimento):
@@ -220,21 +234,37 @@ class RequerimentoCard(QWidget):
             self.callbackUpdate()
         else:
             Overlay.show_error(self, response.error_message)
-        
-    # def reject_requerimento(self, requerimento):
-    #     response = API_RejectRequerimento(requerimento.requerimento_id)
-    #     if response.success: 
-    #         Overlay.show_information(self, f'Requerimento{requerimento.requerimento_id} foi Rejeitado')
-    #         RequerimentoPage.reload_requerimentos()
-    #     else:
-    #         Overlay.show_error(self, response.error_message)
+            
     
-    
+    def accept_requerimento(self, user : Utilizador, requerimento: Requerimento):
+        response = API_AcceptRequerimento(user.utilizador_id,requerimento.requerimento_id)
+        if response.success:
+            response=API_SendEmailAvaliation(requerimento.requerimento_id)
+            if response.success:
+                    self.callbackUpdate()
+                    Overlay.show_information(self.parentWidget(), f'Requerimento{requerimento.requerimento_id} foi recusado e email enviado ao requerente')
+            else:
+                Overlay.show_error(self.parentWidget(), response.error_message)
+        else:
+            Overlay.show_error(self.parentWidget(), response.error_message)
+
+            
+    def reject_requerimento(self, user : Utilizador, requerimento: Requerimento):
+        response = API_RejectRequerimento(user.utilizador_id,requerimento.requerimento_id)
+        if response.success:
+            response=API_SendEmailAvaliation(requerimento.requerimento_id)
+            if response.success:
+                    self.callbackUpdate()
+                    Overlay.show_information(self.parentWidget(), f'Requerimento{requerimento.requerimento_id} foi aceite e email enviado ao requerente')
+            else:
+                Overlay.show_error(self.parentWidget(), response.error_message)
+        else:
+            Overlay.show_error(self.parentWidget(), response.error_message)
 
     def toggle_details(self):
         self.expanded = not self.expanded
         self.details_frame.setVisible(self.expanded)
-        self.container.setMaximumHeight(300 if self.expanded else 120)
+        self.container.setMaximumHeight(300 if self.expanded else self.minimumHeight_Card)
 
     
     def choose_file_location_GeneratePdfItens(self):

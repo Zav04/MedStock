@@ -2,6 +2,8 @@ import os
 import httpx
 import asyncio
 from Class.API_Response import APIResponse
+from typing import List
+from Class.ItemPedido import ItemPedido
 
 
 def API_Login(email, password):
@@ -187,5 +189,28 @@ def API_CreateUser_SendEmail(email, password):
         else:
             print("Erro inesperado:", response.status_code)
             return APIResponse(success=False, error_message="Erro inesperado")
+    except httpx.RequestError as e:
+        return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
+    
+
+def API_SendEmailAvaliation(requerimento_id: int):
+    URL = os.getenv('API_URL') + os.getenv('API_SendEmailAvaliation')
+    payload = {"requerimento_id": requerimento_id}
+
+    try:
+        response = httpx.post(URL, json=payload, headers={"Content-Type": "application/json"})
+        if response.status_code == 200:
+            response_data = response.json()
+            if response_data.get("response") is False:
+                error_message = response_data.get("error", "Erro desconhecido")
+                return APIResponse(success=False, error_message=error_message)
+            else:
+                data = response.json().get("data", {})
+                return APIResponse(success=True, data=data)
+        elif response.status_code == 400:
+            error_message = response.json().get("error", "Erro desconhecido")
+            return APIResponse(success=False, error_message=error_message)
+        else:
+            return APIResponse(success=False, error_message=f"Erro inesperado: {response.status_code}")
     except httpx.RequestError as e:
         return APIResponse(success=False, error_message=f"Erro de conexão: {e}")

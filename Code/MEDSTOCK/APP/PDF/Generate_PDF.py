@@ -124,12 +124,12 @@ def GeneratePdfRequerimento(file_path: str, requerimento: Requerimento):
         
     if requerimento.nome_utilizador_confirmacao and requerimento.data_confirmacao:
         c.setFont("Helvetica-Bold", 12)
-        c.drawString(60, y_offset, "Confirmado por:")
+        c.drawString(60, y_offset, "Avaliado por:")
         confirmacao_str = (
             f"{requerimento.nome_utilizador_confirmacao} "
             f"em {datetime.strptime(requerimento.data_confirmacao, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
         )
-        label_width = c.stringWidth("Confirmado por:", "Helvetica-Bold", 12) + 2
+        label_width = c.stringWidth("Avaliado por:", "Helvetica-Bold", 12) + 2
         c.setFont("Helvetica", 10)
         c.drawString(60 + label_width, y_offset, confirmacao_str)
         y_offset -= 20

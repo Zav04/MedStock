@@ -120,32 +120,21 @@ class CreateUserPage(QWidget):
         password = password_generator()
         if(rolecheck == "Gestor Responsável"):
             response = API_CreateGestor(name, email, password, gender, dob, role, sector)
+        else:
+            response = API_CreateUser(name, email, password, gender, dob, role)
+            
+        if response.success:
+            Overlay.show_success(self, response.data)
+            self.name_input.clear()
+            self.email_input.clear()
+            self.role_input.setCurrentIndex(0)
+            response = API_CreateUser_SendEmail(email, password)
             if response.success:
-                Overlay.show_success(self, response.data)
-                self.name_input.clear()
-                self.email_input.clear()
-                self.role_input.setCurrentIndex(0)
-                response = API_CreateUser_SendEmail(email, password)
-                if response.success:
-                    Overlay.show_information(self, response.data)
-                else:
-                    Overlay.show_error(self, response.error_message)
+                Overlay.show_information(self, response.data)
             else:
                 Overlay.show_error(self, response.error_message)
         else:
-            response = API_CreateUser(name, email, password, gender, dob, role)
-            if response.success:
-                Overlay.show_success(self, response.data)
-                self.name_input.clear()
-                self.email_input.clear()
-                self.role_input.setCurrentIndex(0)
-                response = API_CreateUser_SendEmail(email, password)
-                if response.success:
-                    Overlay.show_information(self, response.data)
-                else:
-                    Overlay.show_error(self, response.error_message)
-            else:
-                Overlay.show_error(self, response.error_message)
+            Overlay.show_error(self, response.error_message)
         
     def check_role(self):
         selected_role = self.role_input.currentText()

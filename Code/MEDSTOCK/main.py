@@ -33,7 +33,8 @@ if __name__ == "__main__":
         data_nascimento="1999-06-06", 
         utilizador_id=12, 
         role_id=1, 
-        role_nome="Administrador"
+        role_nome="Gestor Responsável"
+        #role_nome="Administrador"
     )
     # TODO JUST FOR TESTING
 

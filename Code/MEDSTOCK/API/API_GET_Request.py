@@ -255,7 +255,45 @@ async def API_GetSectors():
         except httpx.RequestError as e:
             return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
 
-
+def API_GetEmailDetails(requerimento_id: int):
+    URL = os.getenv('API_URL') + "/MedStock_GetEmailDetails/"
+    try:
+        response =  httpx.get(
+            URL,
+            headers={"Content-Type": "application/json"},
+            params={"requerimento_id": requerimento_id}
+        )
+        if response.status_code == 200:
+            response_data = response.json()
+            if response_data.get("response"):
+                data = response_data.get("data")
+                itens_pedidos = [
+                    ItemPedido(
+                        nome_item=item["nome_item"],
+                        quantidade=item["quantidade"],
+                        tipo_item=item.get("tipo_item", "")
+                    )
+                    for item in data["itens_pedidos"]
+                ]
+                return {
+                    "success": True,
+                    "email_remetente": data["email_remetente"],
+                    "nome_responsavel": data["nome_responsavel"],
+                    "hora_acao": data["hora_acao"],
+                    "itens_pedidos": itens_pedidos
+                }
+            else:
+                return {
+                    "success": False,
+                    "error_message": response_data.get("error", "Erro desconhecido")
+                }
+        elif response.status_code == 400:
+            error_message = response.json().get("error", "Erro desconhecido")
+            return {"success": False, "error_message": error_message}
+        else:
+            return {"success": False, "error_message": f"Erro inesperado: {response.status_code}"}
+    except httpx.RequestError as e:
+        return {"success": False, "error_message": f"Erro de conexão: {e}"}
 
 
 

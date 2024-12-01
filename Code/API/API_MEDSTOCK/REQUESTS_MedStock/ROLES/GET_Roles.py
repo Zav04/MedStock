@@ -5,8 +5,8 @@ from dependencies import get_db_MEDSTOCK
 
 router = APIRouter()
 
-@router.get("/MedStock_Get_Roles/")
-async def MedStock_Get_Roles(db=Depends(get_db_MEDSTOCK)):
+@router.get("/MedStock_GetRoles/")
+async def MedStock_GetRoles(db=Depends(get_db_MEDSTOCK)):
     try:
         query = text("SELECT get_roles();")
         result = db.execute(query).fetchall()

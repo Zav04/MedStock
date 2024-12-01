@@ -98,3 +98,42 @@ async def MedStock_GetRequerimentosByResponsavel(responsavel_id: int, db=Depends
             "error": error_messages
         }
 
+@router.get("/MedStock_GetRequerimentoAvaliationDetails/")
+async def MedStock_GetRequerimentoAvaliationDetails(requerimento_id: int, db=Depends(get_db_MEDSTOCK)):
+    try:
+        query = text("SELECT * FROM get_requerimento_avaliation_details(:requerimento_id);")
+        result = db.execute(query, {"requerimento_id": requerimento_id}).fetchone()
+
+        if not result:
+            return {
+                "response": False,
+                "error": "Requerimento não encontrado."
+            }
+
+        email_details = {
+            "requerimento_id": result.requerimento_id,
+            "email_utilizador_pedido": result.email_utilizador_pedido,
+            "nome_utilizador_avaliacao": result.nome_utilizador_confirmacao,
+            "data_confirmacao": result.data_confirmacao,
+            "itens_pedidos": result.itens_pedidos
+        }
+
+        return {
+            "response": True,
+            "data": email_details
+        }
+
+    except SQLAlchemyError as e:
+        error_msg = str(e.__dict__['orig']).split('\n')[0]
+        return {
+            "response": False,
+            "error": error_msg
+        }
+
+    except Exception as e:
+        db.rollback()
+        error_messages = [str(arg) for arg in e.args]
+        return {
+            "response": False,
+            "error": error_messages
+        }

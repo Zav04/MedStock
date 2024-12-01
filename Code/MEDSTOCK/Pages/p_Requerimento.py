@@ -20,9 +20,12 @@ class RequerimentoPage(QWidget):
         super().__init__()
         self.user = user
         self.main_layout = QVBoxLayout(self)
-        self.firstTime = True
-        self.setup_RequerimentoPage()
         self.current_requerimentos = []
+        self.setup_page=True
+        self.ui_updated = False
+        self.current_filter = None
+        self.current_requerimentos_dict = {}
+        self.setup_RequerimentoPage()
         QTimer.singleShot(0, self.load_requerimentos_wrapper)
         
         
@@ -32,7 +35,6 @@ class RequerimentoPage(QWidget):
 
     def setup_RequerimentoPage(self):
         title_layout = QHBoxLayout()
-
         self.title = QLabel("REQUERIMENTOS")
         self.title_font = QFont("Arial", 24, QFont.Bold)
         self.title.setFont(self.title_font)
@@ -45,6 +47,7 @@ class RequerimentoPage(QWidget):
         self.create_button.clicked.connect(self.show_create_requerimento_page_wrapper)
         title_layout.addWidget(self.create_button, alignment=Qt.AlignRight)
 
+        #TODO ADMIN NOT SEE THIS BUTTON
         if self.user.role_nome == "Gestor Responsável" or self.user.role_nome == "Farmacêutico":
             self.create_button.hide()
 
@@ -55,20 +58,41 @@ class RequerimentoPage(QWidget):
         filter_layout.setContentsMargins(0, 0, 0, 0)
         filter_layout.setSpacing(10)
 
-        filter_buttons = [
-            ("Todos", "Todos"),
-            ("Urgente", "Urgente"),
-            ("Espera de Aprovação", "Status_0"),
-            ("Na Lista de Espera", "Status_1"),
-            ("Em Preparação", "Status_2"),
-            ("Pronto para Entrega", "Status_3"),
-            ("Finalizado", "Status_4"),
-            ("Recusado", "Status_5"),
-            ("Stand-By", "Status_6"),
-            ("Cancelado", "Status_7"),
-        ]
 
         self.filter_buttons = {}
+        if self.user.role_nome == "Gestor Responsável" or self.user.role_nome == "Farmacêutico":
+            filter_buttons = [
+                ("Pendentes de Resposta", "Pendentes de Resposta"),
+                ("Todos", "Todos"),
+                ("Urgente", "Urgente"),
+                ("Espera de Aprovação", "Status_0"),
+                ("Na Lista de Espera", "Status_1"),
+                ("Em Preparação", "Status_2"),
+                ("Pronto para Entrega", "Status_3"),
+                ("Finalizado", "Status_4"),
+                ("Recusado", "Status_5"),
+                ("Stand-By", "Status_6"),
+                ("Cancelado", "Status_7"),
+            ]
+        else:
+            filter_buttons = [
+                ("Todos", "Todos"),
+                ("Urgente", "Urgente"),
+                ("Espera de Aprovação", "Status_0"),
+                ("Na Lista de Espera", "Status_1"),
+                ("Em Preparação", "Status_2"),
+                ("Pronto para Entrega", "Status_3"),
+                ("Finalizado", "Status_4"),
+                ("Recusado", "Status_5"),
+                ("Stand-By", "Status_6"),
+                ("Cancelado", "Status_7"),
+            ]
+            
+        if self.user.role_nome == "Gestor Responsável" or self.user.role_nome == "Farmacêutico":
+            self.current_filter = "Pendentes de Resposta"
+        else:
+            self.current_filter= "Todos"
+
         for label, key in filter_buttons:
             button = QPushButton(label)
             button.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
@@ -77,7 +101,6 @@ class RequerimentoPage(QWidget):
             self.filter_buttons[key] = button
             filter_layout.addWidget(button)
         
-        self.set_filter_selected(self.filter_buttons["Todos"])
 
         self.main_layout.addLayout(filter_layout)
         self.main_layout.addSpacing(15)
@@ -93,6 +116,7 @@ class RequerimentoPage(QWidget):
         self.scroll_area.setWidget(self.scroll_content)
 
         self.main_layout.addWidget(self.scroll_area)
+        
 
         self.setLayout(self.main_layout)
 
@@ -106,7 +130,7 @@ class RequerimentoPage(QWidget):
         back_button.setFixedSize(100, 40)
         back_button.setIcon(QIcon(UIFunctions.recolor_icon("./icons/MaterialIcons/arrow_back.png", "#b5c6bf")))
         back_button.setStyleSheet(Style.style_bt_QPushButton)
-        back_button.clicked.connect(self.reload_requerimentos)
+        back_button.clicked.connect(self.reload_page_requerimentos)
         back_button.setText("Voltar")
         back_button.setIconSize(QSize(20, 20))
         create_page_layout.addWidget(back_button, alignment=Qt.AlignLeft)
@@ -183,8 +207,8 @@ class RequerimentoPage(QWidget):
     async def fetch_items(self, left_layout):
         response = await API_GetItems()
         if response.success:
-            self.all_items = response.data  # Store all items
-            self.update_item_display(self.all_items)  # Display all items initially
+            self.all_items = response.data 
+            self.update_item_display(self.all_items)
         else:
             Overlay.show_error(self, response.error_message)
 
@@ -238,58 +262,69 @@ class RequerimentoPage(QWidget):
 
 
     async def load_requerimentos(self, user: Utilizador):
-        
         if user.role_nome == "Gestor Responsável":
             response = await API_GetRequerimentosByResponsavel(user.utilizador_id)
         else:
             response = await API_GetRequerimentosByUser(user.utilizador_id)
 
-        if response.success:
-            new_requerimentos = response.data
-
-            if user.role_nome == "Gestor Responsável":
-                new_requerimentos = sorted(new_requerimentos, key=lambda x: x.requerimento_id, reverse=False)
-            else:
-                new_requerimentos = sorted(new_requerimentos, key=lambda x: x.requerimento_id, reverse=True)
-                
-            new_requerimentos_strings = [
-                f"{req.requerimento_id}-{req.setor_nome_localizacao}-{req.nome_utilizador_pedido}-{req.status}-{req.urgente}-"
-                f"{sorted((item.nome_item, item.quantidade, item.tipo_item) for item in req.itens_pedidos)}-"
-                f"{req.data_pedido}-{req.nome_utilizador_confirmacao}-{req.data_confirmacao}-{req.nome_utilizador_envio}-"
-                f"{req.data_envio}-{req.nome_utilizador_preparacao}-{req.data_preparacao}"
-                for req in new_requerimentos
-            ]
-
-            current_requerimentos_strings = [
-                f"{req.requerimento_id}-{req.setor_nome_localizacao}-{req.nome_utilizador_pedido}-{req.status}-{req.urgente}-"
-                f"{sorted((item.nome_item, item.quantidade, item.tipo_item) for item in req.itens_pedidos)}-"
-                f"{req.data_pedido}-{req.nome_utilizador_confirmacao}-{req.data_confirmacao}-{req.nome_utilizador_envio}-"
-                f"{req.data_envio}-{req.nome_utilizador_preparacao}-{req.data_preparacao}"
-                for req in self.current_requerimentos
-            ]
-            
-            if new_requerimentos_strings != current_requerimentos_strings:
-                self.current_requerimentos = new_requerimentos
-                self.clear_layout(self.scroll_layout)
-                for requerimento in new_requerimentos:
-                    QTimer.singleShot(0, lambda req=requerimento: self.add_requerimento_card(req))
-                if not self.firstTime:
-                    Overlay.show_information(self, "Requerimentos atualizados!")
-                else:
-                    self.firstTime = False
-        else:
+        if not response.success:
             Overlay.show_error(self, response.error_message)
+            return
+
+        new_requerimentos = sorted(response.data, key=lambda x: x.requerimento_id, reverse=False)
+        new_requerimentos_dict = {req.requerimento_id: req for req in new_requerimentos}
+        
+        self.ui_updated = False
+        updated_ids = set()
+        for requerimento_id, requerimento in new_requerimentos_dict.items():
+            if requerimento_id not in self.current_requerimentos_dict:
+                self.add_requerimento_card(requerimento)
+                self.ui_updated = True
+            elif requerimento != self.current_requerimentos_dict[requerimento_id]:
+                self.remove_requerimento_card(requerimento_id)
+                self.add_requerimento_card(requerimento)
+                self.ui_updated = True
+            updated_ids.add(requerimento_id)
+
+        for requerimento_id in list(self.current_requerimentos_dict.keys()):
+            if requerimento_id not in updated_ids:
+                self.remove_requerimento_card(requerimento_id)
+                ui_updated = True
+
+        self.current_requerimentos_dict = new_requerimentos_dict.copy()
+
+        self.current_requerimentos = new_requerimentos
+
+        self.apply_filter(self.current_filter)
+        
+        if self.setup_page:
+            self.setup_page=False
+            self.ui_updated = False
+        else:
+            if ui_updated:
+                Overlay.show_information(self, "Requerimentos atualizados!")
+
 
     def add_requerimento_card(self, requerimento):
         card = RequerimentoCard(user=self.user, requerimento=requerimento, update_callback=self.reload_requerimentos)
         self.scroll_layout.addWidget(card)
+        self.current_requerimentos_dict[requerimento.requerimento_id] = requerimento
 
-    def reload_requerimentos(self):
+    def remove_requerimento_card(self, requerimento_id):
+        for i in range(self.scroll_layout.count()):
+            widget = self.scroll_layout.itemAt(i).widget()
+            if isinstance(widget, RequerimentoCard) and widget.requerimento.requerimento_id == requerimento_id:
+                widget.deleteLater()
+                break
+        self.current_requerimentos_dict.pop(requerimento_id, None)
+
+    def reload_page_requerimentos(self):
         self.clear_layout(self.main_layout)
         self.setup_RequerimentoPage()
-        self.clear_layout(self.scroll_layout)
-        for requerimento in self.current_requerimentos:
-            QTimer.singleShot(0, lambda req=requerimento: self.add_requerimento_card(req))
+        self.load_requerimentos_wrapper()
+        
+    def reload_requerimentos(self):
+        self.load_requerimentos_wrapper()
 
     async def update_sectors(self):
         response = await API_GetSectors()
@@ -327,19 +362,27 @@ class RequerimentoPage(QWidget):
         if selected_button:
             self.set_filter_selected(selected_button)
 
-        if filter_key == "Todos":
-            filtered_requerimentos = self.current_requerimentos
-        elif filter_key == "Urgente":
-            filtered_requerimentos = [req for req in self.current_requerimentos if req.urgente]
-        elif filter_key.startswith("Status_"):
-            status = int(filter_key.split("_")[1])
-            filtered_requerimentos = [req for req in self.current_requerimentos if req.status == status]
-        else:
-            filtered_requerimentos = self.current_requerimentos
+        if self.current_filter != filter_key or self.setup_page or self.ui_updated:
+            self.current_filter = filter_key
+            if filter_key == "Todos":
+                filtered_requerimentos = self.current_requerimentos
+            elif filter_key == "Pendentes de Resposta":
+                if self.user.role_nome == "Gestor Responsável":
+                    filtered_requerimentos = [req for req in self.current_requerimentos if req.status == 0]
+                else:
+                    filtered_requerimentos = [req for req in self.current_requerimentos if req.status == 1]
+            elif filter_key == "Urgente":
+                filtered_requerimentos = [req for req in self.current_requerimentos if req.urgente]
+            elif filter_key.startswith("Status_"):
+                status = int(filter_key.split("_")[1])
+                filtered_requerimentos = [req for req in self.current_requerimentos if req.status == status]
+            else:
+                filtered_requerimentos = self.current_requerimentos
 
-        self.clear_layout(self.scroll_layout)
-        for requerimento in filtered_requerimentos:
-            self.add_requerimento_card(requerimento)
+            filtered_requerimentos = sorted(filtered_requerimentos, key=lambda x: x.requerimento_id, reverse=False)
+            self.clear_layout(self.scroll_layout)
+            for requerimento in filtered_requerimentos:
+                self.add_requerimento_card(requerimento)
 
     def set_filter_selected(self, selected_button):
         for button in self.filter_buttons.values():
