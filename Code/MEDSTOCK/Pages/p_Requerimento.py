@@ -290,7 +290,7 @@ class RequerimentoPage(QWidget):
                 key=lambda x: (not x.urgente, x.requerimento_id),
                 reverse=False)
         else:
-            new_requerimentos = sorted(response.data, key=lambda x: x.requerimento_id, reverse=False)
+            new_requerimentos = sorted(response.data, key=lambda x: x.requerimento_id, reverse=True)
         
         new_requerimentos_dict = {req.requerimento_id: req for req in new_requerimentos}
         
@@ -378,38 +378,53 @@ class RequerimentoPage(QWidget):
 
                 
     def apply_filter(self, filter_key):
-        selected_button = self.filter_buttons.get(filter_key)
-        if selected_button:
-            self.set_filter_selected(selected_button)
+        
+        if self.current_filter != filter_key or self.setup_page or  self.ui_updated:
+            selected_button = self.filter_buttons.get(filter_key)
+            if selected_button:
+                self.set_filter_selected(selected_button)
 
-        if self.current_filter != filter_key or self.setup_page or self.ui_updated:
             self.current_filter = filter_key
-            if filter_key == "Todos":
-                filtered_requerimentos = self.current_requerimentos
-            elif filter_key == "Pendentes de Resposta":
-                if self.user.role_nome == "Gestor Responsável":
-                    filtered_requerimentos = [req for req in self.current_requerimentos if req.status == 0]
-                else:
-                    filtered_requerimentos = [req for req in self.current_requerimentos if req.status == 1 or req.status == 6 or req.status == 3]
-            elif filter_key == "Urgente":
-                filtered_requerimentos = [req for req in self.current_requerimentos if req.urgente]
-            elif filter_key.startswith("Status_"):
-                status = int(filter_key.split("_")[1])
-                filtered_requerimentos = [req for req in self.current_requerimentos if req.status == status]
-            else:
-                filtered_requerimentos = self.current_requerimentos
 
-            if(self.user.role_nome == "Farmacêutico"):
-                filtered_requerimentos = sorted(
-                    filtered_requerimentos,
-                    key=lambda x: (not x.urgente, x.requerimento_id),
-                    reverse=False)
+            if self.user.role_nome == "Farmacêutico":
+                requerimentos_urgentes = [
+                    req for req in self.current_requerimentos if req.urgente and req.status in (1, 3)
+                ]
+                if requerimentos_urgentes:
+                    Overlay.show_warning(
+                        self, 
+                        "Há requerimentos urgentes pendentes. Responda-os antes de continuar com outros requerimentos."
+                    )
+                    filtered_requerimentos = requerimentos_urgentes
+                else:
+                    filtered_requerimentos = self.get_filtered_requerimentos(filter_key)
             else:
-                filtered_requerimentos = sorted(filtered_requerimentos, key=lambda x: x.requerimento_id, reverse=False)
-            
+                filtered_requerimentos = self.get_filtered_requerimentos(filter_key)
+
             self.clear_layout(self.scroll_layout)
             for requerimento in filtered_requerimentos:
                 self.add_requerimento_card(requerimento)
+        else:
+            return
+
+    def get_filtered_requerimentos(self, filter_key):
+        if filter_key == "Todos":
+            return self.current_requerimentos
+        elif filter_key == "Pendentes de Resposta":
+            if self.user.role_nome == "Gestor Responsável":
+                return [req for req in self.current_requerimentos if req.status == 0]
+            else:
+                return [
+                    req for req in self.current_requerimentos 
+                    if req.status in (1, 6, 3)
+                ]
+        elif filter_key == "Urgente":
+            return [req for req in self.current_requerimentos if req.urgente]
+        elif filter_key.startswith("Status_"):
+            status = int(filter_key.split("_")[1])
+            return [req for req in self.current_requerimentos if req.status == status]
+        else:
+            return self.current_requerimentos
 
     def set_filter_selected(self, selected_button):
         for button in self.filter_buttons.values():
