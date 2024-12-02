@@ -7,7 +7,8 @@ from PyQt5.QtCore import Qt, QTimer, QSize
 from APP.UI.ui_styles import Style
 from APP.Overlays.Overlay import Overlay
 from Class.utilizador import Utilizador
-from API.API_GET_Request import API_GetRequerimentosByUser, API_GetRequerimentosByResponsavel,API_GetSectors, API_GetItems
+from API.API_GET_Request import (API_GetRequerimentosByUser, API_GetRequerimentosByResponsavel,
+                                API_GetSectors, API_GetItems, API_GetRequerimentosByFarmaceutico)
 from API.API_POST_Request import API_CreateRequerimento
 from APP.Card.Card import RequerimentoCard
 from APP.UI.ui_functions import UIFunctions
@@ -21,7 +22,6 @@ class RequerimentoPage(QWidget):
         self.user = user
         self.main_layout = QVBoxLayout(self)
         self.current_requerimentos = []
-        self.setup_page=True
         self.ui_updated = False
         self.current_filter = None
         self.current_requerimentos_dict = {}
@@ -34,6 +34,7 @@ class RequerimentoPage(QWidget):
         self.update_timer.start(60000)
 
     def setup_RequerimentoPage(self):
+        self.setup_page=True
         title_layout = QHBoxLayout()
         self.title = QLabel("REQUERIMENTOS")
         self.title_font = QFont("Arial", 24, QFont.Bold)
@@ -60,7 +61,7 @@ class RequerimentoPage(QWidget):
 
 
         self.filter_buttons = {}
-        if self.user.role_nome == "Gestor Responsável" or self.user.role_nome == "Farmacêutico":
+        if self.user.role_nome == "Gestor Responsável":
             filter_buttons = [
                 ("Pendentes de Resposta", "Pendentes de Resposta"),
                 ("Todos", "Todos"),
@@ -73,6 +74,18 @@ class RequerimentoPage(QWidget):
                 ("Recusado", "Status_5"),
                 ("Stand-By", "Status_6"),
                 ("Cancelado", "Status_7"),
+            ]
+        elif self.user.role_nome == "Farmacêutico":
+            filter_buttons = [
+                ("Pendentes de Resposta", "Pendentes de Resposta"),
+                ("Todos", "Todos"),
+                ("Urgente", "Urgente"),
+                ("Na Lista de Espera", "Status_1"),
+                ("Em Preparação", "Status_2"),
+                ("Pronto para Entrega", "Status_3"),
+                ("Finalizado", "Status_4"),
+                ("Stand-By", "Status_6"),
+                ("Em Validação", "Status_8"),
             ]
         else:
             filter_buttons = [
@@ -174,22 +187,20 @@ class RequerimentoPage(QWidget):
 
         content_layout.addLayout(horizontal_content_layout)
 
-        sector_urgent_layout = QHBoxLayout()
-        sector_urgent_layout.setAlignment(Qt.AlignCenter)
-
         self.sector_input = QComboBox()
         self.sector_input.setFixedSize(400, 40)
         self.sector_input.setStyleSheet(Style.style_QComboBox)
         
-        self.urgent_input = QCheckBox("Urgente")
-        self.urgent_input.setChecked(False)
-        self.urgent_input.setStyleSheet(Style.style_checkbox)
-
-        sector_urgent_layout.addWidget(self.sector_input)
-        sector_urgent_layout.addSpacing(20)
-        sector_urgent_layout.addWidget(self.urgent_input)
-
-        content_layout.addLayout(sector_urgent_layout)
+        if self.user.role_nome == "Enfermeiro" or self.user.role_nome == "Médico":
+            sector_urgent_layout = QHBoxLayout()
+            sector_urgent_layout.setAlignment(Qt.AlignCenter)
+            self.urgent_input = QCheckBox("Urgente")
+            self.urgent_input.setChecked(False)
+            self.urgent_input.setStyleSheet(Style.style_checkbox)
+            sector_urgent_layout.addWidget(self.sector_input)
+            sector_urgent_layout.addSpacing(20)
+            sector_urgent_layout.addWidget(self.urgent_input)
+            content_layout.addLayout(sector_urgent_layout)
 
         asyncio.create_task(self.update_sectors())
 
@@ -264,14 +275,23 @@ class RequerimentoPage(QWidget):
     async def load_requerimentos(self, user: Utilizador):
         if user.role_nome == "Gestor Responsável":
             response = await API_GetRequerimentosByResponsavel(user.utilizador_id)
+        elif user.role_nome == "Farmacêutico":
+            response = await API_GetRequerimentosByFarmaceutico()
         else:
             response = await API_GetRequerimentosByUser(user.utilizador_id)
-
+            
         if not response.success:
             Overlay.show_error(self, response.error_message)
             return
 
-        new_requerimentos = sorted(response.data, key=lambda x: x.requerimento_id, reverse=False)
+        if(user.role_nome == "Farmacêutico"):
+            new_requerimentos = sorted(
+                response.data,
+                key=lambda x: (not x.urgente, x.requerimento_id),
+                reverse=False)
+        else:
+            new_requerimentos = sorted(response.data, key=lambda x: x.requerimento_id, reverse=False)
+        
         new_requerimentos_dict = {req.requerimento_id: req for req in new_requerimentos}
         
         self.ui_updated = False
@@ -370,7 +390,7 @@ class RequerimentoPage(QWidget):
                 if self.user.role_nome == "Gestor Responsável":
                     filtered_requerimentos = [req for req in self.current_requerimentos if req.status == 0]
                 else:
-                    filtered_requerimentos = [req for req in self.current_requerimentos if req.status == 1]
+                    filtered_requerimentos = [req for req in self.current_requerimentos if req.status == 1 or req.status == 6 or req.status == 3]
             elif filter_key == "Urgente":
                 filtered_requerimentos = [req for req in self.current_requerimentos if req.urgente]
             elif filter_key.startswith("Status_"):
@@ -379,7 +399,14 @@ class RequerimentoPage(QWidget):
             else:
                 filtered_requerimentos = self.current_requerimentos
 
-            filtered_requerimentos = sorted(filtered_requerimentos, key=lambda x: x.requerimento_id, reverse=False)
+            if(self.user.role_nome == "Farmacêutico"):
+                filtered_requerimentos = sorted(
+                    filtered_requerimentos,
+                    key=lambda x: (not x.urgente, x.requerimento_id),
+                    reverse=False)
+            else:
+                filtered_requerimentos = sorted(filtered_requerimentos, key=lambda x: x.requerimento_id, reverse=False)
+            
             self.clear_layout(self.scroll_layout)
             for requerimento in filtered_requerimentos:
                 self.add_requerimento_card(requerimento)
@@ -387,7 +414,6 @@ class RequerimentoPage(QWidget):
     def set_filter_selected(self, selected_button):
         for button in self.filter_buttons.values():
             button.setStyleSheet(Style.style_bt_QPushButton_Filter)
-
         selected_button.setStyleSheet(Style.style_bt_QPushButton_Filter_Selected)
 
 

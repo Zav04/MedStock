@@ -193,8 +193,8 @@ def API_CreateUser_SendEmail(email, password):
         return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
     
 
-def API_SendEmailAvaliation(requerimento_id: int):
-    URL = os.getenv('API_URL') + os.getenv('API_SendEmailAvaliation')
+def API_SendEmailRequerimentoStatus(requerimento_id: int):
+    URL = os.getenv('API_URL') + os.getenv('API_SendEmailRequerimentoStatus')
     payload = {"requerimento_id": requerimento_id}
 
     try:

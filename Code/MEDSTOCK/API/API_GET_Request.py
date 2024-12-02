@@ -74,6 +74,62 @@ async def API_GetItems():
             return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
         
 
+
+
+async def API_GetRequerimentosByFarmaceutico():
+    URL = os.getenv('API_URL') + os.getenv('API_GetRequerimentosByFarmaceutico')
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(URL, headers={"Content-Type": "application/json"})
+            
+            if response.status_code == 200:
+                response_by_api = response.json().get("response", False)
+                if response_by_api:
+                    requerimentos = []
+                    for item in response.json().get("data", []):
+                        itens_pedidos = []
+                        raw_itens_pedidos = item.get("itens_pedidos", None)
+                        if raw_itens_pedidos:
+                            for pedido in raw_itens_pedidos:
+                                try:
+                                    nome_item = pedido.get("nome_item")
+                                    quantidade = pedido.get("quantidade", 0)
+                                    tipo_item = pedido.get("tipo_item")
+                                    if nome_item:
+                                        itens_pedidos.append(ItemPedido(nome_item=nome_item, quantidade=quantidade, tipo_item=tipo_item))
+                                except Exception as e:
+                                    print(f"Erro ao processar item_pedido: {pedido}, erro: {e}")
+
+                        requerimento = Requerimento(
+                            requerimento_id=item["requerimento_id"],
+                            setor_nome_localizacao=item["setor_nome_localizacao"],
+                            nome_utilizador_pedido=item["nome_utilizador_pedido"],
+                            status=item["status"],
+                            urgente=item["urgente"],
+                            itens_pedidos=itens_pedidos,
+                            data_pedido=item["data_pedido"],
+                            nome_utilizador_confirmacao=item["nome_utilizador_confirmacao"],
+                            data_confirmacao=item["data_confirmacao"],
+                            nome_utilizador_envio=item["nome_utilizador_envio"],
+                            data_envio=item["data_envio"],
+                            nome_utilizador_preparacao=item.get("nome_utilizador_preparacao"),
+                            data_preparacao=item.get("data_preparacao")
+                        )
+                        requerimentos.append(requerimento)
+
+                    return APIResponse(success=True, data=requerimentos)
+                else:
+                    error_message = response.json().get("error", {})
+                    return APIResponse(success=False, error_message=error_message)
+            elif response.status_code == 400:
+                error_message = response.json().get("error", "Erro desconhecido")
+                return APIResponse(success=False, error_message=error_message)
+            else:
+                return APIResponse(success=False, error_message=f"Erro inesperado: {response.status_code}")
+        except httpx.RequestError as e:
+            return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
+
+
 async def API_GetRequerimentosByUser(user_id: int):
     URL = os.getenv('API_URL') + os.getenv('API_GetRequerimentosByUser') + f"?user_id={user_id}"
     async with httpx.AsyncClient() as client:

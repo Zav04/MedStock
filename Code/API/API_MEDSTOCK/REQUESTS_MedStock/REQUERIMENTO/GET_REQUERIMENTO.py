@@ -52,6 +52,52 @@ async def MedStock_GetRequerimentosByUser(user_id: int, db=Depends(get_db_MEDSTO
         }
 
 
+@router.get("/MedStock_GetRequerimentosByFarmaceutico/")
+async def MedStock_GetRequerimentosByFarmaceutico(db=Depends(get_db_MEDSTOCK)):
+    try:
+        query = text("SELECT * FROM get_requerimentos_by_farmaceutico();")
+        result = db.execute(query).fetchall()
+        
+        requerimentos = []
+        for row in result:
+            requerimento = {
+                "requerimento_id": row.requerimento_id,
+                "setor_nome_localizacao": row.setor_nome_localizacao,
+                "nome_utilizador_pedido": row.nome_utilizador_pedido,
+                "status": row.status,
+                "urgente": row.urgente,
+                "itens_pedidos": row.itens_pedidos,
+                "data_pedido": row.data_pedido,
+                "nome_utilizador_confirmacao": row.nome_utilizador_confirmacao,
+                "data_confirmacao": row.data_confirmacao,
+                "nome_utilizador_envio": row.nome_utilizador_envio,
+                "data_envio": row.data_envio,
+                "nome_utilizador_preparacao": row.nome_utilizador_preparacao,
+                "data_preparacao": row.data_preparacao
+            }
+            requerimentos.append(requerimento)
+        
+        return {
+            "response": True,
+            "data": requerimentos
+        }
+
+    except SQLAlchemyError as e:
+        error_msg = str(e.__dict__['orig']).split('\n')[0]
+        return {
+            "response": False,
+            "error": error_msg
+        }
+
+    except Exception as e:
+        db.rollback()
+        error_messages = [str(arg) for arg in e.args]
+        return {
+            "response": False,
+            "error": error_messages
+        }
+
+
 @router.get("/MedStock_GetRequerimentosByResponsavel/")
 async def MedStock_GetRequerimentosByResponsavel(responsavel_id: int, db=Depends(get_db_MEDSTOCK)):
     try:

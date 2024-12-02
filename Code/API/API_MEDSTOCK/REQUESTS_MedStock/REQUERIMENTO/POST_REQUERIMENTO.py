@@ -3,9 +3,9 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import text
 from dependencies import get_db_MEDSTOCK
 from Models.C_CreateRequerimento import C_CreateRequerimento
-from Models.C_Email_Avaliation import C_Email_Avaliation
-from send_email import enviarEmailRequerimentoAceito, enviarEmailRequerimentoRecusado
-from REQUESTS_MedStock.REQUERIMENTO.GET_REQUERIMENTO import MedStock_GetRequerimentosByUser
+from send_email import (enviarEmailRequerimentoAceito, enviarEmailRequerimentoRecusado, 
+                        enviarEmailRequerimentoPreparacao, enviarEmailRequerimentoStandBy,
+                        enviarEmailRequerimentoProntoEntrega,enviarEmailRequerimentoListaEspera, enviarEmailRequerimentoEntregue)
 from Models.C_RequerimentoRequest import C_RequerimentoRequest
 import json
 
@@ -60,12 +60,11 @@ async def MedStock_CreateRequerimento(requerimento: C_CreateRequerimento, db=Dep
         }
 
 
-@router.post("/MedStock_SendEmailAvaliation/")
-async def MedStock_SendEmailAvaliation(request: C_RequerimentoRequest, db=Depends(get_db_MEDSTOCK)):
+@router.post("/MedStock_SendEmailRequerimentoStatus/")
+async def MedStock_SendEmailRequerimentoStatus(request: C_RequerimentoRequest, db=Depends(get_db_MEDSTOCK)):
     try:
-        
         requerimento_id = request.requerimento_id
-        query = text("SELECT * FROM get_requerimento_avaliation_details(:p_requerimento_id);")
+        query = text("SELECT * FROM get_requerimento_details(:p_requerimento_id);")
         result = db.execute(query, {"p_requerimento_id": requerimento_id}).fetchone()
 
         if not result:
@@ -74,37 +73,81 @@ async def MedStock_SendEmailAvaliation(request: C_RequerimentoRequest, db=Depend
                 "error": "Requerimento não encontrado."
             }
 
+        # Mapeamento dos campos retornados pelo PostgreSQL
         requerimento_id = result.requerimento_id
+        setor_nome_localizacao = result.setor_nome_localizacao
+        nome_utilizador_pedido = result.nome_utilizador_pedido
         email_utilizador_pedido = result.email_utilizador_pedido
+        nome_gestor_responsavel = result.nome_gestor_responsavel
+        email_gestor_responsavel = result.email_gestor_responsavel
+        status = result.status
+        urgente = result.urgente
+        itens_pedidos = result.itens_pedidos
+        data_pedido = result.data_pedido
         nome_utilizador_confirmacao = result.nome_utilizador_confirmacao
         data_confirmacao = result.data_confirmacao
-        itens_pedidos = result.itens_pedidos
-        status = result.status
+        nome_utilizador_envio = result.nome_utilizador_envio
+        data_envio = result.data_envio
+        nome_utilizador_preparacao = result.nome_utilizador_preparacao
+        data_preparacao = result.data_preparacao
 
-        if status not in (1, 5):
-            return {
-                "response": False,
-                "error": "O requerimento ainda não foi avaliado ou não possui um status válido para envio de e-mail."
-            }
-
+        # Lógica para envio de e-mail com base no status
         if status == 1:
             email_sent = enviarEmailRequerimentoAceito(
+                nome_utilizador_pedido=nome_utilizador_pedido,
                 receiver_email=email_utilizador_pedido,
                 requerimento_id=requerimento_id,
                 itens_pedidos=itens_pedidos,
                 data_confirmacao=data_confirmacao,
                 nome_utilizador_confirmacao=nome_utilizador_confirmacao
             )
-            email_message = "E-mail de aceitação enviado com sucesso!"
+            email_message = "E-mail de requerimento aceite enviado com sucesso!"
+        elif status == 2:
+            email_sent = enviarEmailRequerimentoPreparacao(
+                nome_utilizador_pedido=nome_utilizador_pedido,
+                receiver_email=email_utilizador_pedido,
+                requerimento_id=requerimento_id,
+                itens_pedidos=itens_pedidos
+            )
+            email_message = "E-mail de requerimento em preparação enviado com sucesso!"
+        elif status == 3:
+            email_sent = enviarEmailRequerimentoProntoEntrega(
+                nome_utilizador_pedido=nome_utilizador_pedido,
+                receiver_email=email_utilizador_pedido,
+                requerimento_id=requerimento_id,
+                itens_pedidos=itens_pedidos,
+                nome_utilizador_confirmacao=nome_utilizador_preparacao,
+                data_preparacao=data_preparacao
+            )
+            email_message = "E-mail de requerimento pronto para entrega enviado com sucesso!"
         elif status == 5:
             email_sent = enviarEmailRequerimentoRecusado(
+                nome_utilizador_pedido=nome_utilizador_pedido,
                 receiver_email=email_utilizador_pedido,
                 requerimento_id=requerimento_id,
                 itens_pedidos=itens_pedidos,
                 data_confirmacao=data_confirmacao,
                 nome_utilizador_confirmacao=nome_utilizador_confirmacao
             )
-            email_message = "E-mail de recusa enviado com sucesso!"
+            email_message = "E-mail de requerimento recusado enviado com sucesso!"
+        elif status == 6:
+            email_sent = enviarEmailRequerimentoStandBy(
+                nome_utilizador_pedido=nome_utilizador_pedido,
+                receiver_email=email_utilizador_pedido,
+                requerimento_id=requerimento_id,
+                itens_pedidos=itens_pedidos
+            )
+            email_message = "E-mail de requerimento em stand-by enviado com sucesso!"
+        elif status == 8:
+            email_sent = enviarEmailRequerimentoEntregue(
+                nome_utilizador_pedido=nome_utilizador_pedido,
+                receiver_email=email_utilizador_pedido,
+                requerimento_id=requerimento_id,
+                itens_pedidos=itens_pedidos,
+                nome_entregador=nome_utilizador_envio,
+                data_entrega=data_envio
+            )
+            email_message = "E-mail de requerimento em validação enviado com sucesso!"
         else:
             return {
                 "response": False,
@@ -127,3 +170,5 @@ async def MedStock_SendEmailAvaliation(request: C_RequerimentoRequest, db=Depend
             "response": False,
             "error": str(e)
         }
+
+

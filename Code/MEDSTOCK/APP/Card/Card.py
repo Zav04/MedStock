@@ -9,9 +9,11 @@ import os
 from APP.Label.Label import add_status_lable
 from APP.Overlays.Overlay import Overlay
 from APP.PDF.Generate_PDF import GeneratePdfRequerimento
-from API.API_PUT_Request import API_CancelRequerimento, API_AcceptRequerimento, API_RejectRequerimento
+from API.API_PUT_Request import (API_CancelRequerimento, API_AcceptRequerimento, API_RejectRequerimento, 
+                                API_StandByRequerimento, API_ResumeRequerimento, API_PrepareRequerimento,
+                                API_SendRequerimento)
 from API.API_GET_Request import API_GetEmailDetails
-from API.API_POST_Request import API_SendEmailAvaliation
+from API.API_POST_Request import API_SendEmailRequerimentoStatus
 
 
 class RequerimentoCard(QWidget):
@@ -70,29 +72,71 @@ class RequerimentoCard(QWidget):
         actions_layout.setSpacing(10)
         actions_layout.setAlignment(Qt.AlignRight)
 
-        if requerimento.status == 0 and user.role_nome=="Gestor Responsável" or user.role_nome=="Farmacêutico" :
+        if requerimento.status == 0 and (user.role_nome=="Gestor Responsável" or user.role_nome!="Farmacêutico") :
             delete_button = QPushButton()
             recolored_icon_delete = QIcon(UIFunctions.recolor_icon(os.path.abspath("./icons/MaterialIcons/close.png"), "#f54251"))
             delete_button.setIcon(recolored_icon_delete)
             delete_button.setIconSize(QSize(24, 24))
             delete_button.setCursor(QCursor(Qt.PointingHandCursor))
             delete_button.setStyleSheet(self.button_style("#f54251"))
+            actions_layout.addWidget(delete_button, alignment=Qt.AlignRight)
             if(user.role_nome=="Gestor Responsável"):
                 delete_button.clicked.connect(lambda: self.reject_requerimento(user,requerimento))
             elif user.role_nome!="Farmacêutico":
                 delete_button.clicked.connect(lambda: self.cancel_requerimento(user,requerimento))
-            actions_layout.addWidget(delete_button, alignment=Qt.AlignRight)
+
         
-        
-        if requerimento.status == 0 and user.role_nome=="Gestor Responsável" :
+        if requerimento.status == 0 and user.role_nome=="Gestor Responsável":
             accept_button = QPushButton()
             recolored_accept_button = QIcon(UIFunctions.recolor_icon(os.path.abspath("./icons/MaterialIcons/check.png"), "#b5c6bf"))
             accept_button.setIcon(recolored_accept_button)
             accept_button.setIconSize(QSize(24, 24))
             accept_button.setCursor(QCursor(Qt.PointingHandCursor))
-            accept_button.setStyleSheet(self.button_style("#f54251"))
+            accept_button.setStyleSheet(self.button_style("#b5c6bf"))
             accept_button.clicked.connect(lambda: self.accept_requerimento(user,requerimento))
             actions_layout.addWidget(accept_button, alignment=Qt.AlignRight)
+
+        if requerimento.status == 1 and user.role_nome=="Farmacêutico":
+            stand_by_button = QPushButton()
+            recolored_icon_stand_by = QIcon(UIFunctions.recolor_icon(os.path.abspath("./icons/MaterialIcons/pause_circle.png"), "#eb8c34"))
+            stand_by_button.setIcon(recolored_icon_stand_by)
+            stand_by_button.setIconSize(QSize(24, 24))
+            stand_by_button.setCursor(QCursor(Qt.PointingHandCursor))
+            stand_by_button.setStyleSheet(self.button_style("#eb8c34"))
+            actions_layout.addWidget(stand_by_button, alignment=Qt.AlignRight)
+            stand_by_button.clicked.connect(lambda: self.stand_by_requerimento(requerimento))
+
+        if requerimento.status == 1 and user.role_nome=="Farmacêutico":
+            pistola_button = QPushButton()
+            recolored_icon_pistola_button = QIcon(UIFunctions.recolor_icon(os.path.abspath("./icons/MaterialIcons/barcode_reader.png"), "#4287f5"))
+            pistola_button.setIcon(recolored_icon_pistola_button)
+            pistola_button.setIconSize(QSize(24, 24))
+            pistola_button.setCursor(QCursor(Qt.PointingHandCursor))
+            pistola_button.setStyleSheet(self.button_style("#4287f5"))
+            actions_layout.addWidget(pistola_button, alignment=Qt.AlignRight)
+            pistola_button.clicked.connect(lambda: self.prepare_requerimento(requerimento))
+
+        if requerimento.status == 6 and user.role_nome=="Farmacêutico":
+            resume_button = QPushButton()
+            recolored_icon_resume_button = QIcon(UIFunctions.recolor_icon(os.path.abspath("./icons/MaterialIcons/play.png"), "#b5c6bf"))
+            resume_button.setIcon(recolored_icon_resume_button)
+            resume_button.setIconSize(QSize(24, 24))
+            resume_button.setCursor(QCursor(Qt.PointingHandCursor))
+            resume_button.setStyleSheet(self.button_style("#b5c6bf"))
+            actions_layout.addWidget(resume_button, alignment=Qt.AlignRight)
+            resume_button.clicked.connect(lambda: self.resume_requerimento(requerimento))
+            
+        
+        if requerimento.status == 3 and user.role_nome=="Farmacêutico":
+            send_button = QPushButton()
+            recolored_icon_send_button = QIcon(UIFunctions.recolor_icon(os.path.abspath("./icons/MaterialIcons/package.png"), "#4287f5"))
+            send_button.setIcon(recolored_icon_send_button)
+            send_button.setIconSize(QSize(24, 24))
+            send_button.setCursor(QCursor(Qt.PointingHandCursor))
+            send_button.setStyleSheet(self.button_style("#4287f5"))
+            actions_layout.addWidget(send_button, alignment=Qt.AlignRight)
+            send_button.clicked.connect(lambda: self.send_requerimento(user,requerimento))
+
 
         download_button = QPushButton()
         download_button.setIcon(QIcon("./icons/MaterialIcons/picture_as_pdf.png"))
@@ -230,36 +274,93 @@ class RequerimentoCard(QWidget):
     def cancel_requerimento(self, requerimento: Requerimento):
         response = API_CancelRequerimento(requerimento.requerimento_id)
         if response.success:
-            Overlay.show_information(self, f'Requerimento{requerimento.requerimento_id} foi cancelado')
+            Overlay.show_information(self, f'Requerimento {requerimento.requerimento_id} foi cancelado')
             self.callbackUpdate()
         else:
             Overlay.show_error(self, response.error_message)
             
+    def stand_by_requerimento(self, requerimento: Requerimento):
+        top_parent = self.get_top_parent()
+        response = API_StandByRequerimento(requerimento.requerimento_id)
+        if response.success:
+            response=API_SendEmailRequerimentoStatus(requerimento.requerimento_id)
+            if response.success:
+                self.callbackUpdate()
+                Overlay.show_information(top_parent, f'Requerimento {requerimento.requerimento_id} foi colocado em espera e email enviado ao requerente')
+            else:
+                Overlay.show_error(top_parent, response.error_message)
+        else:
+            Overlay.show_error(top_parent, response.error_message)
+    
+    
+    def resume_requerimento(self,requerimento: Requerimento):
+        top_parent = self.get_top_parent()
+        response = API_ResumeRequerimento(requerimento.requerimento_id)
+        if response.success:
+            response=API_SendEmailRequerimentoStatus(requerimento.requerimento_id)
+            if response.success:
+                self.callbackUpdate()
+                Overlay.show_information(top_parent, f'Requerimento {requerimento.requerimento_id} foi voltou para a lista de espera e email enviado ao requerente')
+            else:
+                Overlay.show_error(top_parent, response.error_message)
+        else:
+            Overlay.show_error(top_parent, response.error_message)
+            
+            
+    
+    def prepare_requerimento(self, requerimento: Requerimento):
+        top_parent = self.get_top_parent()
+        response = API_PrepareRequerimento(requerimento.requerimento_id)
+        if response.success:
+            response=API_SendEmailRequerimentoStatus(requerimento.requerimento_id)
+            if response.success:
+                self.callbackUpdate()
+                Overlay.show_information(top_parent, f'Requerimento {requerimento.requerimento_id} esta em preparação e email enviado ao requerente')
+            else:
+                Overlay.show_error(top_parent, response.error_message)
+        else:
+            Overlay.show_error(top_parent, response.error_message)
+            
+            
+    def send_requerimento(self, user: Utilizador, requerimento: Requerimento):
+        top_parent = self.get_top_parent()
+        response = API_SendRequerimento(user.utilizador_id,requerimento.requerimento_id)
+        if response.success:
+            response=API_SendEmailRequerimentoStatus(requerimento.requerimento_id)
+            if response.success:
+                self.callbackUpdate()
+                Overlay.show_information(top_parent, f'Requerimento {requerimento.requerimento_id} foi entregue e email enviado ao requerente')
+            else:
+                Overlay.show_error(top_parent, response.error_message)
+        else:
+            Overlay.show_error(top_parent, response.error_message)
     
     def accept_requerimento(self, user : Utilizador, requerimento: Requerimento):
+        top_parent = self.get_top_parent()
         response = API_AcceptRequerimento(user.utilizador_id,requerimento.requerimento_id)
         if response.success:
-            response=API_SendEmailAvaliation(requerimento.requerimento_id)
+            response=API_SendEmailRequerimentoStatus(requerimento.requerimento_id)
             if response.success:
-                    self.callbackUpdate()
-                    Overlay.show_information(self.parentWidget(), f'Requerimento{requerimento.requerimento_id} foi recusado e email enviado ao requerente')
+                self.callbackUpdate()
+                Overlay.show_information(top_parent, f'Requerimento {requerimento.requerimento_id} foi recusado e email enviado ao requerente')
             else:
-                Overlay.show_error(self.parentWidget(), response.error_message)
+                Overlay.show_error(top_parent, response.error_message)
         else:
-            Overlay.show_error(self.parentWidget(), response.error_message)
+            Overlay.show_error(top_parent, response.error_message)
 
             
     def reject_requerimento(self, user : Utilizador, requerimento: Requerimento):
+        top_parent = self.get_top_parent()
         response = API_RejectRequerimento(user.utilizador_id,requerimento.requerimento_id)
         if response.success:
-            response=API_SendEmailAvaliation(requerimento.requerimento_id)
+            response=API_SendEmailRequerimentoStatus(requerimento.requerimento_id)
             if response.success:
-                    self.callbackUpdate()
-                    Overlay.show_information(self.parentWidget(), f'Requerimento{requerimento.requerimento_id} foi aceite e email enviado ao requerente')
+                self.callbackUpdate()
+                Overlay.show_information(top_parent, f'Requerimento {requerimento.requerimento_id} foi aceite e email enviado ao requerente')
             else:
-                Overlay.show_error(self.parentWidget(), response.error_message)
+                Overlay.show_error(top_parent, response.error_message)
         else:
-            Overlay.show_error(self.parentWidget(), response.error_message)
+            Overlay.show_error(top_parent, response.error_message)
 
     def toggle_details(self):
         self.expanded = not self.expanded
@@ -281,6 +382,11 @@ class RequerimentoCard(QWidget):
             GeneratePdfRequerimento(file_path, self.requerimento)
             Overlay.show_information(self, "PDF guardado na localização "+file_path)
 
+    def get_top_parent(widget):
+        parent = widget
+        while parent.parentWidget() is not None:
+            parent = parent.parentWidget()
+        return parent
 
     @staticmethod
     def button_style(color):
