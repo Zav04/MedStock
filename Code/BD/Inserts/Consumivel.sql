@@ -1,4 +1,4 @@
-INSERT INTO Item (nome_item, tipo_id, codigo, quantidade_disponivel) 
+INSERT INTO consumivel (nome_consumivel, tipo_id, codigo, quantidade_total) 
 VALUES 
     ('Brufen', 1, MD5(RANDOM()::TEXT), 350),
     ('Paracetamol', 1, MD5(RANDOM()::TEXT), 280),
@@ -11,7 +11,7 @@ VALUES
     ('Diclofenaco', 1, MD5(RANDOM()::TEXT), 410),
     ('Metformina', 1, MD5(RANDOM()::TEXT), 325);
 
-INSERT INTO Item (nome_item, tipo_id, codigo, quantidade_disponivel) 
+INSERT INTO consumivel (nome_consumivel, tipo_id, codigo, quantidade_total) 
 VALUES 
     ('Vacina COVID-19', 2, MD5(RANDOM()::TEXT), 150),
     ('Vacina Gripe', 2, MD5(RANDOM()::TEXT), 220),
@@ -24,7 +24,7 @@ VALUES
     ('Vacina Tétano', 2, MD5(RANDOM()::TEXT), 260),
     ('Vacina Raiva', 2, MD5(RANDOM()::TEXT), 240);
 
-INSERT INTO Item (nome_item, tipo_id, codigo, quantidade_disponivel) 
+INSERT INTO consumivel (nome_consumivel, tipo_id, codigo, quantidade_total) 
 VALUES 
     ('Seringa', 3, MD5(RANDOM()::TEXT), 300),
     ('Compressa Estéril', 3, MD5(RANDOM()::TEXT), 200),
@@ -38,7 +38,7 @@ VALUES
     ('Tubo Endotraqueal', 3, MD5(RANDOM()::TEXT), 230);
 
 
-INSERT INTO Item (nome_item, tipo_id, codigo, quantidade_disponivel) 
+INSERT INTO consumivel (nome_consumivel, tipo_id, codigo, quantidade_total) 
 VALUES 
     ('Gaze', 4, MD5(RANDOM()::TEXT), 270),
     ('Solução Fisiológica', 4, MD5(RANDOM()::TEXT), 390),
