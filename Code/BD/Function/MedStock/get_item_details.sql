@@ -4,7 +4,11 @@ RETURNS TABLE (
     nome_item VARCHAR,
     nome_tipo VARCHAR,
     codigo VARCHAR,
-    quantidade_disponivel BIGINT
+    quantidade_disponivel BIGINT,
+    quantidade_total BIGINT,
+    quantidade_alocada BIGINT,
+    quantidade_minima BIGINT,
+    quantidade_pedido BIGINT
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -13,10 +17,14 @@ BEGIN
         i.nome_item,
         t.nome_tipo,
         i.codigo,
-        i.quantidade_disponivel
+        i.quantidade_disponivel,
+        i.quantidade_total,
+        i.quantidade_alocada,
+        i.quantidade_minima,
+        i.quantidade_pedido
     FROM 
-        Item i
+        Consumivel i
     INNER JOIN 
-        Tipo_Item t ON i.tipo_id = t.tipo_id;
+        Tipo_Consumivel t ON i.tipo_id = t.tipo_id;
 END;
 $$ LANGUAGE plpgsql;

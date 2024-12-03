@@ -51,13 +51,20 @@ async def API_GetItems():
             if response.status_code == 200:
                 response_by_api = response.json().get("response", [])
                 if response_by_api == True:
-                    items = [Itens(
-                        item["item_id"],
-                        item["nome_item"],
-                        item["nome_tipo"],
-                        item["codigo"],
-                        item["quantidade_disponivel"]
-                    ) for item in response.json().get("data", [])]
+                    items = [
+                        Itens(
+                            item["item_id"],
+                            item["nome_item"],
+                            item["nome_tipo"],
+                            item["codigo"],
+                            item["quantidade_disponivel"],
+                            item["quantidade_total"],
+                            item["quantidade_alocada"],
+                            item["quantidade_minima"],
+                            item["quantidade_pedido"]
+                        )
+                        for item in response.json().get("data", [])
+                    ]
                     return APIResponse(success=True, data=items)
                 else:
                     error_message = response.json().get("error", {})
@@ -72,8 +79,6 @@ async def API_GetItems():
             
         except httpx.RequestError as e:
             return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
-        
-
 
 
 async def API_GetRequerimentosByFarmaceutico():

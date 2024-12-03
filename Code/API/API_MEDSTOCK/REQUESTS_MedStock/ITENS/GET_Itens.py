@@ -13,13 +13,28 @@ async def MedStock_GetItems(db=Depends(get_db_MEDSTOCK)):
         
         items = []
         for row in result:
-            item_id,nome_item, nome_tipo, codigo, quantidade_disponivel = row
+            (
+                item_id, 
+                nome_item, 
+                nome_tipo, 
+                codigo, 
+                quantidade_disponivel, 
+                quantidade_total, 
+                quantidade_alocada, 
+                quantidade_minima, 
+                quantidade_pedido
+            ) = row
+            
             items.append({
                 "item_id": item_id,
                 "nome_item": nome_item,
                 "nome_tipo": nome_tipo,
                 "codigo": codigo,
-                "quantidade_disponivel": quantidade_disponivel
+                "quantidade_disponivel": quantidade_disponivel,
+                "quantidade_total": quantidade_total,
+                "quantidade_alocada": quantidade_alocada,
+                "quantidade_minima": quantidade_minima,
+                "quantidade_pedido": quantidade_pedido,
             })
 
         return {"response": True, "data": items}
