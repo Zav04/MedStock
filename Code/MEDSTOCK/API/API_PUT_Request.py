@@ -3,6 +3,36 @@ import httpx
 import asyncio
 from Class.API_Response import APIResponse
 
+async def API_UpdateConsumivel(consumivel_id, quantidade_minima, quantidade_pedido):
+    URL = os.getenv('API_URL') + os.getenv('API_UpdateConsumivel')
+    payload = {
+        "consumivel_id": consumivel_id,
+        "quantidade_minima": quantidade_minima,
+        "quantidade_pedido": quantidade_pedido,
+    }
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.put(URL, json=payload, headers={"Content-Type": "application/json"})
+            
+        if response.status_code == 200:
+            success = response.json().get("response", {})
+            
+            if not success:
+                error_message = response.json().get("error", {})
+                return APIResponse(success=False, error_message=error_message)
+            else:
+                data = response.json().get("data", {})
+                return APIResponse(success=True, data=data)
+        elif response.status_code == 400:
+            error_message = response.json().get("error", "Erro desconhecido")
+            print("Erro:", error_message)
+            return APIResponse(success=False, error_message=error_message)
+        else:
+            print("Erro inesperado:", response.status_code)
+            return APIResponse(success=False, error_message="Erro inesperado")
+    except httpx.RequestError as e:
+        return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
+
 def API_CancelRequerimento(requerimento_id):
     URL = os.getenv('API_URL') + os.getenv('API_CancelRequerimento')
     payload = {

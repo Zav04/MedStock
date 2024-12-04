@@ -42,8 +42,8 @@ async def API_GetRoles():
         
 
 
-async def API_GetItems():
-    URL = os.getenv('API_URL') + os.getenv('API_Get_Items')
+async def API_GetConsumiveis():
+    URL = os.getenv('API_URL') + os.getenv('API_GetConsumiveis')
     async with httpx.AsyncClient() as client:
         try:
             response = await client.get(URL, headers={"Content-Type": "application/json"})
@@ -53,11 +53,10 @@ async def API_GetItems():
                 if response_by_api == True:
                     items = [
                         Itens(
-                            item["item_id"],
-                            item["nome_item"],
+                            item["consumivel_id"],
+                            item["nome_consumivel"],
                             item["nome_tipo"],
                             item["codigo"],
-                            item["quantidade_disponivel"],
                             item["quantidade_total"],
                             item["quantidade_alocada"],
                             item["quantidade_minima"],

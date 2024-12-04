@@ -29,7 +29,7 @@ class Overlay:
             "description": message,
             "position": "top-right",
             "parent": parent,
-            "animationDuration": 5000
+            "animationDuration": 4000
         }
         
 

@@ -8,6 +8,7 @@ from Class.requerimento import Requerimento
 from APP.Label.Label import get_status_description 
 import os
 
+
 def GeneratePdfItens(self, table_widget: QTableWidget, file_path: str):
     width, height = A4
     c = canvas.Canvas(file_path, pagesize=A4)
@@ -22,15 +23,18 @@ def GeneratePdfItens(self, table_widget: QTableWidget, file_path: str):
     draw_header()
     c.drawString(60, height - 80, "Relatório de Itens Disponíveis")
     
-    table_data = [["Nome", "Tipo", "Código", "Quantidade"]]
+    table_data = [["Nome", "Tipo", "Qt Total", "Qt Alocada", "Qt Mínima", "Qt Pedido"]]
     for row in range(table_widget.rowCount()):
         row_data = [
             table_widget.item(row, 0).text(),
             table_widget.item(row, 1).text(),
-            table_widget.item(row, 2).text(),
             table_widget.item(row, 3).text(),
+            table_widget.item(row, 4).text(),
+            table_widget.item(row, 5).text(),
+            table_widget.item(row, 6).text(),
         ]
         table_data.append(row_data)
+
 
     icon_paths = {
         "Medicamento": os.path.abspath("./icons/MaterialIcons/medicamento.png"),
@@ -39,11 +43,11 @@ def GeneratePdfItens(self, table_widget: QTableWidget, file_path: str):
         "Outros": os.path.abspath("./icons/MaterialIcons/outro.png")
     }
 
-    x_offset = 60
+    x_offset = 40
     y_offset = height - 100
-    row_height = 20
-    col_widths = [100, 130, 140, 110]
-    icon_size = 12
+    row_height = 22
+    col_widths = [140, 105, 65, 75, 75, 75]
+    icon_size = 14
     min_y_offset = 50
 
     for row, row_data in enumerate(table_data):
@@ -59,7 +63,7 @@ def GeneratePdfItens(self, table_widget: QTableWidget, file_path: str):
             if row == 0:
                 c.setFont("Helvetica-Bold", 12)
                 c.setFillColor(colors.whitesmoke)
-                c.rect(x, y, col_widths[col], row_height, fill=1, stroke=0)  
+                c.rect(x, y, col_widths[col], row_height, fill=1, stroke=0)
                 c.setFillColor(colors.black)
             else:
                 c.setFont("Helvetica", 10)
@@ -70,23 +74,24 @@ def GeneratePdfItens(self, table_widget: QTableWidget, file_path: str):
             
             if col == 0 and row > 0:
                 tipo_item = row_data[1]
-                icon_path = icon_paths.get(tipo_item)
+                icon_path = icon_paths.get(tipo_item, None)
                 if icon_path:
                     icon_x = x + 5
                     icon_y = y + (row_height - icon_size) / 2
                     c.drawImage(icon_path, icon_x, icon_y, width=icon_size, height=icon_size, mask='auto')
-                    text_x = x + icon_size + 10
+                    text_x = icon_x + icon_size + 5
                 else:
-                    text_x = x + col_widths[col] / 2 - c.stringWidth(cell_data, "Helvetica", 10) / 2
+                    text_x = x + 5
             else:
-                text_x = x + col_widths[col] / 2 - c.stringWidth(cell_data, "Helvetica", 10) / 2
+                text_x = x + 5
             
-            text_y = y + row_height / 4
+            text_y = y + 4
             c.drawString(text_x, text_y, cell_data)
-        
         y_offset -= row_height
 
     c.save()
+
+
 
 
 def GeneratePdfRequerimento(file_path: str, requerimento: Requerimento):

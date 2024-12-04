@@ -317,7 +317,3 @@ async def MedStock_SendRequerimento(requerimento: C_Update_Requerimento, db=Depe
             "response": False,
             "error": error_messages
         }
-        
-        
-        
-        

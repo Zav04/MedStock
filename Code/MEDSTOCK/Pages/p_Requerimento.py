@@ -8,7 +8,7 @@ from APP.UI.ui_styles import Style
 from APP.Overlays.Overlay import Overlay
 from Class.utilizador import Utilizador
 from API.API_GET_Request import (API_GetRequerimentosByUser, API_GetRequerimentosByResponsavel,
-                                API_GetSectors, API_GetItems, API_GetRequerimentosByFarmaceutico)
+                                API_GetSectors, API_GetConsumiveis, API_GetRequerimentosByFarmaceutico)
 from API.API_POST_Request import API_CreateRequerimento
 from APP.Card.Card import RequerimentoCard
 from APP.UI.ui_functions import UIFunctions
@@ -29,9 +29,9 @@ class RequerimentoPage(QWidget):
         QTimer.singleShot(0, self.load_requerimentos_wrapper)
         
         
-        self.update_timer = QTimer(self)
-        self.update_timer.timeout.connect(self.load_requerimentos_wrapper)
-        self.update_timer.start(60000)
+        # self.update_timer = QTimer(self)
+        # self.update_timer.timeout.connect(self.load_requerimentos_wrapper)
+        # self.update_timer.start(60000)
 
     def setup_RequerimentoPage(self):
         self.setup_page=True
@@ -215,8 +215,8 @@ class RequerimentoPage(QWidget):
 
         self.main_layout.addLayout(create_page_layout)
 
-    async def fetch_items(self, left_layout):
-        response = await API_GetItems()
+    async def fetch_items(self):
+        response = await API_GetConsumiveis()
         if response.success:
             self.all_items = response.data 
             self.update_item_display(self.all_items)

@@ -30,7 +30,8 @@ def get_status_description(status):
         5: ("Recusado", QColor("red")),
         6: ("Stand-By", QColor("orange")),
         7: ("Cancelado", QColor("red")),
-        8: ("Em Validação", QColor("#e3ca0e"))
+        8: ("Em Validação", QColor("#e3ca0e")),
+        9: ("Em Re-Avaliação", QColor("blue"))
     }
     return status_mapping.get(status, ("Status Desconhecido", QColor("grey")))
 

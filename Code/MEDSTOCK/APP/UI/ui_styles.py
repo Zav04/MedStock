@@ -298,35 +298,38 @@ class Style():
 """)
     
     style_Table = ("""
-            QTableWidget {
-                gridline-color: #dddddd;
-                background-color: transparent;
-                border: none;
-                text-align: center;
-            }
-            
-            QTableWidget::item {
-                padding-left: 5px;
-                padding-right: 5px;
-                border-bottom: 3px solid #b5c6bf;
-                color: rgb(0, 0, 0);
-                text-align: center;
-            }
-            
-            QTableWidget::item:selected {
-                background-color: #b5c6bf;
-                color: #333;
-            }
-            
-            QHeaderView::section {
-                background-color: #b5c6bf;
-                color: #333;
-                padding: 4px;
-                font-weight: bold;
-                font-size: 20px;
-                border: 1px solid #d0d0d0;
-            }
-        """)
+        QTableWidget {
+            gridline-color: #dddddd;
+            background-color: transparent;
+            border: none;
+            text-align: center;
+        }
+        
+        QTableWidget::item {
+            padding-left: 5px;
+            padding-right: 5px;
+            color: rgb(0, 0, 0);
+            text-align: center;
+        }
+        
+        QTableWidget::item:selected {
+            background-color: #b5c6bf;
+            color: #0a0a0a;
+        }
+        
+        QLineEdit {
+            color: #d9534f;
+        }
+
+        QHeaderView::section {
+            background-color: #b5c6bf;
+            color: #0a0a0a;
+            padding: 4px;
+            font-weight: bold;
+            font-size: 20px;
+            border: 1px solid #d0d0d0;
+        }
+    """)
     
     
     

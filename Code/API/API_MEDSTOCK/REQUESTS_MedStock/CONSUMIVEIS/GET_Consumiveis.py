@@ -5,20 +5,19 @@ from dependencies import get_db_MEDSTOCK
 
 router = APIRouter()
 
-@router.get("/MedStock_GetItems/")
-async def MedStock_GetItems(db=Depends(get_db_MEDSTOCK)):
+@router.get("/MedStock_GetConsumiveis/")
+async def MedStock_GetConsumiveis(db=Depends(get_db_MEDSTOCK)):
     try:
-        query = text("SELECT * FROM get_item_details();")
+        query = text("SELECT * FROM get_consumiveis_details();")
         result = db.execute(query).fetchall()
         
         items = []
         for row in result:
             (
-                item_id, 
-                nome_item, 
+                consumivel_id,
+                nome_consumivel, 
                 nome_tipo, 
                 codigo, 
-                quantidade_disponivel, 
                 quantidade_total, 
                 quantidade_alocada, 
                 quantidade_minima, 
@@ -26,11 +25,10 @@ async def MedStock_GetItems(db=Depends(get_db_MEDSTOCK)):
             ) = row
             
             items.append({
-                "item_id": item_id,
-                "nome_item": nome_item,
+                "consumivel_id":consumivel_id,
+                "nome_consumivel": nome_consumivel,
                 "nome_tipo": nome_tipo,
                 "codigo": codigo,
-                "quantidade_disponivel": quantidade_disponivel,
                 "quantidade_total": quantidade_total,
                 "quantidade_alocada": quantidade_alocada,
                 "quantidade_minima": quantidade_minima,
