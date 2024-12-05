@@ -2,12 +2,13 @@ import os
 import httpx
 import asyncio
 from Class.API_Response import APIResponse
-from Class.roles import Roles
-from Class.itens import Itens
-from Class.requerimento import Requerimento
+from Class.Roles import Roles
+from Class.Consumivel import Consumivel
+from Class.Requerimento import Requerimento
 from Class.ItemPedido import ItemPedido
-from Class.utilizador import Utilizador
-from Class.setor import SetorHospital
+from Class.Utilizador import Utilizador
+from Class.Setor import SetorHospital
+from Class.RequerimentoHistorico import RequerimentoHistorico
 from datetime import datetime, date
 
 
@@ -52,7 +53,7 @@ async def API_GetConsumiveis():
                 response_by_api = response.json().get("response", [])
                 if response_by_api == True:
                     items = [
-                        Itens(
+                        Consumivel(
                             item["consumivel_id"],
                             item["nome_consumivel"],
                             item["nome_tipo"],
@@ -92,32 +93,39 @@ async def API_GetRequerimentosByFarmaceutico():
                     requerimentos = []
                     for item in response.json().get("data", []):
                         itens_pedidos = []
-                        raw_itens_pedidos = item.get("itens_pedidos", None)
-                        if raw_itens_pedidos:
-                            for pedido in raw_itens_pedidos:
-                                try:
-                                    nome_item = pedido.get("nome_item")
-                                    quantidade = pedido.get("quantidade", 0)
-                                    tipo_item = pedido.get("tipo_item")
-                                    if nome_item:
-                                        itens_pedidos.append(ItemPedido(nome_item=nome_item, quantidade=quantidade, tipo_item=tipo_item))
-                                except Exception as e:
-                                    print(f"Erro ao processar item_pedido: {pedido}, erro: {e}")
+                        for pedido in item.get("itens_pedidos", []):
+                            try:
+                                itens_pedidos.append(ItemPedido(
+                                    nome_item=pedido.get("nome_consumivel"),
+                                    quantidade=pedido.get("quantidade", 0),
+                                    tipo_item=pedido.get("tipo_consumivel")
+                                ))
+                            except Exception as e:
+                                print(f"Erro ao processar item_pedido: {pedido}, erro: {e}")
+
+                        historico = []
+                        for h in item.get("historico", []):
+                            try:
+                                historico.append(RequerimentoHistorico(
+                                    requerimento_status=h.get("status"),
+                                    descricao=h.get("descricao", ""),
+                                    data=h.get("data_modificacao"),
+                                    user_responsavel=h.get("user_responsavel", "Desconhecido")
+                                ))
+                            except Exception as e:
+                                print(f"Erro ao processar histórico: {h}, erro: {e}")
 
                         requerimento = Requerimento(
                             requerimento_id=item["requerimento_id"],
                             setor_nome_localizacao=item["setor_nome_localizacao"],
                             nome_utilizador_pedido=item["nome_utilizador_pedido"],
-                            status=item["status"],
+                            email_utilizador_pedido=item["email_utilizador_pedido"],
+                            status_atual=item["status_atual"],
+                            status_anterior=item.get("status_anterior"),
                             urgente=item["urgente"],
                             itens_pedidos=itens_pedidos,
                             data_pedido=item["data_pedido"],
-                            nome_utilizador_confirmacao=item["nome_utilizador_confirmacao"],
-                            data_confirmacao=item["data_confirmacao"],
-                            nome_utilizador_envio=item["nome_utilizador_envio"],
-                            data_envio=item["data_envio"],
-                            nome_utilizador_preparacao=item.get("nome_utilizador_preparacao"),
-                            data_preparacao=item.get("data_preparacao")
+                            historico=historico
                         )
                         requerimentos.append(requerimento)
 
@@ -146,32 +154,39 @@ async def API_GetRequerimentosByUser(user_id: int):
                     requerimentos = []
                     for item in response.json().get("data", []):
                         itens_pedidos = []
-                        raw_itens_pedidos = item.get("itens_pedidos", None)
-                        if raw_itens_pedidos:
-                            for pedido in raw_itens_pedidos:
-                                try:
-                                    nome_item = pedido.get("nome_item")
-                                    quantidade = pedido.get("quantidade", 0)
-                                    tipo_item = pedido.get("tipo_item")
-                                    if nome_item:
-                                        itens_pedidos.append(ItemPedido(nome_item=nome_item, quantidade=quantidade, tipo_item=tipo_item))
-                                except Exception as e:
-                                    print(f"Erro ao processar item_pedido: {pedido}, erro: {e}")
+                        for pedido in item.get("itens_pedidos", []):
+                            try:
+                                itens_pedidos.append(ItemPedido(
+                                    nome_item=pedido.get("nome_consumivel"),
+                                    quantidade=pedido.get("quantidade", 0),
+                                    tipo_item=pedido.get("tipo_consumivel")
+                                ))
+                            except Exception as e:
+                                print(f"Erro ao processar item_pedido: {pedido}, erro: {e}")
+
+                        historico = []
+                        for h in item.get("historico", []):
+                            try:
+                                historico.append(RequerimentoHistorico(
+                                    requerimento_status=h.get("status"),
+                                    descricao=h.get("descricao", ""),
+                                    data=h.get("data_modificacao"),
+                                    user_responsavel=h.get("user_responsavel", "Desconhecido")
+                                ))
+                            except Exception as e:
+                                print(f"Erro ao processar histórico: {h}, erro: {e}")
 
                         requerimento = Requerimento(
                             requerimento_id=item["requerimento_id"],
                             setor_nome_localizacao=item["setor_nome_localizacao"],
                             nome_utilizador_pedido=item["nome_utilizador_pedido"],
-                            status=item["status"],
+                            email_utilizador_pedido=item["email_utilizador_pedido"],
+                            status_atual=item["status_atual"],
+                            status_anterior=item.get("status_anterior"),
                             urgente=item["urgente"],
                             itens_pedidos=itens_pedidos,
                             data_pedido=item["data_pedido"],
-                            nome_utilizador_confirmacao=item["nome_utilizador_confirmacao"],
-                            data_confirmacao=item["data_confirmacao"],
-                            nome_utilizador_envio=item["nome_utilizador_envio"],
-                            data_envio=item["data_envio"],
-                            nome_utilizador_preparacao=item.get("nome_utilizador_preparacao"),
-                            data_preparacao=item.get("data_preparacao")
+                            historico=historico
                         )
                         requerimentos.append(requerimento)
 
@@ -201,32 +216,39 @@ async def API_GetRequerimentosByResponsavel(user_id: int):
                     requerimentos = []
                     for item in response.json().get("data", []):
                         itens_pedidos = []
-                        raw_itens_pedidos = item.get("itens_pedidos", None)
-                        if raw_itens_pedidos:
-                            for pedido in raw_itens_pedidos:
-                                try:
-                                    nome_item = pedido.get("nome_item")
-                                    quantidade = pedido.get("quantidade", 0)
-                                    tipo_item = pedido.get("tipo_item")
-                                    if nome_item:
-                                        itens_pedidos.append(ItemPedido(nome_item=nome_item, quantidade=quantidade, tipo_item=tipo_item))
-                                except Exception as e:
-                                    print(f"Erro ao processar item_pedido: {pedido}, erro: {e}")
+                        for pedido in item.get("itens_pedidos", []):
+                            try:
+                                itens_pedidos.append(ItemPedido(
+                                    nome_item=pedido.get("nome_consumivel"),
+                                    quantidade=pedido.get("quantidade", 0),
+                                    tipo_item=pedido.get("tipo_consumivel")
+                                ))
+                            except Exception as e:
+                                print(f"Erro ao processar item_pedido: {pedido}, erro: {e}")
+
+                        historico = []
+                        for h in item.get("historico", []):
+                            try:
+                                historico.append(RequerimentoHistorico(
+                                    requerimento_status=h.get("status"),
+                                    descricao=h.get("descricao", ""),
+                                    data=h.get("data_modificacao"),
+                                    user_responsavel=h.get("user_responsavel", "Desconhecido")
+                                ))
+                            except Exception as e:
+                                print(f"Erro ao processar histórico: {h}, erro: {e}")
 
                         requerimento = Requerimento(
                             requerimento_id=item["requerimento_id"],
                             setor_nome_localizacao=item["setor_nome_localizacao"],
                             nome_utilizador_pedido=item["nome_utilizador_pedido"],
-                            status=item["status"],
+                            email_utilizador_pedido=item["email_utilizador_pedido"],
+                            status_atual=item["status_atual"],
+                            status_anterior=item.get("status_anterior"),
                             urgente=item["urgente"],
                             itens_pedidos=itens_pedidos,
                             data_pedido=item["data_pedido"],
-                            nome_utilizador_confirmacao=item["nome_utilizador_confirmacao"],
-                            data_confirmacao=item["data_confirmacao"],
-                            nome_utilizador_envio=item["nome_utilizador_envio"],
-                            data_envio=item["data_envio"],
-                            nome_utilizador_preparacao=item.get("nome_utilizador_preparacao"),
-                            data_preparacao=item.get("data_preparacao")
+                            historico=historico
                         )
                         requerimentos.append(requerimento)
 

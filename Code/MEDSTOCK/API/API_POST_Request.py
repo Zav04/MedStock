@@ -129,7 +129,7 @@ def API_CreateGestor(nome, email, password, sexo, data_nascimento, role,setor):
     except httpx.RequestError as e:
         return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
 
-def API_CreateRequerimento(user_id_pedido, setor_id,urgente, requerimento_items):
+def API_CreateRequerimento(user_id_pedido, setor_id,urgente, requerimento_consumivel):
 
     URL = os.getenv('API_URL') + os.getenv('API_CreateRequerimento')
 
@@ -137,7 +137,7 @@ def API_CreateRequerimento(user_id_pedido, setor_id,urgente, requerimento_items)
         "user_id_pedido": user_id_pedido,
         "setor_id": setor_id,
         "urgente": urgente,
-        "requerimento_items": requerimento_items
+        "requerimento_consumiveis": requerimento_consumivel
     }
 
     try:

@@ -4,7 +4,7 @@ from reportlab.lib import colors
 from PyQt5.QtWidgets import QTableWidget
 from PyQt5.QtGui import QIcon
 from datetime import datetime
-from Class.requerimento import Requerimento
+from Class.Requerimento import Requerimento
 from APP.Label.Label import get_status_description 
 import os
 

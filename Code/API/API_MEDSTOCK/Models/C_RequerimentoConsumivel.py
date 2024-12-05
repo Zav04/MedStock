@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
 
-class C_RequerimentoItem(BaseModel):
-    item_id: Optional[int] 
+class C_RequerimentoConsumivel(BaseModel):
+    consumivel_id: Optional[int] 
     quantidade: Optional[int]

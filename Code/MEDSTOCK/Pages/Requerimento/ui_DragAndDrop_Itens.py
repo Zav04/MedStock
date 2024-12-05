@@ -6,11 +6,11 @@ from APP.UI.ui_styles import Style
 
 
 class DraggableLabel(QWidget):
-    def __init__(self, item_id, nome_item, tipo, quantidade_disponivel):
+    def __init__(self, consumivel_id, nome_consumivel, tipo_consumivel, quantidade_disponivel):
         super().__init__()
-        self.item_id = item_id
-        self.nome_item = nome_item
-        self.tipo = tipo
+        self.consumivel_id = consumivel_id
+        self.nome_consumivel = nome_consumivel
+        self.tipo_consumivel = tipo_consumivel
         self.quantidade_disponivel = quantidade_disponivel
 
         container = QWidget(self)
@@ -18,13 +18,13 @@ class DraggableLabel(QWidget):
         container_layout.setContentsMargins(10, 10, 10, 10)
         container_layout.setAlignment(Qt.AlignCenter)
 
-        if tipo == "Medicamento":
+        if tipo_consumivel == "Medicamento":
             icon_path = "./icons/MaterialIcons/medicamento.png"
-        elif tipo == "Vacinas":
+        elif tipo_consumivel == "Vacinas":
             icon_path = "./icons/MaterialIcons/vacina.png"
-        elif tipo == "Material Hospitalar":
+        elif tipo_consumivel == "Material Hospitalar":
             icon_path = "./icons/MaterialIcons/material_hospitalar.png"
-        elif tipo == "Outros":
+        elif tipo_consumivel == "Outros":
             icon_path = "./icons/MaterialIcons/outro.png"
         else:
             icon_path = "./icons/MaterialIcons/default.png"
@@ -34,7 +34,7 @@ class DraggableLabel(QWidget):
         self.icon_label.setAlignment(Qt.AlignCenter)
         self.icon_label.setStyleSheet("border: none;")
 
-        self.text_label = QLabel(f"{self.nome_item}")
+        self.text_label = QLabel(f"{self.nome_consumivel}")
         self.text_label.setAlignment(Qt.AlignCenter)
         self.text_label.setStyleSheet("color: black; font-weight: bold; font: 14pt Arial; border: none;")
 
@@ -49,13 +49,13 @@ class DraggableLabel(QWidget):
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.addWidget(container)
-        self.setFixedSize(200, 150)
+        self.setFixedSize(215, 150)
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
             pixmap = self.create_combined_pixmap()
             mime_data = QMimeData()
-            mime_data.setText(f"{self.item_id}|{self.nome_item}|{self.quantidade_disponivel}")
+            mime_data.setText(f"{self.consumivel_id}|{self.nome_consumivel}|{self.quantidade_disponivel}")
 
             drag = QDrag(self)
             drag.setMimeData(mime_data)
@@ -78,7 +78,7 @@ class DropZone(QTableWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setColumnCount(2)
-        self.setHorizontalHeaderLabels(["Item", "Quantidade"])
+        self.setHorizontalHeaderLabels(["Consumivel", "Quantidade"])
         
         self.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.verticalHeader().setVisible(False)
@@ -92,29 +92,32 @@ class DropZone(QTableWidget):
         self.setSelectionMode(QTableWidget.SingleSelection)
         self.selected_row = None
 
-        self.delete_button = QPushButton("Excluir Item")
+        self.delete_button = QPushButton("Excluir Consumivel")
         self.delete_button.setIcon(QIcon(UIFunctions.recolor_icon("./icons/MaterialIcons/delete_forever.png", "#FFFFFF")))
         self.delete_button.setIconSize(QSize(30, 30))
-        self.delete_button.setFixedSize(200, 40)
+        self.delete_button.setFixedSize(270, 40)
         self.delete_button.setStyleSheet(Style.style_bt_QPushButton_Delete)
         self.delete_button.hide()
         self.delete_button.clicked.connect(self.delete_selected_row)
         self.itemSelectionChanged.connect(self.show_delete_button)
 
 
-    def add_item_to_list(self, item_id, item_name, quantidade_disponivel):
+    def add_consumivel_to_list(self, consumivel_id, consumivel_name, quantidade_disponivel):
         for row in range(self.rowCount()):
-            if self.item(row, 0).text() == item_name:
+            if self.item(row, 0).text() == consumivel_name:
                 spinbox = self.cellWidget(row, 1)
+                
+                #TODO QUANDO FOR PARA FAZER SEM LIMITES DE QUANTIDADE
                 spinbox.setValue(min(spinbox.value() + 1, quantidade_disponivel))
+                #TODO QUANDO FOR PARA FAZER SEM LIMITES DE QUANTIDADE
                 return
 
         row = self.rowCount()
         self.insertRow(row)
 
-        item_widget = QTableWidgetItem(item_name)
-        item_widget.setData(Qt.UserRole, item_id)
-        self.setItem(row, 0, item_widget)
+        consumivel_widget = QTableWidgetItem(consumivel_name)
+        consumivel_widget.setData(Qt.UserRole, consumivel_id)
+        self.setItem(row, 0, consumivel_widget)
 
         spinbox = QSpinBox()
         spinbox.setStyleSheet(Style.style_SpinBox)
@@ -124,8 +127,8 @@ class DropZone(QTableWidget):
         self.setCellWidget(row, 1, spinbox)
 
     def show_delete_button(self):
-        selected_items = self.selectedItems()
-        if selected_items:
+        selected_consumivels = self.selectedItems()
+        if selected_consumivels:
             self.selected_row = self.currentRow()
             self.delete_button.show()
         else:
@@ -150,7 +153,7 @@ class DropLabel(QLabel):
 
         self.setAlignment(Qt.AlignCenter)
         self.setStyleSheet("border: 2px dashed #4CAF50; padding: 10px;")
-        self.setFixedWidth(690)
+        self.setFixedWidth(730)
         self.setAcceptDrops(True)
 
     def update_icon(self, icon_path):
@@ -170,7 +173,7 @@ class DropLabel(QLabel):
     def dropEvent(self, event):
         if event.mimeData().hasText():
             data = event.mimeData().text().split("|")
-            item_id, item_name, quantidade_disponivel = data[0], data[1], int(data[2])
-            self.drop_zone.add_item_to_list(item_id,item_name, quantidade_disponivel)
+            consumivel_id, consumivel_name, quantidade_disponivel = data[0], data[1], int(data[2])
+            self.drop_zone.add_consumivel_to_list(consumivel_id,consumivel_name, quantidade_disponivel)
             self.update_icon(self.default_icon)
             event.accept()

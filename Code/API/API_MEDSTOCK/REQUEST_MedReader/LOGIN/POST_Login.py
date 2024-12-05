@@ -39,7 +39,7 @@ async def MedStock_ValidateAndFetchUser(user: C_Login, db=Depends(get_db_MEDSTOC
         error_msg = str(e.__dict__['orig']).split('\n')[0]
         return {
             "response": False,
-            "error": f"Erro no banco de dados: {error_msg}"
+            "error": f"Erro na base de dados: {error_msg}"
         }
     except Exception as e:
         db.rollback()

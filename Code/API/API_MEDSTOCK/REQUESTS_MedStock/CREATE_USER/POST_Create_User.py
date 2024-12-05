@@ -18,7 +18,7 @@ from fastapi import Depends
 @router.post("/MedStock_CreateUser/")
 async def MedStock_CreateUser(user: C_Create_User, db=Depends(get_db_MEDSTOCK)):
     try:
-        query = text("SELECT inserir_utilizador(:nome, :email,:sexo, :data_nascimento, :role);")
+        query = text("SELECT create_utilizador(:nome, :email,:sexo, :data_nascimento, :role);")
         
         data_nascimento = datetime.strptime(user.data_nascimento, "%d-%m-%Y").date()
         
@@ -68,7 +68,7 @@ async def MedStock_CreateUser(user: C_Create_User, db=Depends(get_db_MEDSTOCK)):
 @router.post("/MedStock_CreateGestorResponsavel/")
 async def MedStock_CreateGestorResponsavel(user: C_Create_Gestor_Responsavel, db=Depends(get_db_MEDSTOCK)):
     try:
-        query = text("SELECT inserir_gestor_responsavel(:nome, :email,:sexo, :data_nascimento, :role, :setor);")
+        query = text("SELECT create_gestor_responsavel(:nome, :email,:sexo, :data_nascimento, :role, :setor);")
         
         data_nascimento = datetime.strptime(user.data_nascimento, "%d-%m-%Y").date()
         

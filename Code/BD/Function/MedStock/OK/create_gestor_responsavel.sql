@@ -1,12 +1,14 @@
-CREATE OR REPLACE FUNCTION inserir_utilizador(
+CREATE OR REPLACE FUNCTION create_gestor_responsavel(
     p_nome VARCHAR(255),
     p_email VARCHAR(255),
     p_sexo CHAR(1),
     p_data_nascimento DATE,
-    p_role_id BIGINT
+    p_role_id BIGINT,
+    p_setor_id BIGINT
 )
 RETURNS BOOLEAN AS $$
 DECLARE
+    v_utilizador_id BIGINT;
 BEGIN
 
     IF p_nome IS NULL OR LENGTH(p_nome) < 3 THEN
@@ -33,10 +35,18 @@ BEGIN
         RAISE EXCEPTION 'O Cargo fornecido não existe';
     END IF;
 
+    IF NOT EXISTS (SELECT 1 FROM setor_hospital WHERE setor_id = p_setor_id) THEN
+        RAISE EXCEPTION 'O setor fornecido não existe.';
+    END IF;
+
     INSERT INTO utilizador (nome, email, sexo, data_nascimento, role_id)
-    VALUES (p_nome, p_email, p_sexo, p_data_nascimento, p_role_id);
-    
-    -- Retorna true indicando sucesso
+    VALUES (p_nome, p_email, p_sexo, p_data_nascimento, p_role_id)
+    RETURNING utilizador_id INTO v_utilizador_id;
+
+    UPDATE setor_hospital
+    SET responsavel_id = v_utilizador_id
+    WHERE setor_id = p_setor_id;
+
     RETURN true;
 END;
 $$ LANGUAGE plpgsql;

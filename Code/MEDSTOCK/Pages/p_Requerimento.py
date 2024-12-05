@@ -6,7 +6,7 @@ from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import Qt, QTimer, QSize
 from APP.UI.ui_styles import Style
 from APP.Overlays.Overlay import Overlay
-from Class.utilizador import Utilizador
+from Class.Utilizador import Utilizador
 from API.API_GET_Request import (API_GetRequerimentosByUser, API_GetRequerimentosByResponsavel,
                                 API_GetSectors, API_GetConsumiveis, API_GetRequerimentosByFarmaceutico)
 from API.API_POST_Request import API_CreateRequerimento
@@ -136,7 +136,7 @@ class RequerimentoPage(QWidget):
 
     async def show_create_requerimento_page(self):
         self.clear_layout(self.main_layout)
-        self.all_items = []
+        self.all_consumivel = []
         create_page_layout = QVBoxLayout()
 
         back_button = QPushButton()
@@ -168,7 +168,11 @@ class RequerimentoPage(QWidget):
         left_scroll_area.setWidgetResizable(True)
         left_scroll_area.setWidget(left_frame)
 
-        asyncio.create_task(self.fetch_items(self.left_layout))
+        try:
+            asyncio.create_task(self.fetch_consumivel())
+        except Exception as e:
+            print(e)
+        ##asyncio.create_task(self.fetch_consumivel(self.left_layout))
 
         right_frame = QFrame()
         right_layout = QVBoxLayout()
@@ -215,33 +219,35 @@ class RequerimentoPage(QWidget):
 
         self.main_layout.addLayout(create_page_layout)
 
-    async def fetch_items(self):
+    async def fetch_consumivel(self):
         response = await API_GetConsumiveis()
         if response.success:
-            self.all_items = response.data 
-            self.update_item_display(self.all_items)
+            self.all_consumivel = response.data 
+            self.update_item_display(self.all_consumivel)
         else:
             Overlay.show_error(self, response.error_message)
 
     def apply_item_filter(self):
         filter_text = self.filter_line_edit.text().lower()
-        filtered_items = [
-            item for item in self.all_items if filter_text in item.nome_item.lower()
+        filtered_consumivel = [
+            item for item in self.all_consumivel if filter_text in item.nome_consumivel.lower()
         ]
-        self.update_item_display(filtered_items)
-    def update_item_display(self, items):
+        self.update_item_display(filtered_consumivel)
+    def update_item_display(self, consumivel):
         for i in reversed(range(self.left_layout.count())):
             widget = self.left_layout.itemAt(i).widget()
             if widget:
                 widget.deleteLater()
 
         row, col = 0, 0
-        for item in items:
+        for item in consumivel:
+            
             item_label = DraggableLabel(
-                item_id=item.item_id,
-                nome_item=item.nome_item,
-                tipo=item.nome_tipo,
-                quantidade_disponivel=item.quantidade_disponivel
+                consumivel_id=item.consumivel_id,
+                nome_consumivel=item.nome_consumivel,
+                tipo_consumivel=item.nome_tipo,
+                #TODO VERIFICAR COMO VAI FICAR COM TIVER ALGORITMO DE ALOCAÇÃO E GESTÃO DE STOCK
+                quantidade_disponivel=item.quantidade_total
             )
             self.left_layout.addWidget(item_label, row, col)
             col += 1
@@ -250,12 +256,12 @@ class RequerimentoPage(QWidget):
                 row += 1
 
     def create_requerimento(self, user_id_pedido,urgent, drop_zone):
-        requerimento_items = []
+        requerimento_consumivel = []
         for row in range(drop_zone.rowCount()):
             item_widget = drop_zone.item(row, 0)
             item_id = int(item_widget.data(Qt.UserRole))
             quantidade = drop_zone.cellWidget(row, 1).value()
-            requerimento_items.append({"item_id": item_id, "quantidade": quantidade})
+            requerimento_consumivel.append({"consumivel_id": item_id, "quantidade": quantidade})
 
         setor_id = self.sector_input.currentData()
         
@@ -264,9 +270,11 @@ class RequerimentoPage(QWidget):
         else:
             urgent = False
 
-        response = API_CreateRequerimento(user_id_pedido, setor_id,urgent, requerimento_items)
+        response = API_CreateRequerimento(user_id_pedido, setor_id,urgent, requerimento_consumivel)
         if response.success:
-            self.reload_requerimentos()
+            
+            #TODO ANTES DE CRIAR TENHO FAZER A GESTÃO PARA VER O QUE SE PODE ALOCAR OS CONSUMIVEIS
+            self.reload_page_requerimentos()
             Overlay.show_success(self, "Requerimento criado com sucesso!")
         else:
             Overlay.show_error(self, response.error_message)

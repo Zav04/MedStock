@@ -1,8 +1,11 @@
-CREATE OR REPLACE FUNCTION get_requerimentos_by_farmaceutico()
+CREATE OR REPLACE FUNCTION get_requerimento_details(p_requerimento_id BIGINT)
 RETURNS TABLE(
     requerimento_id BIGINT,
     setor_nome_localizacao VARCHAR,
     nome_utilizador_pedido VARCHAR,
+    email_utilizador_pedido VARCHAR,
+    nome_gestor_responsavel VARCHAR,
+    email_gestor_responsavel VARCHAR,
     status INT,
     urgente BOOLEAN,
     itens_pedidos JSON,
@@ -20,6 +23,9 @@ BEGIN
         r.requerimento_id,
         CONCAT(s.nome_setor, ' - ', s.localizacao)::VARCHAR AS setor_nome_localizacao,
         u_pedido.nome AS nome_utilizador_pedido,
+        u_pedido.email AS email_utilizador_pedido,
+        u_responsavel.nome AS nome_gestor_responsavel,
+        u_responsavel.email AS email_gestor_responsavel,
         r.status::INT,
         r.urgente,
         (
@@ -49,12 +55,14 @@ BEGIN
     INNER JOIN 
         Utilizador u_pedido ON r.user_id_pedido = u_pedido.utilizador_id
     LEFT JOIN 
+        Utilizador u_responsavel ON s.responsavel_id = u_responsavel.utilizador_id
+    LEFT JOIN 
         Utilizador u_confirmacao ON r.user_id_confirmacao = u_confirmacao.utilizador_id
     LEFT JOIN 
         Utilizador u_envio ON r.user_id_envio = u_envio.utilizador_id
     LEFT JOIN 
         Utilizador u_preparacao ON r.user_id_preparacao = u_preparacao.utilizador_id
     WHERE 
-        r.status IN (1, 2, 3, 4, 6 ,8);
+        r.requerimento_id = p_requerimento_id;
 END;
 $$ LANGUAGE plpgsql;

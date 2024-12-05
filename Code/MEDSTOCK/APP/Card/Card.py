@@ -2,8 +2,8 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButt
 from PyQt5.QtGui import QFont, QIcon, QCursor,QPixmap
 from PyQt5.QtCore import Qt, QSize
 from datetime import datetime
-from Class.requerimento import Requerimento
-from Class.utilizador import Utilizador
+from Class.Requerimento import Requerimento
+from Class.Utilizador import Utilizador
 from APP.UI.ui_functions import UIFunctions
 import os
 from APP.Label.Label import add_status_lable

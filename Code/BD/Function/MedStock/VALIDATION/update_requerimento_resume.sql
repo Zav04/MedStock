@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION update_requerimento_cancel(
+CREATE OR REPLACE FUNCTION update_requerimento_resume(
     p_requerimento_id INT,
     p_user_id INT
 ) RETURNS BOOL AS $$
@@ -12,8 +12,8 @@ BEGIN
     ) VALUES (
         p_requerimento_id,
         CURRENT_TIMESTAMP,
-        7,
-        'Requerimento cancelado sem motivo especificado.',
+        1,
+        'Requerimento retornou a lista de espera.',
         p_user_id
     );
 
@@ -21,6 +21,6 @@ BEGIN
 
 EXCEPTION
     WHEN OTHERS THEN
-        RAISE EXCEPTION 'Erro ao cancelar requerimento: %', SQLERRM;
+        RAISE EXCEPTION 'Erro ao retomar requerimento: %', SQLERRM;
 END;
 $$ LANGUAGE plpgsql;

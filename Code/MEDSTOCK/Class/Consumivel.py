@@ -1,4 +1,4 @@
-class Itens:
+class Consumivel:
     def __init__(
         self, 
         consumivel_id : int,

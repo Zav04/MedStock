@@ -3,14 +3,14 @@ CREATE OR REPLACE FUNCTION create_requerimento(
     p_setor_id INT,
     items_list JSON,
     urgente BOOLEAN
-) RETURNS BOOL AS $$
+) RETURNS BOOLEAN AS $$
 DECLARE
     new_requerimento_id INT;
     item RECORD;
     setor_responsavel INT;
 BEGIN
     IF items_list IS NULL OR json_array_length(items_list) = 0 THEN
-        RAISE EXCEPTION 'Selecione pelo menos um item.';
+        RAISE EXCEPTION 'Selecione pelo menos um consumível.';
     END IF;
 
     IF p_setor_id IS NULL THEN
@@ -25,15 +25,17 @@ BEGIN
         RAISE EXCEPTION 'O setor selecionado não possui um responsável definido.';
     END IF;
 
-
-    INSERT INTO Requerimento (setor_id, user_id_pedido, data_pedido, status, urgente)
-    VALUES (p_setor_id, user_id_pedido, CURRENT_TIMESTAMP(0), 0, urgente)
+    INSERT INTO Requerimento (setor_id, user_id_pedido, urgente, tipo_requerimento)
+    VALUES (p_setor_id, user_id_pedido, urgente, 'Interno')
     RETURNING requerimento_id INTO new_requerimento_id;
 
-    FOR item IN SELECT * FROM json_to_recordset(items_list) AS (item_id INT, quantidade INT)
+    INSERT INTO HistoricoRequerimento (requerimento_id, data_modificacao, status, descricao, user_id_responsavel)
+    VALUES (new_requerimento_id, CURRENT_TIMESTAMP(0), 0, 'Requerimento criado', user_id_pedido);
+
+    FOR item IN SELECT * FROM json_to_recordset(items_list) AS (consumivel_id INT, quantidade INT)
     LOOP
-        INSERT INTO Item_Requerimento (ItemItem_id, Requerimentorequerimento_id, quantidade)
-        VALUES (item.item_id, new_requerimento_id, item.quantidade);
+        INSERT INTO Consumivel_Requerimento (consumivel_id, requerimento_id, quantidade)
+        VALUES (item.consumivel_id, new_requerimento_id, item.quantidade);
     END LOOP;
 
     RETURN TRUE;

@@ -15,15 +15,15 @@ router = APIRouter()
 @router.post("/MedStock_CreateRequerimento/")
 async def MedStock_CreateRequerimento(requerimento: C_CreateRequerimento, db=Depends(get_db_MEDSTOCK)):
     try:
-        items_json = json.dumps([item.model_dump() for item in requerimento.requerimento_items or []])
+        items_json = json.dumps([item.model_dump() for item in requerimento.requerimento_consumiveis or []])
 
         query = text("""
-            SELECT create_requerimento(:user_id_pedido, :setor_id, :items_list, :urgente);
+            SELECT create_requerimento(:user_id_pedido, :p_setor_id, :items_list, :urgente);
         """)
 
         result = db.execute(query, {
             "user_id_pedido": requerimento.user_id_pedido,
-            "setor_id": requerimento.setor_id,
+            "p_setor_id": requerimento.setor_id,
             "items_list": items_json,
             "urgente": requerimento.urgente
         })

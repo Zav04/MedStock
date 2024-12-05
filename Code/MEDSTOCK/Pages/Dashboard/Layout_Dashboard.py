@@ -5,7 +5,7 @@ from APP.UI.WindowFunctions import WindowFunctions
 from APP.Overlays.Overlay import Overlay
 from Pages.Dashboard.ui_dashboard import Ui_MainWindow
 from APP.UI.ui_functions import UIFunctions
-from Class.utilizador import Utilizador
+from Class.Utilizador import Utilizador
 from Pages.Login.Layout_Login import Login
 from Pages.p_Add_user import CreateUserPage
 from Pages.p_Itens import ItemTablePage
@@ -41,8 +41,6 @@ class Dashboard(QMainWindow):
             formatted_string = (first_word[0] + last_word[0]).upper()
         UIFunctions.userIcon(self, formatted_string)
 
-
-
     def initPages(self):
         self.page_home = HomePage()
         self.page_add_user = CreateUserPage()
@@ -73,6 +71,9 @@ class Dashboard(QMainWindow):
         
 
         if role == "Administrador":
+            #Falta criar inserir mais consumiveis
+            #Falta Criar mais Alas Hospitalares
+            #Falta Associar Utilizadores a Alas Hospitalares
             UIFunctions.addNewMenu(self, "CRIAR NOVO UTILIZADOR", "btn_new_user", "url(:/20x20/icons/20x20/cil-user-follow.png)", True)
             UIFunctions.addNewMenu(self, "ITENS STOCK", "btn_stock", "url(:/20x20/icons/20x20/cil-notes.png)", True)
             UIFunctions.addNewMenu(self, "REQUERIMENTOS", "btn_requerimento", "url(:/20x20/icons/20x20/cil-description.png)", True)
