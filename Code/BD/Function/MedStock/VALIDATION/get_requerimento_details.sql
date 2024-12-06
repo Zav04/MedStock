@@ -6,16 +6,12 @@ RETURNS TABLE(
     email_utilizador_pedido VARCHAR,
     nome_gestor_responsavel VARCHAR,
     email_gestor_responsavel VARCHAR,
-    status INT,
+    status_atual INT,
+    status_anterior INT,
     urgente BOOLEAN,
     itens_pedidos JSON,
     data_pedido TIMESTAMP,
-    nome_utilizador_confirmacao VARCHAR,
-    data_confirmacao TIMESTAMP,
-    nome_utilizador_envio VARCHAR,
-    data_envio TIMESTAMP,
-    nome_utilizador_preparacao VARCHAR,
-    data_preparacao TIMESTAMP
+    historico JSON
 ) AS $$
 BEGIN
     RETURN QUERY 
@@ -26,28 +22,56 @@ BEGIN
         u_pedido.email AS email_utilizador_pedido,
         u_responsavel.nome AS nome_gestor_responsavel,
         u_responsavel.email AS email_gestor_responsavel,
-        r.status::INT,
+        (
+            SELECT h.status
+            FROM HistoricoRequerimento h
+            WHERE h.requerimento_id = r.requerimento_id
+            ORDER BY h.data_modificacao DESC
+            LIMIT 1
+        )::INT AS status_atual,
+        (
+            SELECT h.status
+            FROM HistoricoRequerimento h
+            WHERE h.requerimento_id = r.requerimento_id
+            ORDER BY h.data_modificacao DESC
+            OFFSET 1
+            LIMIT 1
+        )::INT AS status_anterior,
         r.urgente,
         (
             SELECT JSON_AGG(
                 JSON_BUILD_OBJECT(
-                    'nome_item', i.nome_item,
-                    'quantidade', ir.quantidade,
-                    'tipo_item', t.nome_tipo
+                    'nome_consumivel', c.nome_consumivel,
+                    'quantidade', cr.quantidade,
+                    'tipo_consumivel', tc.nome_tipo
                 )
             )
-            FROM Item_Requerimento ir
-            INNER JOIN Item i ON ir.ItemItem_id = i.item_id
-            INNER JOIN Tipo_Item t ON i.tipo_id = t.tipo_id
-            WHERE ir.Requerimentorequerimento_id = r.requerimento_id
+            FROM Consumivel_Requerimento cr
+            INNER JOIN Consumivel c ON cr.consumivel_id = c.consumivel_id
+            INNER JOIN Tipo_Consumivel tc ON c.tipo_id = tc.tipo_id
+            WHERE cr.requerimento_id = r.requerimento_id
         ) AS itens_pedidos,
-        r.data_pedido,
-        u_confirmacao.nome AS nome_utilizador_confirmacao,
-        r.data_confirmacao,
-        u_envio.nome AS nome_utilizador_envio,
-        r.data_envio,
-        u_preparacao.nome AS nome_utilizador_preparacao,
-        r.data_preparacao
+        (
+            SELECT h.data_modificacao
+            FROM HistoricoRequerimento h
+            WHERE h.requerimento_id = r.requerimento_id AND h.status = 0
+            ORDER BY h.data_modificacao ASC
+            LIMIT 1
+        ) AS data_pedido,
+        (
+            SELECT JSON_AGG(sub_historico)
+            FROM (
+                SELECT 
+                    h.status,
+                    h.descricao,
+                    h.data_modificacao,
+                    u_historico.nome AS user_responsavel
+                FROM HistoricoRequerimento h
+                LEFT JOIN Utilizador u_historico ON h.user_id_responsavel = u_historico.utilizador_id
+                WHERE h.requerimento_id = r.requerimento_id
+                ORDER BY h.data_modificacao ASC
+            ) sub_historico
+        ) AS historico
     FROM 
         Requerimento r
     INNER JOIN 
@@ -56,12 +80,6 @@ BEGIN
         Utilizador u_pedido ON r.user_id_pedido = u_pedido.utilizador_id
     LEFT JOIN 
         Utilizador u_responsavel ON s.responsavel_id = u_responsavel.utilizador_id
-    LEFT JOIN 
-        Utilizador u_confirmacao ON r.user_id_confirmacao = u_confirmacao.utilizador_id
-    LEFT JOIN 
-        Utilizador u_envio ON r.user_id_envio = u_envio.utilizador_id
-    LEFT JOIN 
-        Utilizador u_preparacao ON r.user_id_preparacao = u_preparacao.utilizador_id
     WHERE 
         r.requerimento_id = p_requerimento_id;
 END;

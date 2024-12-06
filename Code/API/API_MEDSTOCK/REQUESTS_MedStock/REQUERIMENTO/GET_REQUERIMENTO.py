@@ -13,17 +13,42 @@ async def MedStock_GetRequerimentosByUser(user_id: int, db = Depends(get_db_MEDS
         
         requerimentos = []
         for row in result:
+            historico = []
+            if row.historico:
+                for hist in row.historico:
+                    historico.append({
+                        "status": hist.get("status"),
+                        "descricao": hist.get("descricao"),
+                        "data_modificacao": hist.get("data_modificacao"),
+                        "user_responsavel": hist.get("user_responsavel")
+                    })
+
+            itens_pedidos = []
+            if row.itens_pedidos:
+                for item in row.itens_pedidos:
+                    itens_pedidos.append({
+                        "nome_consumivel": item.get("nome_consumivel"),
+                        "quantidade": item.get("quantidade"),
+                        "tipo_consumivel": item.get("tipo_consumivel")
+                    })
+
             requerimento = {
                 "requerimento_id": row.requerimento_id,
                 "setor_nome_localizacao": row.setor_nome_localizacao,
                 "nome_utilizador_pedido": row.nome_utilizador_pedido,
-                "status": row.status,
+                "email_utilizador_pedido": row.email_utilizador_pedido,
+                "nome_gestor_responsavel": row.nome_gestor_responsavel,
+                "email_gestor_responsavel": row.email_gestor_responsavel,
+                "status_atual": row.status_atual,
+                "status_anterior": row.status_anterior,
                 "urgente": row.urgente,
-                "itens_pedidos": row.itens_pedidos,
+                "itens_pedidos": itens_pedidos,
                 "data_pedido": row.data_pedido,
-                "historico": row.historico
+                "historico": historico
             }
+
             requerimentos.append(requerimento)
+
         
         return {
             "response": True,
@@ -53,16 +78,40 @@ async def MedStock_GetRequerimentosByFarmaceutico(db=Depends(get_db_MEDSTOCK)):
         
         requerimentos = []
         for row in result:
+            historico = []
+            if row.historico:
+                for hist in row.historico:
+                    historico.append({
+                        "status": hist.get("status"),
+                        "descricao": hist.get("descricao"),
+                        "data_modificacao": hist.get("data_modificacao"),
+                        "user_responsavel": hist.get("user_responsavel")
+                    })
+
+            itens_pedidos = []
+            if row.itens_pedidos:
+                for item in row.itens_pedidos:
+                    itens_pedidos.append({
+                        "nome_consumivel": item.get("nome_consumivel"),
+                        "quantidade": item.get("quantidade"),
+                        "tipo_consumivel": item.get("tipo_consumivel")
+                    })
+
             requerimento = {
                 "requerimento_id": row.requerimento_id,
                 "setor_nome_localizacao": row.setor_nome_localizacao,
                 "nome_utilizador_pedido": row.nome_utilizador_pedido,
-                "status": row.status,
+                "email_utilizador_pedido": row.email_utilizador_pedido,
+                "nome_gestor_responsavel": row.nome_gestor_responsavel,
+                "email_gestor_responsavel": row.email_gestor_responsavel,
+                "status_atual": row.status_atual,
+                "status_anterior": row.status_anterior,
                 "urgente": row.urgente,
-                "itens_pedidos": row.itens_pedidos,
+                "itens_pedidos": itens_pedidos,
                 "data_pedido": row.data_pedido,
-                "historico": row.historico
+                "historico": historico
             }
+
             requerimentos.append(requerimento)
         
         return {
@@ -95,16 +144,40 @@ async def MedStock_GetRequerimentosByResponsavel(responsavel_id: int, db=Depends
         
         requerimentos = []
         for row in result:
+            historico = []
+            if row.historico:
+                for hist in row.historico:
+                    historico.append({
+                        "status": hist.get("status"),
+                        "descricao": hist.get("descricao"),
+                        "data_modificacao": hist.get("data_modificacao"),
+                        "user_responsavel": hist.get("user_responsavel")
+                    })
+
+            itens_pedidos = []
+            if row.itens_pedidos:
+                for item in row.itens_pedidos:
+                    itens_pedidos.append({
+                        "nome_consumivel": item.get("nome_consumivel"),
+                        "quantidade": item.get("quantidade"),
+                        "tipo_consumivel": item.get("tipo_consumivel")
+                    })
+
             requerimento = {
                 "requerimento_id": row.requerimento_id,
                 "setor_nome_localizacao": row.setor_nome_localizacao,
                 "nome_utilizador_pedido": row.nome_utilizador_pedido,
-                "status": row.status,
+                "email_utilizador_pedido": row.email_utilizador_pedido,
+                "nome_gestor_responsavel": row.nome_gestor_responsavel,
+                "email_gestor_responsavel": row.email_gestor_responsavel,
+                "status_atual": row.status_atual,
+                "status_anterior": row.status_anterior,
                 "urgente": row.urgente,
-                "itens_pedidos": row.itens_pedidos,
+                "itens_pedidos": itens_pedidos,
                 "data_pedido": row.data_pedido,
-                "historico": row.historico
+                "historico": historico
             }
+
             requerimentos.append(requerimento)
         
         return {

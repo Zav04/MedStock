@@ -13,7 +13,7 @@ BEGIN
     ) VALUES (
         p_requerimento_id,
         CURRENT_TIMESTAMP,
-        7,
+        5,
         COALESCE(p_motivo, 'Requerimento rejeitado sem motivo especificado.'),
         p_user_id
     );

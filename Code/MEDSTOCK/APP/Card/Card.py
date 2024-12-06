@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QFrame,QFileDialog
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QFrame,QFileDialog, QScrollArea, QSizePolicy
 from PyQt5.QtGui import QFont, QIcon, QCursor,QPixmap
 from PyQt5.QtCore import Qt, QSize
 from datetime import datetime
@@ -63,7 +63,7 @@ class RequerimentoCard(QWidget):
         # Centro: Status
         status_layout = QVBoxLayout()
         status_layout.setAlignment(Qt.AlignCenter)
-        status_label = add_status_lable(requerimento.status)
+        status_label = add_status_lable(requerimento.status_atual)
         status_layout.addWidget(status_label, alignment=Qt.AlignCenter)
         header_layout.addLayout(status_layout)
 
@@ -72,7 +72,7 @@ class RequerimentoCard(QWidget):
         actions_layout.setSpacing(10)
         actions_layout.setAlignment(Qt.AlignRight)
 
-        if requerimento.status == 0 and (user.role_nome=="Gestor Responsável" or user.role_nome!="Farmacêutico") :
+        if requerimento.status_atual == 0 and (user.role_nome=="Gestor Responsável" or user.role_nome!="Farmacêutico") :
             delete_button = QPushButton()
             recolored_icon_delete = QIcon(UIFunctions.recolor_icon(os.path.abspath("./icons/MaterialIcons/close.png"), "#f54251"))
             delete_button.setIcon(recolored_icon_delete)
@@ -86,7 +86,7 @@ class RequerimentoCard(QWidget):
                 delete_button.clicked.connect(lambda: self.cancel_requerimento(user,requerimento))
 
         
-        if requerimento.status == 0 and user.role_nome=="Gestor Responsável":
+        if requerimento.status_atual == 0 and user.role_nome=="Gestor Responsável":
             accept_button = QPushButton()
             recolored_accept_button = QIcon(UIFunctions.recolor_icon(os.path.abspath("./icons/MaterialIcons/check.png"), "#b5c6bf"))
             accept_button.setIcon(recolored_accept_button)
@@ -96,7 +96,7 @@ class RequerimentoCard(QWidget):
             accept_button.clicked.connect(lambda: self.accept_requerimento(user,requerimento))
             actions_layout.addWidget(accept_button, alignment=Qt.AlignRight)
 
-        if requerimento.status == 1 and user.role_nome=="Farmacêutico":
+        if requerimento.status_atual == 1 and user.role_nome=="Farmacêutico":
             stand_by_button = QPushButton()
             recolored_icon_stand_by = QIcon(UIFunctions.recolor_icon(os.path.abspath("./icons/MaterialIcons/pause_circle.png"), "#eb8c34"))
             stand_by_button.setIcon(recolored_icon_stand_by)
@@ -106,7 +106,7 @@ class RequerimentoCard(QWidget):
             actions_layout.addWidget(stand_by_button, alignment=Qt.AlignRight)
             stand_by_button.clicked.connect(lambda: self.stand_by_requerimento(requerimento))
 
-        if requerimento.status == 1 and user.role_nome=="Farmacêutico":
+        if requerimento.status_atual == 1 and user.role_nome=="Farmacêutico":
             pistola_button = QPushButton()
             recolored_icon_pistola_button = QIcon(UIFunctions.recolor_icon(os.path.abspath("./icons/MaterialIcons/barcode_reader.png"), "#4287f5"))
             pistola_button.setIcon(recolored_icon_pistola_button)
@@ -116,7 +116,7 @@ class RequerimentoCard(QWidget):
             actions_layout.addWidget(pistola_button, alignment=Qt.AlignRight)
             pistola_button.clicked.connect(lambda: self.prepare_requerimento(requerimento))
 
-        if requerimento.status == 6 and user.role_nome=="Farmacêutico":
+        if requerimento.status_atual == 6 and user.role_nome=="Farmacêutico":
             resume_button = QPushButton()
             recolored_icon_resume_button = QIcon(UIFunctions.recolor_icon(os.path.abspath("./icons/MaterialIcons/play.png"), "#b5c6bf"))
             resume_button.setIcon(recolored_icon_resume_button)
@@ -127,7 +127,7 @@ class RequerimentoCard(QWidget):
             resume_button.clicked.connect(lambda: self.resume_requerimento(requerimento))
             
         
-        if requerimento.status == 3 and user.role_nome=="Farmacêutico":
+        if requerimento.status_atual == 3 and user.role_nome=="Farmacêutico":
             send_button = QPushButton()
             recolored_icon_send_button = QIcon(UIFunctions.recolor_icon(os.path.abspath("./icons/MaterialIcons/package.png"), "#4287f5"))
             send_button.setIcon(recolored_icon_send_button)
@@ -158,6 +158,9 @@ class RequerimentoCard(QWidget):
         header_layout.addLayout(actions_layout)
         self.container_layout.addLayout(header_layout)
 
+        self.scroll_area = QScrollArea()
+        self.scroll_area.setVisible(False)
+        self.scroll_area.setWidgetResizable(False)
         # Detalhes ocultos
         self.details_frame = QFrame()
         self.details_frame.setStyleSheet("border: none;")
@@ -193,7 +196,6 @@ class RequerimentoCard(QWidget):
                 quantidade = item.quantidade or "Quantidade não especificada"
                 tipo_item = item.tipo_item or "Tipo não especificado"
 
-                # Seleciona o ícone correspondente
                 if tipo_item == "Medicamento":
                     icon_path = "./icons/MaterialIcons/medicamento.png"
                 elif tipo_item == "Vacinas":
@@ -229,44 +231,107 @@ class RequerimentoCard(QWidget):
             no_items_label.setTextFormat(Qt.RichText)
             details_layout.addWidget(no_items_label)
 
-        if requerimento.nome_utilizador_confirmacao and requerimento.data_confirmacao:
-            confirmacao_label = QLabel()
-            confirmacao_label.setText(
-                f"<span style='font-size:16px; font-weight:bold; color:#000000;'>"
-                f"Avaliado por:</span> "
-                f"<span style='font-size:14px; color:#555555;'>{requerimento.nome_utilizador_confirmacao}</span> "
-                f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(requerimento.data_confirmacao, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
-            )
-            confirmacao_label.setFont(QFont("Arial"))
-            details_layout.addWidget(confirmacao_label)
-            
-        
-        if requerimento.nome_utilizador_preparacao and requerimento.data_preparacao:
-            preparacao_label = QLabel()
-            preparacao_label.setText(
-                f"<span style='font-size:16px; font-weight:bold; color:#000000;'>"
-                f"Preparado por:</span> "
-                f"<span style='font-size:14px; color:#555555;'>{requerimento.nome_utilizador_preparacao}</span> "
-                f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(requerimento.data_preparacao, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
-            )
-            preparacao_label.setFont(QFont("Arial"))
-            details_layout.addWidget(preparacao_label)
 
-        if requerimento.nome_utilizador_envio and requerimento.data_envio:
-            envio_label = QLabel()
-            envio_label.setText(
-                f"<span style='font-size:16px; font-weight:bold; color:#000000;'>"
-                f"Enviado por:</span> "
-                f"<span style='font-size:14px; color:#555555;'>{requerimento.nome_utilizador_envio}</span> "
-                f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(requerimento.data_envio, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
-            )
-            envio_label.setFont(QFont("Arial"))
-            details_layout.addWidget(envio_label)
+        historico_label = QLabel()
+        historico_label.setText(
+            "<span style='font-size:16px; font-weight:bold; color:#000000;'>Histórico:</span>"
+        )
+        historico_label.setFont(QFont("Arial"))
+        details_layout.addWidget(historico_label)
+
+        if self.requerimento.historico:
+            for hist in self.requerimento.historico:
+
+                historico_text_label = QLabel()
+                match requerimento.status_atual:
+                    case 0:
+                        historico_text_label.setText(
+                            f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                            f"Pedido criado por:</span> "
+                            f"<span style='font-size:14px; color:#555555;'>{hist.user_responsavel}</span> "
+                            f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
+                        )
+                    case 1:
+                        if requerimento.status_anterior == 6:
+                            historico_text_label.setText(
+                                f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                                f"Requerimento enviado novamente para a lista de espera por:</span> "
+                                f"<span style='font-size:14px; color:#555555;'>{hist.user_responsavel}</span> "
+                                f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
+                            )
+                        else:
+                            historico_text_label.setText(
+                            f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                            f"Avaliado por:</span> "
+                            f"<span style='font-size:14px; color:#555555;'>{hist.user_responsavel}</span> "
+                            f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
+                            )
+                    case 2:
+                        historico_text_label.setText(
+                            f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                            f"Pedido envido para preparar por:</span> "
+                            f"<span style='font-size:14px; color:#555555;'>{hist.user_responsavel}</span> "
+                            f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
+                        )
+                    case 3:
+                        historico_text_label.setText(
+                            f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                            f"Preparado por:</span> "
+                            f"<span style='font-size:14px; color:#555555;'>{hist.user_responsavel}</span> "
+                            f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
+                        )
+                    case 4:
+                        historico_text_label.setText(
+                            f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                            f"Enviado por:</span> "
+                            f"<span style='font-size:14px; color:#555555;'>{hist.user_responsavel}</span> "
+                            f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
+                        )
+                    case 5:
+                        historico_text_label.setText(
+                                f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                                f"Recusado por:</span> "
+                                f"<span style='font-size:14px; color:#555555;'>{hist.user_responsavel}</span> "
+                                f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
+                                f"<br><span style='font-size:14px; color:#555555;'>Motivo: {hist.descricao}</span>"
+                            )
+                    case 6:
+                        historico_text_label.setText(
+                            f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                            f"Colocado em Stand By por:</span> "
+                            f"<span style='font-size:14px; color:#555555;'>{hist.user_responsavel}</span> "
+                            f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
+                        )
+                    case 7:
+                        historico_text_label.setText(
+                            f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                            f"Cancelado por:</span> "
+                            f"<span style='font-size:14px; color:#555555;'>{hist.user_responsavel}</span> "
+                            f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
+                        )
+                    case 8:
+                        historico_text_label.setText(
+                            f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                            f"Colocado em Validação por:</span> "
+                            f"<span style='font-size:14px; color:#555555;'>{hist.user_responsavel}</span> "
+                            f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
+                        )
+                    case 9:
+                        historico_text_label.setText(
+                            f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                            f"Colocado em Re-Validação por:</span> "
+                            f"<span style='font-size:14px; color:#555555;'>{hist.user_responsavel}</span> "
+                            f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
+                        )
+                historico_text_label.setFont(QFont("Arial"))
+                details_layout.addWidget(historico_text_label)
 
 
-        self.container_layout.addWidget(self.details_frame)
+        self.details_frame.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        self.details_frame.setLayout(details_layout)
+        self.scroll_area.setWidget(self.details_frame)
+        self.container_layout.addWidget(self.scroll_area)
         self.layout().addWidget(self.container)
-        
         
         if requerimento.urgente:
             self.container.setStyleSheet("background-color: #f8d7da; border: 1px solid #f5c2c7; border-radius: 8px;")
@@ -364,12 +429,15 @@ class RequerimentoCard(QWidget):
 
     def toggle_details(self):
         self.expanded = not self.expanded
-        self.details_frame.setVisible(self.expanded)
-        self.container.setMaximumHeight(300 if self.expanded else self.minimumHeight_Card)
+        if self.expanded:
+            self.scroll_area.setVisible(True)
+            self.container.setMaximumHeight(400)
+        else:
+            self.scroll_area.setVisible(False)
+            self.container.setMaximumHeight(self.minimumHeight_Card)
 
-    
+
     def choose_file_location_GeneratePdfItens(self):
-        
         options = QFileDialog.Options()
         file_path, _ = QFileDialog.getSaveFileName(
             self, 

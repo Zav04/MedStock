@@ -105,6 +105,13 @@ def GeneratePdfRequerimento(file_path: str, requerimento: Requerimento):
         c.line(60, height - 50, width - 60, height - 50)
         c.setFont("Helvetica-Bold", 16)
 
+    def check_page_space(y_offset, required_space):
+        if y_offset - required_space < 50:
+            c.showPage()
+            draw_header()
+            return height - 80
+        return y_offset
+
     draw_header()
     c.drawString(60, height - 80, f"REQ-{requerimento.requerimento_id}")
     c.setFont("Helvetica-Bold", 12)
@@ -112,60 +119,64 @@ def GeneratePdfRequerimento(file_path: str, requerimento: Requerimento):
     c.setFont("Helvetica", 10)
     y_offset = height - 130
 
+    # Detalhes básicos
     details = [
-        ("Setor", requerimento.setor_nome_localizacao),
-        ("Nome do Solicitante", requerimento.nome_utilizador_pedido),
+        ("Setor", requerimento.setor_nome_localizacao or "Não especificado"),
+        ("Nome do Solicitante", requerimento.nome_utilizador_pedido or "Desconhecido"),
         ("Data do Pedido", datetime.strptime(requerimento.data_pedido, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M') if requerimento.data_pedido else "------------"),
         ("Urgente", "Sim" if requerimento.urgente else "Não"),
     ]
 
     for label, value in details:
+        y_offset = check_page_space(y_offset, 20)
         c.setFont("Helvetica-Bold", 12)
         c.drawString(60, y_offset, f"{label}:")
         label_width = c.stringWidth(f"{label}:", "Helvetica-Bold", 12)
         c.setFont("Helvetica", 10)
-        c.drawString(60 + label_width + 2, y_offset, value)
-        y_offset -= 20 
-        
-    if requerimento.nome_utilizador_confirmacao and requerimento.data_confirmacao:
-        c.setFont("Helvetica-Bold", 12)
-        c.drawString(60, y_offset, "Avaliado por:")
-        confirmacao_str = (
-            f"{requerimento.nome_utilizador_confirmacao} "
-            f"em {datetime.strptime(requerimento.data_confirmacao, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
-        )
-        label_width = c.stringWidth("Avaliado por:", "Helvetica-Bold", 12) + 2
-        c.setFont("Helvetica", 10)
-        c.drawString(60 + label_width, y_offset, confirmacao_str)
-        y_offset -= 20
-        
-    
-    if requerimento.nome_utilizador_preparacao and requerimento.data_preparacao:
-        c.setFont("Helvetica-Bold", 12)
-        c.drawString(60, y_offset, "Preparado por:")
-        confirmacao_str = (
-            f"{requerimento.nome_utilizador_preparacao} "
-            f"em {datetime.strptime(requerimento.data_preparacao, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
-        )
-        label_width = c.stringWidth("Preparado por:", "Helvetica-Bold", 12) + 2
-        c.setFont("Helvetica", 10)
-        c.drawString(60 + label_width, y_offset, confirmacao_str)
+        c.drawString(60 + label_width + 5, y_offset, value)
         y_offset -= 20
 
-    if requerimento.nome_utilizador_envio and requerimento.data_envio:
+    # Histórico
+    if requerimento.historico:
+        y_offset = check_page_space(y_offset, 30)
         c.setFont("Helvetica-Bold", 12)
-        c.drawString(60, y_offset, "Enviado por:")
-        envio_str = (
-            f"{requerimento.nome_utilizador_envio} "
-            f"em {datetime.strptime(requerimento.data_envio, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
-        )
-        label_width = c.stringWidth("Enviado por:", "Helvetica-Bold", 12) + 2
-        c.setFont("Helvetica", 10)
-        c.drawString(60 + label_width, y_offset, envio_str)
+        c.drawString(60, y_offset, "Histórico:")
         y_offset -= 20
+
+        for hist in requerimento.historico:
+            y_offset = check_page_space(y_offset, 40)
+            match hist.requerimento_status:
+                case 0:
+                    text = f"           Pedido criado por {hist.user_responsavel} em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                case 1:
+                    if requerimento.status_anterior == 6:
+                        text = f"           Requerimento enviado novamente para a lista de espera por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                    else:
+                        text = f"           Avaliado por {hist.user_responsavel} em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                case 2:
+                    text = f"           Pedido enviado para preparar por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                case 3:
+                    text = f"           Preparado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                case 4:
+                    text = f"           Enviado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                case 5:
+                    text = f"           Recusado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}. Motivo: {hist.descricao or 'Não especificado'}"
+                case 6:
+                    text = f"           Colocado em Stand By por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                case 7:
+                    text = f"           Cancelado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                case 8:
+                    text = f"           Colocado em Validação por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                case 9:
+                    text = f"           Colocado em Revalidação por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                case _:
+                    text = f"           Estado desconhecido registrado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+            c.setFont("Helvetica", 10)
+            c.drawString(60, y_offset, text)
+            y_offset -= 20
 
     y_offset -= 10
-    draw_status_label(c, 60, y_offset, requerimento.status)
+    draw_status_label(c, 60, y_offset, requerimento.status_atual)
     y_offset -= 30
 
 
@@ -226,6 +237,9 @@ def GeneratePdfRequerimento(file_path: str, requerimento: Requerimento):
         
         y_offset -= row_height
     c.save()
+
+
+
 
 def draw_status_label(c, x, y, status):
     status_text, qcolor = get_status_description(status)

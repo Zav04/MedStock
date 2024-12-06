@@ -3,7 +3,11 @@ RETURNS TABLE(
     requerimento_id BIGINT,
     setor_nome_localizacao VARCHAR,
     nome_utilizador_pedido VARCHAR,
-    status INT,
+    email_utilizador_pedido VARCHAR,
+    nome_gestor_responsavel VARCHAR,
+    email_gestor_responsavel VARCHAR,
+    status_atual INT,
+    status_anterior INT,
     urgente BOOLEAN,
     itens_pedidos JSON,
     data_pedido TIMESTAMP,
@@ -15,13 +19,24 @@ BEGIN
         r.requerimento_id,
         CONCAT(s.nome_setor, ' - ', s.localizacao)::VARCHAR AS setor_nome_localizacao,
         u_pedido.nome AS nome_utilizador_pedido,
+        u_pedido.email AS email_utilizador_pedido,
+        u_responsavel.nome AS nome_gestor_responsavel,
+        u_responsavel.email AS email_gestor_responsavel,
         (
             SELECT h.status
             FROM HistoricoRequerimento h
             WHERE h.requerimento_id = r.requerimento_id
             ORDER BY h.data_modificacao DESC
             LIMIT 1
-        )::INT AS status,
+        )::INT AS status_atual,
+        (
+            SELECT h.status
+            FROM HistoricoRequerimento h
+            WHERE h.requerimento_id = r.requerimento_id
+            ORDER BY h.data_modificacao DESC
+            OFFSET 1
+            LIMIT 1
+        )::INT AS status_anterior,
         r.urgente,
         (
             SELECT JSON_AGG(
@@ -62,6 +77,8 @@ BEGIN
         Setor_Hospital s ON r.setor_id = s.setor_id
     INNER JOIN 
         Utilizador u_pedido ON r.user_id_pedido = u_pedido.utilizador_id
+    LEFT JOIN 
+        Utilizador u_responsavel ON s.responsavel_id = u_responsavel.utilizador_id
     WHERE 
         (
             SELECT h.status
@@ -72,4 +89,3 @@ BEGIN
         ) IN (1, 2, 3, 4, 6, 8, 9);
 END;
 $$ LANGUAGE plpgsql;
-

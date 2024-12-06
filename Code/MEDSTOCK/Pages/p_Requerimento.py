@@ -29,9 +29,9 @@ class RequerimentoPage(QWidget):
         QTimer.singleShot(0, self.load_requerimentos_wrapper)
         
         
-        # self.update_timer = QTimer(self)
-        # self.update_timer.timeout.connect(self.load_requerimentos_wrapper)
-        # self.update_timer.start(60000)
+        self.update_timer = QTimer(self)
+        self.update_timer.timeout.connect(self.load_requerimentos_wrapper)
+        self.update_timer.start(60000)
 
     def setup_RequerimentoPage(self):
         self.setup_page=True
@@ -270,6 +270,7 @@ class RequerimentoPage(QWidget):
         else:
             urgent = False
 
+        #TODO SE FOR URGENTE NÃO PASSA PELO GESTOR DE ALA
         response = API_CreateRequerimento(user_id_pedido, setor_id,urgent, requerimento_consumivel)
         if response.success:
             
@@ -420,17 +421,17 @@ class RequerimentoPage(QWidget):
             return self.current_requerimentos
         elif filter_key == "Pendentes de Resposta":
             if self.user.role_nome == "Gestor Responsável":
-                return [req for req in self.current_requerimentos if req.status == 0]
+                return [req for req in self.current_requerimentos if req.status_atual == 0]
             else:
                 return [
                     req for req in self.current_requerimentos 
-                    if req.status in (1, 6, 3)
+                    if req.status_atual in (1, 6, 3)
                 ]
         elif filter_key == "Urgente":
             return [req for req in self.current_requerimentos if req.urgente]
         elif filter_key.startswith("Status_"):
             status = int(filter_key.split("_")[1])
-            return [req for req in self.current_requerimentos if req.status == status]
+            return [req for req in self.current_requerimentos if req.status_atual == status]
         else:
             return self.current_requerimentos
 
