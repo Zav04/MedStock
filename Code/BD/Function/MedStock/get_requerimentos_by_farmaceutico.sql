@@ -86,6 +86,6 @@ BEGIN
             WHERE h.requerimento_id = r.requerimento_id
             ORDER BY h.data_modificacao DESC
             LIMIT 1
-        ) IN (1, 2, 3, 4, 6, 8, 9);
+        ) IN (1, 2, 3, 4, 6, 8, 9,10);
 END;
 $$ LANGUAGE plpgsql;

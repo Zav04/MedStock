@@ -160,7 +160,7 @@ def GeneratePdfRequerimento(file_path: str, requerimento: Requerimento):
                 case 4:
                     text = f"           Enviado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
                 case 5:
-                    text = f"           Recusado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}. Motivo: {hist.descricao or 'Não especificado'}"
+                    text = f"           Recusado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}." #Motivo: {hist.descricao or 'Não especificado'}"
                 case 6:
                     text = f"           Colocado em Stand By por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
                 case 7:
@@ -169,6 +169,8 @@ def GeneratePdfRequerimento(file_path: str, requerimento: Requerimento):
                     text = f"           Colocado em Validação por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
                 case 9:
                     text = f"           Colocado em Revalidação por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                case 10:
+                    text = f"           Retornou para a Lista de Espera por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
                 case _:
                     text = f"           Estado desconhecido registrado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
             c.setFont("Helvetica", 10)

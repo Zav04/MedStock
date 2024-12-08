@@ -172,7 +172,6 @@ class RequerimentoPage(QWidget):
             asyncio.create_task(self.fetch_consumivel())
         except Exception as e:
             print(e)
-        ##asyncio.create_task(self.fetch_consumivel(self.left_layout))
 
         right_frame = QFrame()
         right_layout = QVBoxLayout()
@@ -194,24 +193,29 @@ class RequerimentoPage(QWidget):
         self.sector_input = QComboBox()
         self.sector_input.setFixedSize(400, 40)
         self.sector_input.setStyleSheet(Style.style_QComboBox)
+        sector_urgent_layout = QHBoxLayout()
+        sector_urgent_layout.setAlignment(Qt.AlignCenter)
+        self.urgent_input = QCheckBox("Urgente")
+        self.urgent_input.setChecked(False)
+        self.urgent_input.setStyleSheet(Style.style_checkbox)
+        sector_urgent_layout.addWidget(self.sector_input)
+        sector_urgent_layout.addSpacing(20)
+        sector_urgent_layout.addWidget(self.urgent_input)
+        content_layout.addLayout(sector_urgent_layout)
+        asyncio.create_task(self.update_sectors())
         
         if self.user.role_nome == "Enfermeiro" or self.user.role_nome == "Médico":
-            sector_urgent_layout = QHBoxLayout()
-            sector_urgent_layout.setAlignment(Qt.AlignCenter)
-            self.urgent_input = QCheckBox("Urgente")
-            self.urgent_input.setChecked(False)
-            self.urgent_input.setStyleSheet(Style.style_checkbox)
-            sector_urgent_layout.addWidget(self.sector_input)
-            sector_urgent_layout.addSpacing(20)
-            sector_urgent_layout.addWidget(self.urgent_input)
-            content_layout.addLayout(sector_urgent_layout)
-
-        asyncio.create_task(self.update_sectors())
+            self.urgent_input.setVisible(True)
+        else:
+            self.urgent_input.setVisible(False)
 
         create_button = QPushButton("Criar Requerimento")
         create_button.setFixedSize(500, 40)
         create_button.setStyleSheet(Style.style_bt_QPushButton)
-        create_button.clicked.connect(lambda: self.create_requerimento(user_id_pedido=self.user.utilizador_id, urgent=self.urgent_input.isChecked(), drop_zone=drop_zone))
+        if self.user.role_nome == "Enfermeiro" or self.user.role_nome == "Médico":
+            create_button.clicked.connect(lambda: self.create_requerimento(user_id_pedido=self.user.utilizador_id, urgent=self.urgent_input.isChecked(), drop_zone=drop_zone))
+        else:
+            create_button.clicked.connect(lambda: self.create_requerimento(user_id_pedido=self.user.utilizador_id, urgent=False, drop_zone=drop_zone))
 
         content_layout.addWidget(create_button, alignment=Qt.AlignCenter)
 
@@ -273,7 +277,6 @@ class RequerimentoPage(QWidget):
         #TODO SE FOR URGENTE NÃO PASSA PELO GESTOR DE ALA
         response = API_CreateRequerimento(user_id_pedido, setor_id,urgent, requerimento_consumivel)
         if response.success:
-            
             #TODO ANTES DE CRIAR TENHO FAZER A GESTÃO PARA VER O QUE SE PODE ALOCAR OS CONSUMIVEIS
             self.reload_page_requerimentos()
             Overlay.show_success(self, "Requerimento criado com sucesso!")
@@ -425,7 +428,7 @@ class RequerimentoPage(QWidget):
             else:
                 return [
                     req for req in self.current_requerimentos 
-                    if req.status_atual in (1, 6, 3)
+                    if req.status_atual in (1, 6, 3, 10)
                 ]
         elif filter_key == "Urgente":
             return [req for req in self.current_requerimentos if req.urgente]

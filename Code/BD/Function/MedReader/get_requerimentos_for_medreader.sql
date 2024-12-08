@@ -12,18 +12,24 @@ BEGIN
         (
             SELECT JSON_AGG(
                 JSON_BUILD_OBJECT(
-                    'nome_item', i.nome_item,
-                    'codigo', i.codigo,
-                    'quantidade', ir.quantidade
+                    'nome_consumivel', c.nome_consumivel,
+                    'codigo', c.codigo,
+                    'quantidade', cr.quantidade
                 )
             )
-            FROM Item_Requerimento ir
-            INNER JOIN Item i ON ir.ItemItem_id = i.item_id
-            WHERE ir.Requerimentorequerimento_id = r.requerimento_id
+            FROM Consumivel_Requerimento cr
+            INNER JOIN Consumivel c ON cr.consumivel_id = c.consumivel_id
+            WHERE cr.requerimento_id = r.requerimento_id
         ) AS itens_pedidos
     FROM 
         Requerimento r
     WHERE 
-        r.status = 2;
+        (
+            SELECT h.status
+            FROM HistoricoRequerimento h
+            WHERE h.requerimento_id = r.requerimento_id
+            ORDER BY h.data_modificacao DESC
+            LIMIT 1
+        ) = 2;
 END;
 $$ LANGUAGE plpgsql;

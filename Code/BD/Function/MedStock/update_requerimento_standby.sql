@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION update_requerimento_cancel(
+CREATE OR REPLACE FUNCTION update_requerimento_standby(
     p_requerimento_id INT,
     p_user_id INT
 ) RETURNS BOOL AS $$
@@ -11,9 +11,9 @@ BEGIN
         user_id_responsavel
     ) VALUES (
         p_requerimento_id,
-        CURRENT_TIMESTAMP,
-        7,
-        'Requerimento cancelado.',
+        CURRENT_TIMESTAMP(0),
+        6,
+        'Requerimento colocado em standby.',
         p_user_id
     );
 
@@ -21,6 +21,6 @@ BEGIN
 
 EXCEPTION
     WHEN OTHERS THEN
-        RAISE EXCEPTION 'Erro ao cancelar requerimento: %', SQLERRM;
+        RAISE EXCEPTION 'Erro ao colocar requerimento em standby: %', SQLERRM;
 END;
 $$ LANGUAGE plpgsql;

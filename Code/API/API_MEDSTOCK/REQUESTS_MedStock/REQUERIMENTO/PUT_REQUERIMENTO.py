@@ -3,8 +3,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import text
 from dependencies import get_db_MEDSTOCK
 from Models.C_Update_Requerimento import C_Update_Requerimento
-from Models.C_RequerimentoRequest import C_RequerimentoRequest
-import json
+
 
 router = APIRouter()
 
@@ -14,11 +13,12 @@ async def MedStock_CancelRequerimento(requerimento: C_Update_Requerimento, db=De
     try:
 
         query = text("""
-            SELECT update_requerimento_cancel(:p_requerimento_id);
+            SELECT update_requerimento_cancel(:p_requerimento_id,:p_user_id);
         """)
 
         result = db.execute(query, {
             "p_requerimento_id": requerimento.requerimento_id,
+            "p_user_id": requerimento.user_id
         })
 
         success = result.scalar()
@@ -57,7 +57,7 @@ async def MedStock_RejectRequerimento(requerimento: C_Update_Requerimento, db=De
     try:
 
         query = text("""
-            SELECT update_requerimento_reject(:p_requerimento_id, :p_user_id);
+            SELECT update_requerimento_reject(:p_requerimento_id,:p_user_id);
         """)
 
         result = db.execute(query, {
@@ -145,15 +145,16 @@ async def MedStock_AcceptRequerimento(requerimento: C_Update_Requerimento, db=De
 
 
 @router.put("/MedStock_StandByRequerimento/")
-async def MedStock_StandByRequerimento(requerimento: C_RequerimentoRequest, db=Depends(get_db_MEDSTOCK)):
+async def MedStock_StandByRequerimento(requerimento: C_Update_Requerimento, db=Depends(get_db_MEDSTOCK)):
     try:
 
         query = text("""
-            SELECT update_requerimento_standby(:p_requerimento_id);
+            SELECT update_requerimento_standby(:p_requerimento_id,:p_user_id);
         """)
 
         result = db.execute(query, {
             "p_requerimento_id": requerimento.requerimento_id,
+            "p_user_id": requerimento.user_id
         })
 
         success = result.scalar()
@@ -189,15 +190,16 @@ async def MedStock_StandByRequerimento(requerimento: C_RequerimentoRequest, db=D
         
         
 @router.put("/MedStock_ResumeRequerimento/")
-async def MedStock_ResumeRequerimento(requerimento: C_RequerimentoRequest, db=Depends(get_db_MEDSTOCK)):
+async def MedStock_ResumeRequerimento(requerimento: C_Update_Requerimento, db=Depends(get_db_MEDSTOCK)):
     try:
 
         query = text("""
-            SELECT update_requerimento_resume(:p_requerimento_id);
+            SELECT update_requerimento_resume(:p_requerimento_id,:p_user_id);
         """)
 
         result = db.execute(query, {
             "p_requerimento_id": requerimento.requerimento_id,
+            "p_user_id": requerimento.user_id
         })
 
         success = result.scalar()
@@ -232,15 +234,16 @@ async def MedStock_ResumeRequerimento(requerimento: C_RequerimentoRequest, db=De
         }
         
 @router.put("/MedStock_PrepareRequerimento/")
-async def MedStock_PrepareRequerimento(requerimento: C_RequerimentoRequest, db=Depends(get_db_MEDSTOCK)):
+async def MedStock_PrepareRequerimento(requerimento: C_Update_Requerimento, db=Depends(get_db_MEDSTOCK)):
     try:
 
         query = text("""
-            SELECT update_requerimento_preparation(:p_requerimento_id);
+            SELECT update_requerimento_preparation(:p_requerimento_id,:p_user_id);
         """)
 
         result = db.execute(query, {
             "p_requerimento_id": requerimento.requerimento_id,
+            "p_user_id": requerimento.user_id
         })
 
         success = result.scalar()

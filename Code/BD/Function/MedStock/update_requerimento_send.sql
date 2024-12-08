@@ -1,7 +1,6 @@
-CREATE OR REPLACE FUNCTION update_requerimento_reject(
+CREATE OR REPLACE FUNCTION update_requerimento_send(
     p_requerimento_id INT,
-    p_user_id INT,
-    p_motivo VARCHAR
+    p_user_id INT
 ) RETURNS BOOL AS $$
 BEGIN
     INSERT INTO HistoricoRequerimento (
@@ -12,9 +11,9 @@ BEGIN
         user_id_responsavel
     ) VALUES (
         p_requerimento_id,
-        CURRENT_TIMESTAMP,
-        5,
-        COALESCE(p_motivo, 'Requerimento rejeitado sem motivo especificado.'),
+        CURRENT_TIMESTAMP(0),
+        8,
+        'Consumiveis enviados.',
         p_user_id
     );
 
@@ -22,6 +21,6 @@ BEGIN
 
 EXCEPTION
     WHEN OTHERS THEN
-        RAISE EXCEPTION 'Erro ao rejeitar requerimento: %', SQLERRM;
+        RAISE EXCEPTION 'Erro ao enviar requerimento: %', SQLERRM;
 END;
 $$ LANGUAGE plpgsql;

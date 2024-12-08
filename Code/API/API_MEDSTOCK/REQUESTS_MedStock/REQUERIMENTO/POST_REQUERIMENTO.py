@@ -5,7 +5,8 @@ from dependencies import get_db_MEDSTOCK
 from Models.C_CreateRequerimento import C_CreateRequerimento
 from send_email import (enviarEmailRequerimentoAceito, enviarEmailRequerimentoRecusado, 
                         enviarEmailRequerimentoPreparacao, enviarEmailRequerimentoStandBy,
-                        enviarEmailRequerimentoProntoEntrega,enviarEmailRequerimentoListaEspera, enviarEmailRequerimentoEntregue)
+                        enviarEmailRequerimentoProntoEntrega,enviarEmailRequerimentoListaEspera, enviarEmailRequerimentoEntregue,
+                        enviarEmailRequerimentoCriado)
 from Models.C_RequerimentoRequest import C_RequerimentoRequest
 import json
 
@@ -73,81 +74,91 @@ async def MedStock_SendEmailRequerimentoStatus(request: C_RequerimentoRequest, d
                 "error": "Requerimento não encontrado."
             }
 
-        # Mapeamento dos campos retornados pelo PostgreSQL
         requerimento_id = result.requerimento_id
-        setor_nome_localizacao = result.setor_nome_localizacao
         nome_utilizador_pedido = result.nome_utilizador_pedido
         email_utilizador_pedido = result.email_utilizador_pedido
-        nome_gestor_responsavel = result.nome_gestor_responsavel
-        email_gestor_responsavel = result.email_gestor_responsavel
-        status = result.status
-        urgente = result.urgente
+        status_atual = result.status_atual
         itens_pedidos = result.itens_pedidos
-        data_pedido = result.data_pedido
-        nome_utilizador_confirmacao = result.nome_utilizador_confirmacao
-        data_confirmacao = result.data_confirmacao
-        nome_utilizador_envio = result.nome_utilizador_envio
-        data_envio = result.data_envio
-        nome_utilizador_preparacao = result.nome_utilizador_preparacao
-        data_preparacao = result.data_preparacao
-
-        # Lógica para envio de e-mail com base no status
-        if status == 1:
+        historico = result.historico
+        
+        ultima_entrada = historico[-1]
+        user_responsavel = ultima_entrada["user_responsavel"]
+        data_modificacao = ultima_entrada["data_modificacao"]
+        
+        if status_atual == 0:
+            email_sent = enviarEmailRequerimentoStandBy(
+                nome_utilizador_pedido=nome_utilizador_pedido,
+                receiver_email=email_utilizador_pedido,
+                requerimento_id=requerimento_id,
+                itens_pedidos=itens_pedidos,
+            )
+            email_message = "E-mail de requerimento enviado com sucesso!"
+        elif status_atual == 1:
             email_sent = enviarEmailRequerimentoAceito(
                 nome_utilizador_pedido=nome_utilizador_pedido,
                 receiver_email=email_utilizador_pedido,
                 requerimento_id=requerimento_id,
                 itens_pedidos=itens_pedidos,
-                data_confirmacao=data_confirmacao,
-                nome_utilizador_confirmacao=nome_utilizador_confirmacao
+                user_responsavel=user_responsavel,
+                data_modificacao=data_modificacao,
             )
             email_message = "E-mail de requerimento aceite enviado com sucesso!"
-        elif status == 2:
+        elif status_atual == 2:
             email_sent = enviarEmailRequerimentoPreparacao(
                 nome_utilizador_pedido=nome_utilizador_pedido,
                 receiver_email=email_utilizador_pedido,
                 requerimento_id=requerimento_id,
-                itens_pedidos=itens_pedidos
+                itens_pedidos=itens_pedidos,
             )
             email_message = "E-mail de requerimento em preparação enviado com sucesso!"
-        elif status == 3:
+        elif status_atual == 3:
             email_sent = enviarEmailRequerimentoProntoEntrega(
                 nome_utilizador_pedido=nome_utilizador_pedido,
                 receiver_email=email_utilizador_pedido,
                 requerimento_id=requerimento_id,
                 itens_pedidos=itens_pedidos,
-                nome_utilizador_confirmacao=nome_utilizador_preparacao,
-                data_preparacao=data_preparacao
+                user_responsavel=user_responsavel,
+                data_modificacao=data_modificacao,
             )
             email_message = "E-mail de requerimento pronto para entrega enviado com sucesso!"
-        elif status == 5:
+        elif status_atual == 5:
             email_sent = enviarEmailRequerimentoRecusado(
                 nome_utilizador_pedido=nome_utilizador_pedido,
                 receiver_email=email_utilizador_pedido,
                 requerimento_id=requerimento_id,
                 itens_pedidos=itens_pedidos,
-                data_confirmacao=data_confirmacao,
-                nome_utilizador_confirmacao=nome_utilizador_confirmacao
+                user_responsavel=user_responsavel,
+                data_modificacao=data_modificacao,
             )
             email_message = "E-mail de requerimento recusado enviado com sucesso!"
-        elif status == 6:
+        elif status_atual == 6:
             email_sent = enviarEmailRequerimentoStandBy(
                 nome_utilizador_pedido=nome_utilizador_pedido,
                 receiver_email=email_utilizador_pedido,
                 requerimento_id=requerimento_id,
-                itens_pedidos=itens_pedidos
+                itens_pedidos=itens_pedidos,
             )
             email_message = "E-mail de requerimento em stand-by enviado com sucesso!"
-        elif status == 8:
+        elif status_atual == 8:
             email_sent = enviarEmailRequerimentoEntregue(
                 nome_utilizador_pedido=nome_utilizador_pedido,
                 receiver_email=email_utilizador_pedido,
                 requerimento_id=requerimento_id,
                 itens_pedidos=itens_pedidos,
-                nome_entregador=nome_utilizador_envio,
-                data_entrega=data_envio
+                user_responsavel=user_responsavel,
+                data_modificacao=data_modificacao,
             )
-            email_message = "E-mail de requerimento em validação enviado com sucesso!"
+            email_message = "E-mail de requerimento entregue enviado com sucesso!"
+        elif status_atual == 10:
+            email_sent = enviarEmailRequerimentoListaEspera(
+                nome_utilizador_pedido=nome_utilizador_pedido,
+                receiver_email=email_utilizador_pedido,
+                requerimento_id=requerimento_id,
+                itens_pedidos=itens_pedidos,
+            )
+            email_message = "E-mail de requerimento entregue enviado com sucesso!"      
+            
+            
         else:
             return {
                 "response": False,

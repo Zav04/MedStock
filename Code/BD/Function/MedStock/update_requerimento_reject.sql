@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION update_requerimento_preparation(
+CREATE OR REPLACE FUNCTION update_requerimento_reject(
     p_requerimento_id INT,
     p_user_id INT
 ) RETURNS BOOL AS $$
@@ -11,9 +11,9 @@ BEGIN
         user_id_responsavel
     ) VALUES (
         p_requerimento_id,
-        CURRENT_TIMESTAMP,
-        2,
-        'Requerimento em preparação.',
+        CURRENT_TIMESTAMP(0),
+        5,
+        'Requerimento rejeitado.',
         p_user_id
     );
 
@@ -21,6 +21,6 @@ BEGIN
 
 EXCEPTION
     WHEN OTHERS THEN
-        RAISE EXCEPTION 'Erro ao atualizar para status em preparação: %', SQLERRM;
+        RAISE EXCEPTION 'Erro ao rejeitar requerimento: %', SQLERRM;
 END;
 $$ LANGUAGE plpgsql;

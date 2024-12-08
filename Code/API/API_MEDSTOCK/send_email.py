@@ -2,6 +2,7 @@ import os
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from datetime import datetime
 
 
 def enviarEmailRegistro(receiver_email:str, password:str):
@@ -51,7 +52,8 @@ def enviarEmailRegistro(receiver_email:str, password:str):
     except Exception as e:
         return False
 
-def enviarEmailRequerimentoAceito(nome_utilizador_pedido:str,receiver_email:str, requerimento_id:int, itens_pedidos:list, nome_utilizador_confirmacao:str, data_confirmacao:str):
+
+def enviarEmailRequerimentoCriado(nome_utilizador_pedido:str,receiver_email:str, requerimento_id:int, itens_pedidos:list):
     
     sender_email = os.getenv('EMAIL')
     password_email = os.getenv('PW')
@@ -64,7 +66,7 @@ def enviarEmailRequerimentoAceito(nome_utilizador_pedido:str,receiver_email:str,
 
     if itens_pedidos is not None:
         itens_html = "".join(
-            f"<li>{item['nome_item']} - Quantidade: {item['quantidade']}</li>"
+            f"<li>{item['nome_consumivel']} - Quantidade: {item['quantidade']}</li>"
             for item in itens_pedidos
         )
     else:
@@ -80,9 +82,7 @@ def enviarEmailRequerimentoAceito(nome_utilizador_pedido:str,receiver_email:str,
         </div>
         <div style="padding: 20px; text-align: left;">
             <p>Prezado(a) {nome_utilizador_pedido},</p>
-            <p>O requerimento <strong>REQ-{requerimento_id}</strong> foi aceite e está na lista de espera da farmácia para ser preparado.</p>
-            <p>Aprovação realizada por: <strong>{nome_utilizador_confirmacao}</strong></p>
-            <p>Data de Aprovação: <strong>{data_confirmacao.strftime('%d/%m/%Y %H:%M:%S')}</strong></p>
+            <p>O requerimento <strong>REQ-{requerimento_id}</strong> foi criado, fique a espera pela aprovação da gestor responsável.</p>
             <h3>Itens Solicitados:</h3>
             <ul>
                 {itens_html}
@@ -112,7 +112,75 @@ def enviarEmailRequerimentoAceito(nome_utilizador_pedido:str,receiver_email:str,
 
 
 
-def enviarEmailRequerimentoRecusado(nome_utilizador_pedido:str,receiver_email: str, requerimento_id: int, itens_pedidos: list, nome_utilizador_confirmacao: str, data_confirmacao: str):
+def enviarEmailRequerimentoAceito(nome_utilizador_pedido:str,receiver_email:str, 
+                                requerimento_id:int, itens_pedidos:list, user_responsavel:str, 
+                                data_modificacao:str):
+    
+    sender_email = os.getenv('EMAIL')
+    password_email = os.getenv('PW')
+
+    # Configuração da mensagem
+    message = MIMEMultipart("alternative")
+    message["Subject"] = f"MedStock - Requerimento #{requerimento_id} Aceite"
+    message["From"] = sender_email
+    message["To"] = receiver_email
+    
+    
+    data_modificacao_datetime = datetime.strptime(data_modificacao, "%Y-%m-%dT%H:%M:%S")
+    data_formatada = data_modificacao_datetime.strftime('%d/%m/%Y %H:%M:%S')
+
+    if itens_pedidos is not None:
+        itens_html = "".join(
+            f"<li>{item['nome_consumivel']} - Quantidade: {item['quantidade']}</li>"
+            for item in itens_pedidos
+        )
+    else:
+        itens_html = ""
+
+
+    html = f"""\
+    <html>
+    <body>
+    <div style="max-width: 600px; margin: 20px auto; padding: 20px; background: #ffffff; border: 1px solid #ddd; border-radius: 7px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); font-family: Arial, sans-serif; color: #333;">
+        <div style="background: #89c379; color: #ffffff; padding: 10px; text-align: center; border-radius: 7px 7px 0 0;">
+            <h2 style="margin: 0;">MedStock - Requerimento Aceite</h2>
+        </div>
+        <div style="padding: 20px; text-align: left;">
+            <p>Prezado(a) {nome_utilizador_pedido},</p>
+            <p>O requerimento <strong>REQ-{requerimento_id}</strong> foi aceite e está na lista de espera da farmácia para ser preparado.</p>
+            <p>Aprovação realizada por: <strong>{user_responsavel}</strong></p>
+            <p>Data de Aprovação: <strong>{data_formatada}</strong></p>
+            <h3>Itens Solicitados:</h3>
+            <ul>
+                {itens_html}
+            </ul>
+        </div>
+        <div style="text-align: center; padding: 10px 0; color: #aaa; font-size: 12px;">
+            <p>Obrigado,</p>
+            <p>Equipe MedStock</p>
+        </div>
+    </div>
+    </body>
+    </html>
+    """
+
+    # Parte HTML
+    part2 = MIMEText(html, "html")
+    message.attach(part2)
+
+    # Envio do e-mail
+    try:
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(sender_email, password_email)
+            server.sendmail(sender_email, receiver_email, message.as_string())
+        return True
+    except Exception as e:
+        return False
+
+
+
+def enviarEmailRequerimentoRecusado(nome_utilizador_pedido:str,receiver_email: str, requerimento_id: int, 
+                                    itens_pedidos: list, user_responsavel:str, data_modificacao:str):
     sender_email = os.getenv('EMAIL')
     password_email = os.getenv('PW')
 
@@ -122,10 +190,13 @@ def enviarEmailRequerimentoRecusado(nome_utilizador_pedido:str,receiver_email: s
     message["From"] = sender_email
     message["To"] = receiver_email
 
+    data_modificacao_datetime = datetime.strptime(data_modificacao, "%Y-%m-%dT%H:%M:%S")
+    data_formatada = data_modificacao_datetime.strftime('%d/%m/%Y %H:%M:%S')
+
     # Conteúdo HTML
     if itens_pedidos is not None:
         itens_html = "".join(
-            f"<li>{item['nome_item']} - Quantidade: {item['quantidade']}</li>"
+            f"<li>{item['nome_consumivel']} - Quantidade: {item['quantidade']}</li>"
             for item in itens_pedidos
         )
     else:
@@ -141,13 +212,13 @@ def enviarEmailRequerimentoRecusado(nome_utilizador_pedido:str,receiver_email: s
         <div style="padding: 20px; text-align: left;">
             <p>Prezado(a) {nome_utilizador_pedido},</p>
             <p>Infelizmente, o requerimento <strong>REQ-{requerimento_id}</strong> foi <strong>Recusado</strong>.</p>
-            <p>Decisão realizada por: <strong>{nome_utilizador_confirmacao}</strong></p>
-            <p>Data da decisão: <strong>{data_confirmacao.strftime('%d/%m/%Y %H:%M:%S')}</strong></p>
+            <p>Decisão realizada por: <strong>{user_responsavel}</strong></p>
+            <p>Data da decisão: <strong>{data_formatada}</strong></p>
             <p>Abaixo está a lista dos itens solicitados no requerimento:</p>
             <ul>
                 {itens_html}
             </ul>
-            <p>Caso precise de assistência, não hesite em entrar em contato com o setor responsável.</p>
+            <p>Caso precise de assistência, não hesite em entrar em contato com o gestor responsável.</p>
         </div>
         <div style="text-align: center; padding: 10px 0; color: #aaa; font-size: 12px;">
             <p>Obrigado,</p>
@@ -184,7 +255,7 @@ def enviarEmailRequerimentoStandBy(nome_utilizador_pedido:str,receiver_email: st
 
     if itens_pedidos is not None:
         itens_html = "".join(
-            f"<li>{item['nome_item']} - Quantidade: {item['quantidade']}</li>"
+            f"<li>{item['nome_consumivel']} - Quantidade: {item['quantidade']}</li>"
             for item in itens_pedidos
         )
     else:
@@ -237,7 +308,7 @@ def enviarEmailRequerimentoListaEspera(nome_utilizador_pedido:str,receiver_email
 
     if itens_pedidos is not None:
         itens_html = "".join(
-            f"<li>{item['nome_item']} - Quantidade: {item['quantidade']}</li>"
+            f"<li>{item['nome_consumivel']} - Quantidade: {item['quantidade']}</li>"
             for item in itens_pedidos
         )
     else:
@@ -252,7 +323,7 @@ def enviarEmailRequerimentoListaEspera(nome_utilizador_pedido:str,receiver_email
         </div>
         <div style="padding: 20px; text-align: left;">
             <p>Prezado(a) {nome_utilizador_pedido},</p>
-            <p>O requerimento <strong>REQ-{requerimento_id}</strong> foi retornado à lista de espera da farmácia.</p>
+            <p>O requerimento <strong>REQ-{requerimento_id}</strong> retornou à lista de espera da farmácia.</p>
             <h3>Itens do Requerimento:</h3>
             <ul>
                 {itens_html}
@@ -291,7 +362,7 @@ def enviarEmailRequerimentoPreparacao(nome_utilizador_pedido:str,receiver_email:
 
     if itens_pedidos is not None:
         itens_html = "".join(
-            f"<li>{item['nome_item']} - Quantidade: {item['quantidade']}</li>"
+            f"<li>{item['nome_consumivel']} - Quantidade: {item['quantidade']}</li>"
             for item in itens_pedidos
         )
     else:
@@ -333,7 +404,8 @@ def enviarEmailRequerimentoPreparacao(nome_utilizador_pedido:str,receiver_email:
         return False
 
 
-def enviarEmailRequerimentoProntoEntrega(nome_utilizador_pedido:str,receiver_email: str, requerimento_id: int, itens_pedidos: list, nome_utilizador_preparacao: str, data_preparacao: str):
+def enviarEmailRequerimentoProntoEntrega(nome_utilizador_pedido:str,receiver_email: str, requerimento_id: int, 
+                                        itens_pedidos: list, user_responsavel: str, data_modificacao:str):
     sender_email = os.getenv('EMAIL')
     password_email = os.getenv('PW')
 
@@ -341,10 +413,13 @@ def enviarEmailRequerimentoProntoEntrega(nome_utilizador_pedido:str,receiver_ema
     message["Subject"] = f"MedStock - Requerimento #{requerimento_id} Pronto para Entrega"
     message["From"] = sender_email
     message["To"] = receiver_email
+    
+    data_modificacao_datetime = datetime.strptime(data_modificacao, "%Y-%m-%dT%H:%M:%S")
+    data_formatada = data_modificacao_datetime.strftime('%d/%m/%Y %H:%M:%S')
 
     if itens_pedidos is not None:
         itens_html = "".join(
-            f"<li>{item['nome_item']} - Quantidade: {item['quantidade']}</li>"
+            f"<li>{item['nome_consumivel']} - Quantidade: {item['quantidade']}</li>"
             for item in itens_pedidos
         )
     else:
@@ -360,7 +435,7 @@ def enviarEmailRequerimentoProntoEntrega(nome_utilizador_pedido:str,receiver_ema
         <div style="padding: 20px; text-align: left;">
             <p>Prezado(a) {nome_utilizador_pedido},</p>
             <p>O requerimento <strong>REQ-{requerimento_id}</strong> está pronto para entrega e será enviado brevemente.</p>
-            <p>Pedido realizado por: <strong>{nome_utilizador_preparacao}</strong> em <strong>{data_preparacao}</strong>.</p>
+            <p>Pedido realizado por: <strong>{user_responsavel}</strong> em <strong>{data_formatada}</strong>.</p>
             <h3>Itens do Requerimento:</h3>
             <ul>
                 {itens_html}
@@ -391,8 +466,8 @@ def enviarEmailRequerimentoEntregue(
     receiver_email: str,
     requerimento_id: int,
     itens_pedidos: list,
-    nome_entregador: str,
-    data_entrega: str
+    user_responsavel:str, 
+    data_modificacao:str
 ):
     sender_email = os.getenv('EMAIL')
     password_email = os.getenv('PW')
@@ -402,9 +477,12 @@ def enviarEmailRequerimentoEntregue(
     message["From"] = sender_email
     message["To"] = receiver_email
 
+    data_modificacao_datetime = datetime.strptime(data_modificacao, "%Y-%m-%dT%H:%M:%S")
+    data_formatada = data_modificacao_datetime.strftime('%d/%m/%Y %H:%M:%S')
+
     if itens_pedidos is not None:
         itens_html = "".join(
-            f"<li>{item['nome_item']} - Quantidade: {item['quantidade']}</li>"
+            f"<li>{item['nome_consumivel']} - Quantidade: {item['quantidade']}</li>"
             for item in itens_pedidos
         )
     else:
@@ -420,7 +498,7 @@ def enviarEmailRequerimentoEntregue(
         <div style="padding: 20px; text-align: left;">
             <p>Prezado(a) {nome_utilizador_pedido},</p>
             <p>O requerimento <strong>REQ-{requerimento_id}</strong> foi entregue com sucesso.</p>
-            <p>Entrega realizada por: <strong>{nome_entregador}</strong> em <strong>{data_entrega}</strong>.</p>
+            <p>Entrega realizada por: <strong>{user_responsavel}</strong> em <strong>{data_formatada}</strong>.</p>
             <p>Por favor, valide a entrega para concluir o processo.</p>
             <h3>Itens do Requerimento:</h3>
             <ul>

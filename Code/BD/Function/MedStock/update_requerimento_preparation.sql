@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION update_requerimento_resume(
+CREATE OR REPLACE FUNCTION update_requerimento_preparation(
     p_requerimento_id INT,
     p_user_id INT
 ) RETURNS BOOL AS $$
@@ -11,9 +11,9 @@ BEGIN
         user_id_responsavel
     ) VALUES (
         p_requerimento_id,
-        CURRENT_TIMESTAMP,
-        1,
-        'Requerimento retornou a lista de espera.',
+        CURRENT_TIMESTAMP(0),
+        2,
+        'Requerimento em preparação.',
         p_user_id
     );
 
@@ -21,6 +21,6 @@ BEGIN
 
 EXCEPTION
     WHEN OTHERS THEN
-        RAISE EXCEPTION 'Erro ao retomar requerimento: %', SQLERRM;
+        RAISE EXCEPTION 'Erro ao atualizar para status em preparação: %', SQLERRM;
 END;
 $$ LANGUAGE plpgsql;

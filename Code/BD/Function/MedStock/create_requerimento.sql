@@ -8,6 +8,8 @@ DECLARE
     new_requerimento_id INT;
     item RECORD;
     setor_responsavel INT;
+    status_inicial INT;
+    descricao_status TEXT;
 BEGIN
     IF items_list IS NULL OR json_array_length(items_list) = 0 THEN
         RAISE EXCEPTION 'Selecione pelo menos um consumível.';
@@ -25,12 +27,20 @@ BEGIN
         RAISE EXCEPTION 'O setor selecionado não possui um responsável definido.';
     END IF;
 
+    IF urgente THEN
+        status_inicial := 1;
+        descricao_status := 'Requerimento criado e enviado para a farmácia.';
+    ELSE
+        status_inicial := 0;
+        descricao_status := 'Requerimento criado.';
+    END IF;
+
     INSERT INTO Requerimento (setor_id, user_id_pedido, urgente, tipo_requerimento)
     VALUES (p_setor_id, user_id_pedido, urgente, 'Interno')
     RETURNING requerimento_id INTO new_requerimento_id;
 
     INSERT INTO HistoricoRequerimento (requerimento_id, data_modificacao, status, descricao, user_id_responsavel)
-    VALUES (new_requerimento_id, CURRENT_TIMESTAMP(0), 0, 'Requerimento criado', user_id_pedido);
+    VALUES (new_requerimento_id, CURRENT_TIMESTAMP(0), status_inicial, descricao_status, user_id_pedido);
 
     FOR item IN SELECT * FROM json_to_recordset(items_list) AS (consumivel_id INT, quantidade INT)
     LOOP

@@ -33,10 +33,11 @@ async def API_UpdateConsumivel(consumivel_id, quantidade_minima, quantidade_pedi
     except httpx.RequestError as e:
         return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
 
-def API_CancelRequerimento(requerimento_id):
+def API_CancelRequerimento(user_id:int,requerimento_id):
     URL = os.getenv('API_URL') + os.getenv('API_CancelRequerimento')
     payload = {
         "requerimento_id": requerimento_id,
+        "user_id": user_id
         }
     try:
         response = httpx.put(URL, json=payload, headers={"Content-Type": "application/json"})
@@ -89,11 +90,12 @@ def API_AcceptRequerimento(user_id,requerimento_id):
         return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
     
 
-def API_StandByRequerimento(requerimento_id: int):
+def API_StandByRequerimento(user_id:int,requerimento_id: int):
     URL = os.getenv('API_URL') + os.getenv('API_StandByRequerimento')
     payload = {
-        "requerimento_id": requerimento_id
-    }
+        "requerimento_id": requerimento_id,
+        "user_id": user_id
+        }
     try:
         response = httpx.put(URL, json=payload, headers={"Content-Type": "application/json"})
         
@@ -115,11 +117,12 @@ def API_StandByRequerimento(requerimento_id: int):
         return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
 
 
-def API_ResumeRequerimento(requerimento_id: int):
+def API_ResumeRequerimento(user_id:int,requerimento_id: int):
     URL = os.getenv('API_URL') + os.getenv('API_ResumeRequerimento')
     payload = {
-        "requerimento_id": requerimento_id
-    }
+        "requerimento_id": requerimento_id,
+        "user_id": user_id
+        }
     try:
         response = httpx.put(URL, json=payload, headers={"Content-Type": "application/json"})
         
@@ -142,11 +145,12 @@ def API_ResumeRequerimento(requerimento_id: int):
 
     
     
-def API_PrepareRequerimento(requerimento_id: int):
+def API_PrepareRequerimento(user_id:int,requerimento_id: int):
     URL = os.getenv('API_URL') + os.getenv('API_PrepareRequerimento')
     payload = {
-        "requerimento_id": requerimento_id
-    }
+        "requerimento_id": requerimento_id,
+        "user_id": user_id
+        }
     try:
         response = httpx.put(URL, json=payload, headers={"Content-Type": "application/json"})
         
