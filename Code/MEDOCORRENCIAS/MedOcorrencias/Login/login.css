@@ -1,0 +1,92 @@
+/* Resetando margens e padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Corpo da página */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+}
+
+/* Estilo do título principal */
+h1 {
+    color: #d61f19;
+    margin-bottom: 20px;
+    font-size: 2.5rem;
+}
+
+/* Formulário de recuperação de senha */
+form {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+/* Estilo dos campos de entrada */
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+}
+
+/* Estilo do botão */
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #d61f19;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #e64141;
+}
+
+/* Link para voltar ao login */
+p a {
+    color: #504c4a;
+    text-decoration: none;
+    margin-top: 20px;  /* Margem para afastar do botão */
+    display: inline-block;
+}
+
+p a:hover {
+    text-decoration: underline;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    body {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    form {
+        width: 100%;
+    }
+
+    button {
+        font-size: 1rem;
+    }
+}

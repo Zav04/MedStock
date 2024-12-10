@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedOcorrencias - Home</title>
+    <link rel="stylesheet" href="home.css"> <!-- Caminho para o CSS -->
+</head>
+<body>
+    <div id="homePage">
+        <h1>Registrar uma Ocorrência</h1>
+        <form id="occurrenceForm">
+            <label for="patientName">Nome do Paciente:</label>
+            <input type="text" id="patientName" name="patientName" required>
+            <label for="description">Descreva a Ocorrência:</label>
+            <textarea id="description" name="description" rows="4" cols="50" required></textarea>
+            <button type="submit" id="submitButton">Enviar Ocorrência</button>
+        </form>
+    </div>
+
+    <script src="home.js"></script> <!-- Caminho para o JS -->
+</body>
+</html>

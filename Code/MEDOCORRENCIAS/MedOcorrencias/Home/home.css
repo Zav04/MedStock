@@ -1,0 +1,71 @@
+/* home.css */
+
+/* Define a fonte padrão para todo o corpo da página */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+}
+
+#homePage {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    padding: 0 20px;
+}
+
+#homePage h1 {
+    margin-bottom: 20px;
+    font-size: 2rem; /* Ajusta o tamanho da fonte para o título */
+}
+
+#occurrenceForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+}
+
+#occurrenceForm label {
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+#occurrenceForm input,
+#occurrenceForm textarea {
+    width: 100%;
+    max-width: 600px;
+    padding: 10px;
+    font-size: 1rem;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+#occurrenceForm input[type="text"]:focus,
+#occurrenceForm textarea:focus {
+    border-color: #e96666;
+    outline: none;
+    box-shadow: 0 0 8px rgba(233, 102, 102, 0.6);
+}   
+
+#occurrenceForm button {
+    padding: 12px 24px;
+    font-size: 1.2rem;
+    color: white;
+    background-color: #d61f19;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#occurrenceForm button:hover {
+    background-color: #e64141;
+}
+
+

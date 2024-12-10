@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - MedOcorrencias</title>
+    <link rel="stylesheet" href="login.css"> <!-- Caminho para o CSS -->
+</head>
+<body>
+    <div id="loginPage">
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <h1>Login</h1>
+            <input type="text" id="username" placeholder="Utilizador" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="submit">Entrar</button>
+            <p><a href="forgot-password.html">Esqueci a senha</a></p> <!-- Link para a página de recuperação de senha -->
+        </form>
+    </div>
+
+    <script src="login.js"></script> <!-- Caminho para o JS -->
+</body>
+</html>

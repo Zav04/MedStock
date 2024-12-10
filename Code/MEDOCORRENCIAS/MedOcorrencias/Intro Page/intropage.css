@@ -1,0 +1,32 @@
+/* intropage.css */
+#introPage {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centraliza verticalmente */
+    align-items: center; /* Centraliza horizontalmente */
+    height: 100vh; /* Garante que ocupe toda a altura da tela */
+    text-align: center; /* Centraliza o texto */
+    padding: 0 20px; /* Adiciona algum preenchimento para responsividade */
+    margin-top: -50px; /* Ajusta a margem superior para mover tudo para cima */
+}
+
+#introPage #logo {
+    width: 700px; /* Ajuste a largura do logotipo */
+    height: auto; /* Mantém a proporção da imagem */
+    margin-bottom: 0; /* Remove o espaço abaixo do logo */
+}
+
+#introPage button {
+    padding: 12px 24px;
+    font-size: 1.2rem;
+    color: white;
+    background-color: #d61f19;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: -10px; /* Margem superior negativa para puxar o botão para cima */
+}
+
+#introPage button:hover {
+    background-color: #e64141;
+}
