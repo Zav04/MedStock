@@ -95,7 +95,7 @@ class DropZone(QTableWidget):
         self.delete_button = QPushButton("Excluir Consumivel")
         self.delete_button.setIcon(QIcon(UIFunctions.recolor_icon("./icons/MaterialIcons/delete_forever.png", "#FFFFFF")))
         self.delete_button.setIconSize(QSize(30, 30))
-        self.delete_button.setFixedSize(270, 40)
+        self.delete_button.setFixedSize(300, 40)
         self.delete_button.setStyleSheet(Style.style_bt_QPushButton_Delete)
         self.delete_button.hide()
         self.delete_button.clicked.connect(self.delete_selected_row)

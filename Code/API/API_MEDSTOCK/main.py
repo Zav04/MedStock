@@ -7,9 +7,11 @@ from REQUESTS_MedStock.CREATE_USER.POST_Create_User import router as POST_create
 from REQUESTS_MedStock.ROLES.GET_Roles import router as GET_roles_router
 from REQUESTS_MedStock.CONSUMIVEIS.GET_Consumiveis import router as GET_Consumiveis_router
 from REQUESTS_MedStock.CONSUMIVEIS.PUT_Consumiveis import router as PUT_Consumiveis_router
+from REQUESTS_MedStock.CONSUMIVEIS.POST_Consumiveis import router as POST_Consumiveis_router
 from REQUESTS_MedStock.REQUERIMENTO.GET_REQUERIMENTO import router as GET_requerimento_router
 from REQUESTS_MedStock.LOGIN.GET_Login import router as GET_login_router
 from REQUESTS_MedStock.SETORES.GET_Setor import router as GET_setor_router
+from REQUESTS_MedStock.SETORES.POST_Setor import router as POST_setor_router
 from REQUESTS_MedStock.REQUERIMENTO.POST_REQUERIMENTO import router as POST_requerimento_router
 from REQUEST_MedReader.LOGIN.POST_Login import router as POST_login_router_MedReader
 from REQUEST_MedReader.REQUERIMENTO.GET_REQUERIMENTO import router as GET_requerimento_router_MedReader
@@ -31,10 +33,12 @@ api.include_router(POST_create_user_router)
 api.include_router(GET_roles_router)
 api.include_router(GET_Consumiveis_router)
 api.include_router(PUT_Consumiveis_router)
+api.include_router(POST_Consumiveis_router)
 api.include_router(GET_requerimento_router)
 api.include_router(POST_requerimento_router)
 api.include_router(GET_login_router)
 api.include_router(GET_setor_router)
+api.include_router(POST_setor_router)
 api.include_router(PUT_requerimento_router)
 
 

@@ -8,11 +8,12 @@ from Class.Requerimento import Requerimento
 from Class.ItemPedido import ItemPedido
 from Class.Utilizador import Utilizador
 from Class.Setor import SetorHospital
+from Class.TipoConsumivel import Tipo_Consumivel
 from Class.RequerimentoHistorico import RequerimentoHistorico
 from datetime import datetime, date
 
 
-async def API_GetRoles():
+async def API_GetRoles()-> APIResponse:
     URL = os.getenv('API_URL') + os.getenv('API_Get_Roles')
     async with httpx.AsyncClient() as client:
         try:    
@@ -43,7 +44,7 @@ async def API_GetRoles():
         
 
 
-async def API_GetConsumiveis():
+async def API_GetConsumiveis()-> APIResponse:
     URL = os.getenv('API_URL') + os.getenv('API_GetConsumiveis')
     async with httpx.AsyncClient() as client:
         try:
@@ -81,7 +82,7 @@ async def API_GetConsumiveis():
             return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
 
 
-async def API_GetRequerimentosByFarmaceutico():
+async def API_GetRequerimentosByFarmaceutico()-> APIResponse:
     URL = os.getenv('API_URL') + os.getenv('API_GetRequerimentosByFarmaceutico')
     async with httpx.AsyncClient() as client:
         try:
@@ -142,7 +143,7 @@ async def API_GetRequerimentosByFarmaceutico():
             return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
 
 
-async def API_GetRequerimentosByUser(user_id: int):
+async def API_GetRequerimentosByUser(user_id: int)-> APIResponse:
     URL = os.getenv('API_URL') + os.getenv('API_GetRequerimentosByUser') + f"?user_id={user_id}"
     async with httpx.AsyncClient() as client:
         try:
@@ -204,7 +205,7 @@ async def API_GetRequerimentosByUser(user_id: int):
 
 
 
-async def API_GetRequerimentosByResponsavel(user_id: int):
+async def API_GetRequerimentosByResponsavel(user_id: int)-> APIResponse:
     URL = os.getenv('API_URL') + os.getenv('API_GetRequerimentosByResponsavel') + f"?responsavel_id={user_id}"
     async with httpx.AsyncClient() as client:
         try:
@@ -266,7 +267,7 @@ async def API_GetRequerimentosByResponsavel(user_id: int):
 
 
 
-def API_GetUserByEmail(email: str):
+def API_GetUserByEmail(email: str)-> APIResponse:
     URL = os.getenv('API_URL') + os.getenv('API_GetUserByEmail') + f"?email={email}"
     try:
         response =httpx.get(URL, headers={"Content-Type": "application/json"})
@@ -306,7 +307,7 @@ def API_GetUserByEmail(email: str):
         return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
 
 
-async def API_GetSectors():
+async def API_GetSectors()-> APIResponse:
     URL = os.getenv('API_URL') + os.getenv('API_GetSectors')
     async with httpx.AsyncClient() as client:
         try:
@@ -336,9 +337,41 @@ async def API_GetSectors():
 
         except httpx.RequestError as e:
             return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
+        
+        
+async def API_GetAllTipoConsumiveis()-> APIResponse:
+    URL = os.getenv('API_URL') + os.getenv('API_GetAllTipoConsumiveis')
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(URL, headers={"Content-Type": "application/json"})
+            if response.status_code == 200:
+                response_data = response.json()
+                if response_data.get("response"):
+                    tipos = [
+                        Tipo_Consumivel(
+                            tipo_consumivel_id=tipo["tipo_id"],
+                            nome_tipo=tipo["nome_tipo"]
+                        )
+                        for tipo in response_data.get("data", [])
+                    ]
+                    return APIResponse(success=True, data=tipos)
+                else:
+                    error_message = response_data.get("error", "Erro desconhecido")
+                    return APIResponse(success=False, error_message=error_message)
 
-def API_GetEmailDetails(requerimento_id: int):
-    URL = os.getenv('API_URL') + "/MedStock_GetEmailDetails/"
+            elif response.status_code == 400:
+                error_message = response.json().get("error", "Erro desconhecido")
+                return APIResponse(success=False, error_message=error_message)
+
+            else:
+                return APIResponse(success=False, error_message=f"Erro inesperado: {response.status_code}")
+
+        except httpx.RequestError as e:
+            return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
+
+
+def API_GetEmailDetails(requerimento_id: int)-> APIResponse:
+    URL = os.getenv('API_URL') + os.getenv('API_GetEmailDetails')
     try:
         response =  httpx.get(
             URL,

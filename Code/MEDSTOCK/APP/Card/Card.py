@@ -1,9 +1,10 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QFrame,QFileDialog, QScrollArea, QSizePolicy
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QFrame,QFileDialog, QScrollArea, QSizePolicy, QDialog
 from PyQt5.QtGui import QFont, QIcon, QCursor,QPixmap
 from PyQt5.QtCore import Qt, QSize, QTimer
 from datetime import datetime
 from Class.Requerimento import Requerimento
 from Class.Utilizador import Utilizador
+from Pages.Requerimento.ValidationDialog import ValidationDialog
 from APP.UI.ui_functions import UIFunctions
 import os
 from APP.Label.Label import add_status_lable
@@ -11,7 +12,7 @@ from APP.Overlays.Overlay import Overlay
 from APP.PDF.Generate_PDF import GeneratePdfRequerimento
 from API.API_PUT_Request import (API_CancelRequerimento, API_AcceptRequerimento, API_RejectRequerimento, 
                                 API_StandByRequerimento, API_ResumeRequerimento, API_PrepareRequerimento,
-                                API_SendRequerimento)
+                                API_SendRequerimento, API_FinishRequerimento, API_ReavaliationRequerimento)
 from API.API_GET_Request import API_GetEmailDetails
 from API.API_POST_Request import API_SendEmailRequerimentoStatus
 
@@ -19,6 +20,7 @@ from API.API_POST_Request import API_SendEmailRequerimentoStatus
 class RequerimentoCard(QWidget):
     def __init__(self, user:Utilizador, requerimento: Requerimento, update_callback=None):
         super().__init__()
+        self.user = user
         self.requerimento = requerimento
         self.expanded = False
         self.callbackUpdate = update_callback
@@ -136,9 +138,17 @@ class RequerimentoCard(QWidget):
             send_button.setStyleSheet(self.button_style("#4287f5"))
             actions_layout.addWidget(send_button, alignment=Qt.AlignRight)
             send_button.clicked.connect(lambda: self.send_requerimento(user,requerimento))
-
-        #TODO DESENHAR O BOTÂO DE REQUERENTE AVALIAR O PEDIDO QUE CHEGOU
         
+        if requerimento.status_atual == 8 and (user.role_nome != "Farmacêutico" and user.role_nome != "Gestor Responsável"):
+            validate_button = QPushButton()
+            recolored_icon_validate = QIcon(UIFunctions.recolor_icon(os.path.abspath("./icons/MaterialIcons/play.png"), "#b5c6bf"))
+            validate_button.setIcon(recolored_icon_validate)
+            validate_button.setIconSize(QSize(24, 24))
+            validate_button.setCursor(QCursor(Qt.PointingHandCursor))
+            validate_button.setStyleSheet(self.button_style("#4caf50"))
+            actions_layout.addWidget(validate_button, alignment=Qt.AlignRight)
+            validate_button.clicked.connect(lambda: self.open_validation_window(requerimento))
+
         
         download_button = QPushButton()
         download_button.setIcon(QIcon("./icons/MaterialIcons/picture_as_pdf.png"))
@@ -194,7 +204,7 @@ class RequerimentoCard(QWidget):
 
         if requerimento.itens_pedidos:
             for item in requerimento.itens_pedidos:
-                nome_item = item.nome_item or "Item desconhecido"
+                nome_consumivel = item.nome_item or "Item desconhecido"
                 quantidade = item.quantidade or "Quantidade não especificada"
                 tipo_item = item.tipo_item or "Tipo não especificado"
 
@@ -220,7 +230,7 @@ class RequerimentoCard(QWidget):
                 item_text_label = QLabel()
                 item_text_label.setText(
                     f"<span style='font-size:14px; color:#000000;'>"
-                    f"{nome_item}</span> "
+                    f"{nome_consumivel}</span> "
                     f"<span style='font-size:14px; color:#555555;'>(Quantidade: {quantidade})</span>"
                 )
                 item_text_label.setFont(QFont("Arial"))
@@ -417,7 +427,45 @@ class RequerimentoCard(QWidget):
             self.container.setMaximumHeight(self.minimumHeight_Card)
 
 
+    def open_validation_window(self, requerimento: Requerimento):
+        top_parent = self.get_top_parent()
+        validation_dialog = ValidationDialog(requerimento, self)
+        result = validation_dialog.exec_()
+
+        if result == QDialog.Accepted:
+            observations = validation_dialog.get_observations()
+            QTimer.singleShot(0, lambda: self.finishRequerimento(observations))
+        elif validation_dialog.was_cancelled:
+            Overlay.show_information(top_parent, "Validação Cancelada!")
+        elif result == QDialog.Rejected:
+            rejected_items = validation_dialog.get_rejected_items()
+            observations = validation_dialog.get_observations()
+            QTimer.singleShot(0, lambda: self.reavaliationRequerimento(rejected_items, observations))
+            Overlay.show_information(top_parent, "Requerimento rejeitado com sucesso!")
+            print("Itens rejeitados:", rejected_items)
+            print("Observações:", observations)
+
+    async def finishRequerimento(self, observations:str):
+        top_parent = self.get_top_parent()
+        response = API_FinishRequerimento(self.user.utilizador_id, self.requerimento.requerimento_id, observations)
+        if response.success:
+            Overlay.show_information(top_parent, f"Requerimento {self.requerimento.requerimento_id} finalizado com sucesso!")
+            self.callbackUpdate()
+        else:
+            Overlay.show_error(top_parent, response.error_message)
+            
+    async def reavaliationRequerimento(self, rejected_items, observations):
+        top_parent = self.get_top_parent()
+        response = API_ReavaliationRequerimento(self.user.utilizador_id,self.requerimento.requerimento_id, rejected_items, observations)
+        if response.success:
+            Overlay.show_information(top_parent, f"Requerimento {self.requerimento.requerimento_id} rejeitado com sucesso!")
+            self.callbackUpdate()
+        else:
+            Overlay.show_error(top_parent, response.error_message)
+
+
     def choose_file_location_GeneratePdfItens(self):
+        top_parent = self.get_top_parent()
         options = QFileDialog.Options()
         file_path, _ = QFileDialog.getSaveFileName(
             self, 
@@ -428,7 +476,7 @@ class RequerimentoCard(QWidget):
         )
         if file_path:
             GeneratePdfRequerimento(file_path, self.requerimento)
-            Overlay.show_information(self, "PDF guardado na localização "+file_path)
+            Overlay.show_information(top_parent, "PDF guardado na localização "+file_path)
 
     def get_top_parent(widget):
         parent = widget
@@ -450,3 +498,4 @@ class RequerimentoCard(QWidget):
                 background-color: rgba({int(color[1:3], 16)}, {int(color[3:5], 16)}, {int(color[5:], 16)}, 127);
             }}
         """
+        

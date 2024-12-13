@@ -3,6 +3,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import text
 from dependencies import get_db_MEDSTOCK
 from Models.C_Update_Requerimento import C_Update_Requerimento
+from Models.C_ReavaliationRequerimento import C_ReavaliationRequerimento
 
 
 router = APIRouter()
@@ -297,6 +298,99 @@ async def MedStock_SendRequerimento(requerimento: C_Update_Requerimento, db=Depe
             return {
                 "response": True,
                 "data": "Requerimento Aceite."
+            }
+        else:
+            db.rollback()
+            return {
+                "response": False,
+                "error": "Erro ao aceitar o requerimento."
+            }
+
+    except SQLAlchemyError as e:
+        db.rollback()
+        error_msg = str(e.__dict__['orig']).split('\n')[0]
+        return {
+            "response": False,
+            "error": error_msg
+        }
+
+    except Exception as e:
+        db.rollback()
+        error_messages = [str(arg) for arg in e.args]
+        return {
+            "response": False,
+            "error": error_messages
+        }
+
+@router.put("/MedStock_FinishRequerimento/")
+async def MedStock_FinishRequerimento(requerimento: C_ReavaliationRequerimento, db=Depends(get_db_MEDSTOCK)):
+    try:
+        query = text("""
+            SELECT update_requerimento_finish(:p_requerimento_id, :p_user_id, :p_comentario);
+        """)
+
+        result = db.execute(query, {
+            "p_requerimento_id": requerimento.requerimento_id,
+            "p_user_id": requerimento.user_id,
+            "p_comentario": requerimento.comentario if hasattr(requerimento, 'comentario') else None
+        })
+
+        success = result.scalar()
+
+        if success:
+            db.commit()
+            return {
+                "response": True,
+                "data": "Requerimento Finalizado com sucesso."
+            }
+        else:
+            db.rollback()
+            return {
+                "response": False,
+                "error": "Erro ao finalizar o requerimento."
+            }
+
+    except SQLAlchemyError as e:
+        db.rollback()
+        error_msg = str(e.__dict__['orig']).split('\n')[0]
+        return {
+            "response": False,
+            "error": error_msg
+        }
+
+    except Exception as e:
+        db.rollback()
+        error_messages = [str(arg) for arg in e.args]
+        return {
+            "response": False,
+            "error": error_messages
+        }
+
+        
+        
+        
+@router.put("/MedStock_ReavaliationRequerimento/")
+async def MedStock_ReavaliationRequerimento(requerimento: C_ReavaliationRequerimento, db=Depends(get_db_MEDSTOCK)):
+    try:
+
+        query = text("""
+            SELECT update_requerimento_reavaliation(:p_requerimento_id,:p_user_id, :p_comentario, :consumiveis_rejeitados);
+        """)
+
+        result = db.execute(query, {
+            "p_requerimento_id": requerimento.requerimento_id,
+            "p_user_id": requerimento.user_id,
+            "p_comentario": requerimento.comentario,
+            "consumiveis_rejeitados": requerimento.rejected_items
+        })
+
+        success = result.scalar()
+
+        if success:
+            db.commit()
+            return {
+                "response": True,
+                "data": "Requerimento em Reavaliação."
             }
         else:
             db.rollback()

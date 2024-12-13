@@ -422,6 +422,8 @@
     <file>icons/20x20/cil-x-circle.png</file>
     <file>icons/20x20/cil-zoom-in.png</file>
     <file>icons/20x20/cil-zoom-out.png</file>
+    <file>icons/20x20/pill.png</file>
+    <file>icons/20x20/hospital.png</file>
   </qresource>
   <qresource prefix="/">
     <file>icons/MedStock/favicon.png</file>

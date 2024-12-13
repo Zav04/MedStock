@@ -110,7 +110,37 @@ class Style():
     """
     )
     
-    
+    style_bt_QPushButton_Delete = (
+    """
+    QPushButton {
+        background-position: left center;
+        background-repeat: no-repeat;
+        border: 2px solid #f8d7da;
+        border-radius: 8px;
+        border-left: none;
+        border-right: none;
+        background-color: #f8d7da;
+        text-align: center;
+        font-size: 22px;
+        font-weight: bold;
+        color: rgb(255,255,255);
+    }
+    QPushButton:hover {
+        background-color: #E53935;
+        border-left: none;
+        border-right: none;
+        color: rgb(255,255,255);
+    }
+    QPushButton:pressed {
+        background-color: #B71C1C;
+        border-left: none;
+        border-right: none;
+        color: rgb(255,255,255);
+    }
+    """
+    )
+
+
     style_bt_QPushButton_Filter = (
     """
     QPushButton {
@@ -141,6 +171,31 @@ class Style():
     """
     )
     
+    style_bt_QPushButton_Cancel = (
+        """
+        QPushButton {
+            background-position: left center;
+            background-repeat: no-repeat;
+            border: 2px solid #d6d6d6;
+            border-radius: 8px;
+            background-color: #d6d6d6;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+        QPushButton:hover {
+            background-color: #bfbfbf;
+            color: #ffffff;
+        }
+        QPushButton:pressed {
+            background-color: #a6a6a6;
+            color: #ffffff;
+        }
+        """
+    )
+
+    
     style_bt_QPushButton_Filter_Selected = (
     """
     QPushButton {
@@ -164,25 +219,6 @@ class Style():
     """
 )
     
-    style_bt_QPushButton_Delete = """
-    QPushButton {
-        background-color: #D32F2F;
-        border: 2px solid #B71C1C;
-        border-radius: 8px;
-        color: white;
-        font-size: 20px;
-        font-weight: bold;
-        padding: 8px 16px;
-    }
-    QPushButton:hover {
-        background-color: #E53935;
-        border-color: #B71C1C;
-    }
-    QPushButton:pressed {
-        background-color: #B71C1C;
-        border-color: #7F0000;
-    }
-    """
     
     style_QComboBox = (
         """

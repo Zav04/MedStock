@@ -42,15 +42,13 @@ class RequerimentoPage(QWidget):
         self.title.setStyleSheet("color: #C0C0C0; font-weight: bold;")
         title_layout.addWidget(self.title, alignment=Qt.AlignLeft)
 
-        self.create_button = QPushButton("CRIAR NOVO REQUERIMENTO")
-        self.create_button.setFixedSize(400, 40)
-        self.create_button.setStyleSheet(Style.style_bt_QPushButton)
-        self.create_button.clicked.connect(self.show_create_requerimento_page_wrapper)
-        title_layout.addWidget(self.create_button, alignment=Qt.AlignRight)
+        if self.user.role_nome != "Gestor Responsável" and self.user.role_nome != "Farmacêutico" and self.user.role_nome != "Administrador":
+            self.create_button = QPushButton("CRIAR NOVO REQUERIMENTO")
+            self.create_button.setFixedSize(400, 40)
+            self.create_button.setStyleSheet(Style.style_bt_QPushButton)
+            self.create_button.clicked.connect(self.show_create_requerimento_page_wrapper)
+            title_layout.addWidget(self.create_button, alignment=Qt.AlignRight)
 
-        #TODO ADMIN NOT SEE THIS BUTTON
-        if self.user.role_nome == "Gestor Responsável" or self.user.role_nome == "Farmacêutico":
-            self.create_button.hide()
 
         self.main_layout.addLayout(title_layout)
         self.main_layout.addSpacing(50)
@@ -61,21 +59,7 @@ class RequerimentoPage(QWidget):
 
 
         self.filter_buttons = {}
-        if self.user.role_nome == "Gestor Responsável":
-            filter_buttons = [
-                ("Pendentes de Resposta", "Pendentes de Resposta"),
-                ("Todos", "Todos"),
-                ("Urgente", "Urgente"),
-                ("Espera de Aprovação", "Status_0"),
-                ("Na Lista de Espera", "Status_1"),
-                ("Em Preparação", "Status_2"),
-                ("Pronto para Entrega", "Status_3"),
-                ("Finalizado", "Status_4"),
-                ("Recusado", "Status_5"),
-                ("Stand-By", "Status_6"),
-                ("Cancelado", "Status_7"),
-            ]
-        elif self.user.role_nome == "Farmacêutico":
+        if self.user.role_nome == "Farmacêutico":
             filter_buttons = [
                 ("Pendentes de Resposta", "Pendentes de Resposta"),
                 ("Todos", "Todos"),
@@ -89,6 +73,7 @@ class RequerimentoPage(QWidget):
             ]
         else:
             filter_buttons = [
+                ("Pendentes de Resposta", "Pendentes de Resposta"),
                 ("Todos", "Todos"),
                 ("Urgente", "Urgente"),
                 ("Espera de Aprovação", "Status_0"),
@@ -101,10 +86,7 @@ class RequerimentoPage(QWidget):
                 ("Cancelado", "Status_7"),
             ]
             
-        if self.user.role_nome == "Gestor Responsável" or self.user.role_nome == "Farmacêutico":
             self.current_filter = "Pendentes de Resposta"
-        else:
-            self.current_filter= "Todos"
 
         for label, key in filter_buttons:
             button = QPushButton(label)
@@ -195,29 +177,28 @@ class RequerimentoPage(QWidget):
         self.sector_input.setStyleSheet(Style.style_QComboBox)
         sector_urgent_layout = QHBoxLayout()
         sector_urgent_layout.setAlignment(Qt.AlignCenter)
-        self.urgent_input = QCheckBox("Urgente")
-        self.urgent_input.setChecked(False)
-        self.urgent_input.setStyleSheet(Style.style_checkbox)
         sector_urgent_layout.addWidget(self.sector_input)
         sector_urgent_layout.addSpacing(20)
-        sector_urgent_layout.addWidget(self.urgent_input)
+        
+        if self.user.role_nome == "Enfermeiro" or self.user.role_nome == "Médico":
+            self.urgent_input = QCheckBox("Urgente")
+            self.urgent_input.setChecked(False)
+            self.urgent_input.setStyleSheet(Style.style_checkbox)
+            sector_urgent_layout.addWidget(self.urgent_input)
+
+
         content_layout.addLayout(sector_urgent_layout)
         asyncio.create_task(self.update_sectors())
         
-        if self.user.role_nome == "Enfermeiro" or self.user.role_nome == "Médico":
-            self.urgent_input.setVisible(True)
-        else:
-            self.urgent_input.setVisible(False)
-
-        create_button = QPushButton("Criar Requerimento")
-        create_button.setFixedSize(500, 40)
-        create_button.setStyleSheet(Style.style_bt_QPushButton)
-        if self.user.role_nome == "Enfermeiro" or self.user.role_nome == "Médico":
-            create_button.clicked.connect(lambda: self.create_requerimento(user_id_pedido=self.user.utilizador_id, urgent=self.urgent_input.isChecked(), drop_zone=drop_zone))
-        else:
-            create_button.clicked.connect(lambda: self.create_requerimento(user_id_pedido=self.user.utilizador_id, urgent=False, drop_zone=drop_zone))
-
-        content_layout.addWidget(create_button, alignment=Qt.AlignCenter)
+        if self.user.role_nome != "Gestor Responsável" or self.user.role_nome != "Farmacêutico":
+            create_button = QPushButton("Criar Requerimento")
+            create_button.setFixedSize(500, 40)
+            create_button.setStyleSheet(Style.style_bt_QPushButton)
+            if self.user.role_nome == "Enfermeiro" or self.user.role_nome == "Médico":
+                create_button.clicked.connect(lambda: self.create_requerimento(user_id_pedido=self.user.utilizador_id, urgent=self.urgent_input.isChecked(), drop_zone=drop_zone))
+            else:
+                create_button.clicked.connect(lambda: self.create_requerimento(user_id_pedido=self.user.utilizador_id, urgent=False, drop_zone=drop_zone))
+            content_layout.addWidget(create_button, alignment=Qt.AlignCenter)
 
         create_page_layout.addLayout(content_layout)
 
@@ -425,10 +406,14 @@ class RequerimentoPage(QWidget):
         elif filter_key == "Pendentes de Resposta":
             if self.user.role_nome == "Gestor Responsável":
                 return [req for req in self.current_requerimentos if req.status_atual == 0]
-            else:
+            elif self.user.role_nome == "Farmacêutico":
                 return [
                     req for req in self.current_requerimentos 
                     if req.status_atual in (1, 6, 3, 10)
+                ]
+            else:
+                return [
+                    req for req in self.current_requerimentos if req.status_atual == 8
                 ]
         elif filter_key == "Urgente":
             return [req for req in self.current_requerimentos if req.urgente]

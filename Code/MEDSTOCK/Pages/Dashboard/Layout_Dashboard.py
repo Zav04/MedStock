@@ -10,6 +10,8 @@ from Pages.Login.Layout_Login import Login
 from Pages.p_Add_user import CreateUserPage
 from Pages.p_Itens import ItemTablePage
 from Pages.p_Requerimento import RequerimentoPage
+from Pages.p_Add_Consumiveis import CreateConsumivelPage
+from Pages.p_Add_Setor import CreateSetorPage
 
 
 class Dashboard(QMainWindow):
@@ -44,10 +46,14 @@ class Dashboard(QMainWindow):
     def initPages(self):
         self.page_home = HomePage()
         self.page_add_user = CreateUserPage()
+        self.page_add_consumivel = CreateConsumivelPage()
+        self.page_add_setor_hospitalar = CreateSetorPage()
         self.page_stock = ItemTablePage()
         self.page_requerimento = RequerimentoPage(self.user)
         self.ui.stackedWidget.addWidget(self.page_home)
         self.ui.stackedWidget.addWidget(self.page_add_user)
+        self.ui.stackedWidget.addWidget(self.page_add_consumivel)
+        self.ui.stackedWidget.addWidget(self.page_add_setor_hospitalar)
         self.ui.stackedWidget.addWidget(self.page_stock)
         self.ui.stackedWidget.addWidget(self.page_requerimento)
         self.ui.stackedWidget.setCurrentWidget(self.page_home)
@@ -71,10 +77,10 @@ class Dashboard(QMainWindow):
         
 
         if role == "Administrador":
-            #Falta criar inserir mais consumiveis
-            #Falta Criar mais Alas Hospitalares
             #Falta Associar Utilizadores a Alas Hospitalares
             UIFunctions.addNewMenu(self, "CRIAR NOVO UTILIZADOR", "btn_new_user", "url(:/20x20/icons/20x20/cil-user-follow.png)", True)
+            UIFunctions.addNewMenu(self, "CRIAR NOVO CONSUMIVEL", "btn_new_consumivel", "url(:/20x20/icons/20x20/pill.png)", True)
+            UIFunctions.addNewMenu(self, "CRIAR NOVA ALA HOSPITALAR", "btn_new_setor", "url(:/20x20/icons/20x20/hospital.png)", True)
             UIFunctions.addNewMenu(self, "ITENS STOCK", "btn_stock", "url(:/20x20/icons/20x20/cil-notes.png)", True)
             UIFunctions.addNewMenu(self, "REQUERIMENTOS", "btn_requerimento", "url(:/20x20/icons/20x20/cil-description.png)", True)
         elif role == "Gestor Responsável":
@@ -95,6 +101,8 @@ class Dashboard(QMainWindow):
         page_map = {
             "btn_home": (self.page_home, "Home"),
             "btn_new_user": (self.page_add_user, "Novo Utilizador"),
+            "btn_new_consumivel": (self.page_add_consumivel, "Novo Consumivel"),
+            "btn_new_setor": (self.page_add_setor_hospitalar, "Nova Ala Hospitalar"),
             "btn_stock": (self.page_stock, "Stock"),
             "btn_requerimento": (self.page_requerimento, "Requerimento"),
             "btn_log_out": None

@@ -45,3 +45,30 @@ async def MedStock_GetConsumiveis(db=Depends(get_db_MEDSTOCK)):
         db.rollback()
         error_messages = [str(arg) for arg in e.args]
         return {"response": False, "error": error_messages}
+
+
+
+@router.get("/MedStock_GetAllTipoConsumiveis/")
+async def MedStock_GetAllTipoConsumiveis(db=Depends(get_db_MEDSTOCK)):
+    try:
+        query = text("SELECT * FROM get_all_tipo_consumiveis();")
+        result = db.execute(query).fetchall()
+
+        tipos = []
+        for row in result:
+            tipo_id, nome_tipo = row
+            
+            tipos.append({
+                "tipo_id": tipo_id,
+                "nome_tipo": nome_tipo,
+            })
+
+        return {"response": True, "data": tipos}
+    
+    except SQLAlchemyError as e:
+        error_msg = str(e.__dict__['orig']).split('\n')[0]
+        return {"response": False, "error": error_msg}
+
+    except Exception as e:
+        error_messages = [str(arg) for arg in e.args]
+        return {"response": False, "error": error_messages}
