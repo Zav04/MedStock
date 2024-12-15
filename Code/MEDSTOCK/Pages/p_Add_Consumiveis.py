@@ -1,10 +1,10 @@
 import random
 import string
 from PyQt5.QtWidgets import (
-    QWidget, QLabel, QLineEdit, QVBoxLayout, QPushButton, QComboBox, QDateEdit
+    QWidget, QLabel, QLineEdit, QVBoxLayout, QPushButton, QComboBox
 )
 from PyQt5.QtGui import QFont
-from PyQt5.QtCore import Qt, QDate, QTimer
+from PyQt5.QtCore import Qt, QTimer
 from APP.UI.ui_styles import Style
 from API.API_GET_Request import API_GetAllTipoConsumiveis
 from API.API_POST_Request import API_CreateConsumivel
@@ -16,11 +16,12 @@ import asyncio
 class CreateConsumivelPage(QWidget):
     def __init__(self):
         super().__init__()
+        self.tipos=[]
         self.main_layout = QVBoxLayout(self)
         self.main_layout.setAlignment(Qt.AlignCenter)
         self.main_layout.setContentsMargins(20, 30, 20, 30)
 
-        self.title = QLabel("Adicionar Consumiveis")
+        self.title = QLabel("ADICIONAR NOVO  CONSUMIVEL")
         self.title_font = QFont("Arial", 24, QFont.Bold)
         self.title.setFont(self.title_font)
         self.title.setAlignment(Qt.AlignCenter)
@@ -72,7 +73,12 @@ class CreateConsumivelPage(QWidget):
         self.register_button.clicked.connect(self.criar_consumiveis)
         self.main_layout.addWidget(self.register_button, alignment=Qt.AlignCenter)
 
+        self.update_tipos_thread = QTimer(self)
+        self.update_tipos_thread.timeout.connect(self.update_tipos_wrapper)
+        self.update_tipos_thread.start(60000)
+        
         asyncio.ensure_future(self.update_tipos())
+        
         self.setLayout(self.main_layout)
         
     def criar_consumiveis(self):  
@@ -93,12 +99,17 @@ class CreateConsumivelPage(QWidget):
     async def update_tipos(self):
         response = await API_GetAllTipoConsumiveis()
         if response.success:
-            QTimer.singleShot(0, lambda: self.create_tipos(response.data))
+            asyncio.ensure_future(self.create_tipos(response.data))
         else:
             Overlay.show_error(self, response.error_message)
 
     def create_tipos(self, tipos):
-        self.tipo_input.clear()
-        self.tipo_input.addItem("Selecione o Tipo", None)
-        for tipo in tipos:
-            self.tipo_input.addItem(tipo.nome_tipo, tipo.tipo_consumivel_id)
+        if tipos != self.tipos:
+            self.tipos = tipos
+            self.tipo_input.clear()
+            self.tipo_input.addItem("Selecione o Tipo", None)
+            for tipo in tipos:
+                self.tipo_input.addItem(tipo.nome_tipo, tipo.tipo_consumivel_id)
+
+    def update_tipos_wrapper(self):
+        asyncio.ensure_future(self.update_tipos())

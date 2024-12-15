@@ -16,7 +16,7 @@ class CreateSetorPage(QWidget):
         self.main_layout.setContentsMargins(20, 30, 20, 30)
 
         # Título da página
-        self.title = QLabel("Adicionar Setor Hospitalar")
+        self.title = QLabel("ADICIONAR NOVO SETOR HOSPITALAR")
         self.title_font = QFont("Arial", 24, QFont.Bold)
         self.title.setFont(self.title_font)
         self.title.setAlignment(Qt.AlignCenter)

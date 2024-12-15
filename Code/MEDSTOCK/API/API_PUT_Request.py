@@ -288,3 +288,31 @@ async def API_ReavaliationRequerimento(user_id:int, requerimento_id:int, rejecte
                 return APIResponse(success=False, error_message="Erro inesperado")
     except httpx.RequestError as e:
         return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
+    
+
+async def API_AssociateUserToSector(utilizador_id: int, setor_id: int) -> APIResponse:
+    URL = os.getenv('API_URL') + os.getenv('API_AssociateUtilizadorToSector')
+    payload = {
+        "utilizador_id": utilizador_id,
+        "setor_id": setor_id
+    }
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.put(URL, json=payload, headers={"Content-Type": "application/json"})
+            if response.status_code == 200:
+                response_data = response.json()
+                if response_data.get("response"):
+                    return APIResponse(success=True, data=response_data.get("data"))
+                else:
+                    error_message = response_data.get("error", "Erro desconhecido")
+                    return APIResponse(success=False, error_message=error_message)
+
+            elif response.status_code == 400:
+                error_message = response.json().get("error", "Erro desconhecido")
+                return APIResponse(success=False, error_message=error_message)
+
+            else:
+                return APIResponse(success=False, error_message=f"Erro inesperado: {response.status_code}")
+
+    except httpx.RequestError as e:
+        return APIResponse(success=False, error_message=f"Erro de conexão: {e}")

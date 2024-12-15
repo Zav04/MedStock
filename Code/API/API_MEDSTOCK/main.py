@@ -3,7 +3,9 @@ import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 from REQUESTS_MedStock.LOGIN.POST_Login import router as POST_login_router
 from REQUESTS_MedStock.RESET_PASSWORD.POST_Reset_Password import router as POST_reset_password_router
-from REQUESTS_MedStock.CREATE_USER.POST_Create_User import router as POST_create_user_router
+from REQUESTS_MedStock.UTILIZADOR.POST_Utilizador import router as POST_utilizador_router
+from REQUESTS_MedStock.UTILIZADOR.GET_Utilizador import router as GET_utilizador_router
+from REQUESTS_MedStock.UTILIZADOR.PUT_Utilizador import router as PUT_utilizador_router
 from REQUESTS_MedStock.ROLES.GET_Roles import router as GET_roles_router
 from REQUESTS_MedStock.CONSUMIVEIS.GET_Consumiveis import router as GET_Consumiveis_router
 from REQUESTS_MedStock.CONSUMIVEIS.PUT_Consumiveis import router as PUT_Consumiveis_router
@@ -29,7 +31,9 @@ api.add_middleware(
 
 api.include_router(POST_login_router)
 api.include_router(POST_reset_password_router)
-api.include_router(POST_create_user_router)
+api.include_router(POST_utilizador_router)
+api.include_router(GET_utilizador_router)
+api.include_router(PUT_utilizador_router)
 api.include_router(GET_roles_router)
 api.include_router(GET_Consumiveis_router)
 api.include_router(PUT_Consumiveis_router)

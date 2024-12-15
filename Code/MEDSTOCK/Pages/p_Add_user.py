@@ -16,6 +16,8 @@ import asyncio
 class CreateUserPage(QWidget):
     def __init__(self):
         super().__init__()
+        self.setores=[]
+        self.roles=[]
         self.main_layout = QVBoxLayout(self)
         self.main_layout.setAlignment(Qt.AlignCenter)
         self.main_layout.setContentsMargins(20, 30, 20, 30)
@@ -106,6 +108,14 @@ class CreateUserPage(QWidget):
 
         asyncio.ensure_future(self.update_role())
         asyncio.ensure_future(self.update_sectors())
+        
+        self.update_roles_thread = QTimer(self)
+        self.update_roles_thread.timeout.connect(self.update_role_wrapper)
+        self.update_roles_thread.start(60000)
+        
+        self.update_sectors_thread = QTimer(self)
+        self.update_sectors_thread.timeout.connect(self.update_sectors_wrapper)
+        self.update_sectors_thread.start(60000)
         self.setLayout(self.main_layout)
         
     def register_user(self):            
@@ -153,9 +163,12 @@ class CreateUserPage(QWidget):
             Overlay.show_error(self, DbRoles.error_message)
 
     def create_roles(self, roles):
-        self.role_input.clear()
-        for role in roles:
-            self.role_input.addItem(role.nome_role, role.role_id)
+        if roles != self.roles:
+            self.roles = roles
+            self.role_input.clear()
+            for role in roles:
+                self.role_input.addItem(role.nome_role, role.role_id)
+
 
     async def update_sectors(self):
         response = await API_GetSectors()
@@ -165,9 +178,17 @@ class CreateUserPage(QWidget):
             Overlay.show_error(self, response.error_message)
 
     def create_sectors(self, sectors):
-        self.sector_input.clear()
-        for sector in sectors:
-            self.sector_input.addItem(f"{sector.nome_setor} - {sector.localizacao}", sector.setor_id)
+        if sectors != self.setores:
+            self.setores = sectors
+            self.sector_input.clear()
+            for sector in sectors:
+                self.sector_input.addItem(f"{sector.nome_setor} - {sector.localizacao}", sector.setor_id)
+
+    def update_sectors_wrapper(self):
+        asyncio.ensure_future(self.update_sectors())
+        
+    def update_role_wrapper(self):
+        asyncio.ensure_future(self.update_role())
 
 def password_generator():
     upper = random.choice(string.ascii_uppercase)

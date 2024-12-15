@@ -13,7 +13,6 @@ from APP.PDF.Generate_PDF import GeneratePdfRequerimento
 from API.API_PUT_Request import (API_CancelRequerimento, API_AcceptRequerimento, API_RejectRequerimento, 
                                 API_StandByRequerimento, API_ResumeRequerimento, API_PrepareRequerimento,
                                 API_SendRequerimento, API_FinishRequerimento, API_ReavaliationRequerimento)
-from API.API_GET_Request import API_GetEmailDetails
 from API.API_POST_Request import API_SendEmailRequerimentoStatus
 
 
