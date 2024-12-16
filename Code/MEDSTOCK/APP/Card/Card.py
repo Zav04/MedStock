@@ -298,7 +298,7 @@ class RequerimentoCard(QWidget):
                                 )
                         historico_text_label.setText(
                             f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-                            f"Finalizado por:</span> "
+                            f"Finalizado e Validado por:</span> "
                             f"<span style='font-size:14px; color:#555555;'>{hist.user_responsavel}</span> "
                             f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
                             f"{descricao_texto}"

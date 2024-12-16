@@ -163,7 +163,7 @@ def GeneratePdfRequerimento(file_path: str, requerimento: Requerimento):
                     text = f"           Preparado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
                     textcomentario= ""
                 case 4:
-                    text = f"           Finalizado por {hist.user_responsavel} em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                    text = f"           Finalizado e Validado por {hist.user_responsavel} em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
                     if hist.descricao:
                         descricao_limpa = hist.descricao.replace("Requerimento finalizado.", "").strip()
                         if descricao_limpa:
