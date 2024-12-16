@@ -326,7 +326,7 @@ async def MedStock_SendRequerimento(requerimento: C_Update_Requerimento, db=Depe
 async def MedStock_FinishRequerimento(requerimento: C_ReavaliationRequerimento, db=Depends(get_db_MEDSTOCK)):
     try:
         query = text("""
-            SELECT update_requerimento_finish(:p_requerimento_id, :p_user_id, :p_comentario);
+            SELECT update_requerimento_finish(:p_user_id, :p_requerimento_id, :p_comentario);
         """)
 
         result = db.execute(query, {

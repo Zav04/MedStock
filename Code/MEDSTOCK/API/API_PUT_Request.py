@@ -25,10 +25,8 @@ async def API_UpdateConsumivel(consumivel_id, quantidade_minima, quantidade_pedi
                 return APIResponse(success=True, data=data)
         elif response.status_code == 400:
             error_message = response.json().get("error", "Erro desconhecido")
-            print("Erro:", error_message)
             return APIResponse(success=False, error_message=error_message)
         else:
-            print("Erro inesperado:", response.status_code)
             return APIResponse(success=False, error_message="Erro inesperado")
     except httpx.RequestError as e:
         return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
@@ -53,10 +51,8 @@ def API_CancelRequerimento(user_id:int,requerimento_id)-> APIResponse:
                 return APIResponse(success=True, data=data)
         elif response.status_code == 400:
             error_message = response.json().get("error", "Erro desconhecido")
-            print("Erro:", error_message)
             return APIResponse(success=False, error_message=error_message)
         else:
-            print("Erro inesperado:", response.status_code)
             return APIResponse(success=False, error_message="Erro inesperado")
     except httpx.RequestError as e:
         return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
@@ -81,10 +77,8 @@ def API_AcceptRequerimento(user_id,requerimento_id):
                 return APIResponse(success=True, data=data)
         elif response.status_code == 400:
             error_message = response.json().get("error", "Erro desconhecido")
-            print("Erro:", error_message)
             return APIResponse(success=False, error_message=error_message)
         else:
-            print("Erro inesperado:", response.status_code)
             return APIResponse(success=False, error_message="Erro inesperado")
     except httpx.RequestError as e:
         return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
@@ -220,16 +214,14 @@ def API_RejectRequerimento(user_id:int,requerimento_id:int)-> APIResponse:
                 return APIResponse(success=True, data=data)
         elif response.status_code == 400:
             error_message = response.json().get("error", "Erro desconhecido")
-            print("Erro:", error_message)
             return APIResponse(success=False, error_message=error_message)
         else:
-            print("Erro inesperado:", response.status_code)
             return APIResponse(success=False, error_message="Erro inesperado")
     except httpx.RequestError as e:
         return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
 
     
-async def API_FinishRequerimento(user_id: int, requerimento_id: int, comentario: str)-> APIResponse:
+def API_FinishRequerimento(user_id: int, requerimento_id: int, comentario: str)-> APIResponse:
     URL = os.getenv('API_URL') + os.getenv('API_FinishRequerimento')
     payload = {
         "requerimento_id": requerimento_id,
@@ -237,8 +229,7 @@ async def API_FinishRequerimento(user_id: int, requerimento_id: int, comentario:
         "comentario": comentario if comentario else None
     }
     try:
-        async with httpx.AsyncClient() as client:
-            response = await client.put(URL, json=payload, headers={"Content-Type": "application/json"})
+            response = httpx.put(URL, json=payload, headers={"Content-Type": "application/json"})
             if response.status_code == 200:
                 success = response.json().get("response", {})
                 
@@ -250,16 +241,14 @@ async def API_FinishRequerimento(user_id: int, requerimento_id: int, comentario:
                     return APIResponse(success=True, data=data)
             elif response.status_code == 400:
                 error_message = response.json().get("error", "Erro desconhecido")
-                print("Erro:", error_message)
                 return APIResponse(success=False, error_message=error_message)
             else:
-                print("Erro inesperado:", response.status_code)
                 return APIResponse(success=False, error_message="Erro inesperado")
     except httpx.RequestError as e:
         return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
 
     
-async def API_ReavaliationRequerimento(user_id:int, requerimento_id:int, rejected_items:str,comentario: str)-> APIResponse:    
+def API_ReavaliationRequerimento(user_id:int, requerimento_id:int, rejected_items:str,comentario: str)-> APIResponse:    
     URL = os.getenv('API_URL') + os.getenv('API_ReavaliationRequerimento')
     payload = {
         "requerimento_id": requerimento_id,
@@ -268,24 +257,21 @@ async def API_ReavaliationRequerimento(user_id:int, requerimento_id:int, rejecte
         "rejected_items": rejected_items
         }
     try:
-        async with httpx.AsyncClient() as client:
-            response = await client.put(URL, json=payload, headers={"Content-Type": "application/json"})
-            if response.status_code == 200:
-                sucess = response.json().get("response", {})
-                
-                if sucess == False:
-                    error_message = response.json().get("error", {})
-                    return APIResponse(success=False, error_message = error_message)
-                else:
-                    data = response.json().get("data", {})
-                    return APIResponse(success=True, data=data)
-            elif response.status_code == 400:
-                error_message = response.json().get("error", "Erro desconhecido")
-                print("Erro:", error_message)
-                return APIResponse(success=False, error_message=error_message)
+        response = httpx.put(URL, json=payload, headers={"Content-Type": "application/json"})
+        if response.status_code == 200:
+            sucess = response.json().get("response", {})
+            
+            if sucess == False:
+                error_message = response.json().get("error", {})
+                return APIResponse(success=False, error_message = error_message)
             else:
-                print("Erro inesperado:", response.status_code)
-                return APIResponse(success=False, error_message="Erro inesperado")
+                data = response.json().get("data", {})
+                return APIResponse(success=True, data=data)
+        elif response.status_code == 400:
+            error_message = response.json().get("error", "Erro desconhecido")
+            return APIResponse(success=False, error_message=error_message)
+        else:
+            return APIResponse(success=False, error_message="Erro inesperado")
     except httpx.RequestError as e:
         return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
     

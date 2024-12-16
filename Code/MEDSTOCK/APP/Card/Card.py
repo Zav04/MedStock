@@ -171,19 +171,23 @@ class RequerimentoCard(QWidget):
 
         self.scroll_area = QScrollArea()
         self.scroll_area.setVisible(False)
-        self.scroll_area.setWidgetResizable(False)
-        # Detalhes ocultos
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_area.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
         self.details_frame = QFrame()
         self.details_frame.setStyleSheet("border: none;")
-        self.details_frame.setVisible(False)
-        details_layout = QVBoxLayout(self.details_frame)
-        details_layout.setContentsMargins(10, 10, 10, 10)
-        details_layout.setSpacing(5)
+        self.details_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+
+        self.details_layout = QVBoxLayout(self.details_frame)
+        self.details_layout.setContentsMargins(10, 10, 10, 10)
+        self.details_layout.setSpacing(5)
 
         setor_label = QLabel()
         setor_label.setText(f"<span style='font-size:16px; font-weight:bold; color:#000000;'>Setor:</span> <span style='font-size:14px; color:#000000;'>{requerimento.setor_nome_localizacao or 'Não especificado'}</span>")
         setor_label.setFont(QFont("Arial"))
-        details_layout.addWidget(setor_label)
+        self.details_layout.addWidget(setor_label)
 
         utilizador_pedido_label = QLabel()
         utilizador_pedido_label.setText(
@@ -191,14 +195,14 @@ class RequerimentoCard(QWidget):
             f"<span style='font-size:14px; color:#555555;'>{requerimento.nome_utilizador_pedido or 'Desconhecido'}</span>"
         )
         utilizador_pedido_label.setFont(QFont("Arial"))
-        details_layout.addWidget(utilizador_pedido_label)
+        self.details_layout.addWidget(utilizador_pedido_label)
 
         itens_label = QLabel()
         itens_label.setText(
             "<span style='font-size:16px; font-weight:bold; color:#000000;'>Itens Pedidos:</span>"
         )
         itens_label.setFont(QFont("Arial"))
-        details_layout.addWidget(itens_label)
+        self.details_layout.addWidget(itens_label)
 
 
         if requerimento.itens_pedidos:
@@ -235,12 +239,12 @@ class RequerimentoCard(QWidget):
                 item_text_label.setFont(QFont("Arial"))
                 item_layout.addWidget(item_text_label)
 
-                details_layout.addLayout(item_layout)
+                self.details_layout.addLayout(item_layout)
         else:
             no_items_label = QLabel("<span style='font-size:14px; color:#555555;'>Nenhum item pedido.</span>")
             no_items_label.setFont(QFont("Arial"))
             no_items_label.setTextFormat(Qt.RichText)
-            details_layout.addWidget(no_items_label)
+            self.details_layout.addWidget(no_items_label)
 
 
         historico_label = QLabel()
@@ -248,7 +252,7 @@ class RequerimentoCard(QWidget):
             "<span style='font-size:16px; font-weight:bold; color:#000000;'>Histórico:</span>"
         )
         historico_label.setFont(QFont("Arial"))
-        details_layout.addWidget(historico_label)
+        self.details_layout.addWidget(historico_label)
 
         if self.requerimento.historico:
             for hist in self.requerimento.historico:
@@ -271,7 +275,7 @@ class RequerimentoCard(QWidget):
                     case 2:
                         historico_text_label.setText(
                             f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-                            f"Pedido envido para preparar por:</span> "
+                            f"Pedido enviado para preparar por:</span> "
                             f"<span style='font-size:14px; color:#555555;'>{hist.user_responsavel}</span> "
                             f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
                             )
@@ -283,12 +287,22 @@ class RequerimentoCard(QWidget):
                             f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
                             )
                     case 4:
+                        descricao_texto = ""
+                        if hist.descricao:
+                            descricao_limpa = hist.descricao.replace("Requerimento finalizado.", "").strip()
+                            if descricao_limpa:
+                                descricao_texto = (
+                                    f"<br><span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                                    f"Comentário:</span> "
+                                    f"<span style='font-size:14px; color:#555555;'>{descricao_limpa}</span>"
+                                )
                         historico_text_label.setText(
                             f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-                            f"Enviado por:</span> "
+                            f"Finalizado por:</span> "
                             f"<span style='font-size:14px; color:#555555;'>{hist.user_responsavel}</span> "
                             f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
-                            )
+                            f"{descricao_texto}"
+                        )
                     case 5:
                         historico_text_label.setText(
                             f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
@@ -314,7 +328,7 @@ class RequerimentoCard(QWidget):
                     case 8:
                         historico_text_label.setText(
                             f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-                            f"Colocado em Validação por:</span> "
+                            f"Enviado por:</span> "
                             f"<span style='font-size:14px; color:#555555;'>{hist.user_responsavel}</span> "
                             f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
                             )
@@ -334,10 +348,10 @@ class RequerimentoCard(QWidget):
                             )
                         
                 historico_text_label.setFont(QFont("Arial"))
-                details_layout.addWidget(historico_text_label)
+                self.details_layout.addWidget(historico_text_label)
 
         self.details_frame.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        self.details_frame.setLayout(details_layout)
+        self.details_frame.setLayout(self.details_layout)
         self.scroll_area.setWidget(self.details_frame)
         self.container_layout.addWidget(self.scroll_area)
         self.layout().addWidget(self.container)
@@ -418,12 +432,19 @@ class RequerimentoCard(QWidget):
 
     def toggle_details(self):
         self.expanded = not self.expanded
+
         if self.expanded:
             self.scroll_area.setVisible(True)
-            self.container.setMaximumHeight(400)
+            self.container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
+            self.container.setMaximumHeight(500)
+            self.scroll_area.setMaximumHeight(500)
         else:
             self.scroll_area.setVisible(False)
+            self.container.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
             self.container.setMaximumHeight(self.minimumHeight_Card)
+        
+        self.container.updateGeometry()
+        self.updateGeometry()
 
 
     def open_validation_window(self, requerimento: Requerimento):
@@ -433,18 +454,15 @@ class RequerimentoCard(QWidget):
 
         if result == QDialog.Accepted:
             observations = validation_dialog.get_observations()
-            QTimer.singleShot(0, lambda: self.finishRequerimento(observations))
+            self.finishRequerimento(observations)
         elif validation_dialog.was_cancelled:
             Overlay.show_information(top_parent, "Validação Cancelada!")
         elif result == QDialog.Rejected:
             rejected_items = validation_dialog.get_rejected_items()
             observations = validation_dialog.get_observations()
-            QTimer.singleShot(0, lambda: self.reavaliationRequerimento(rejected_items, observations))
-            Overlay.show_information(top_parent, "Requerimento rejeitado com sucesso!")
-            print("Itens rejeitados:", rejected_items)
-            print("Observações:", observations)
+            self.reavaliationRequerimento(rejected_items, observations)
 
-    async def finishRequerimento(self, observations:str):
+    def finishRequerimento(self, observations:str):
         top_parent = self.get_top_parent()
         response = API_FinishRequerimento(self.user.utilizador_id, self.requerimento.requerimento_id, observations)
         if response.success:
@@ -453,7 +471,7 @@ class RequerimentoCard(QWidget):
         else:
             Overlay.show_error(top_parent, response.error_message)
             
-    async def reavaliationRequerimento(self, rejected_items, observations):
+    def reavaliationRequerimento(self, rejected_items, observations):
         top_parent = self.get_top_parent()
         response = API_ReavaliationRequerimento(self.user.utilizador_id,self.requerimento.requerimento_id, rejected_items, observations)
         if response.success:

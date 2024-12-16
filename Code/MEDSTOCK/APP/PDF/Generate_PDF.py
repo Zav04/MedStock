@@ -148,34 +148,59 @@ def GeneratePdfRequerimento(file_path: str, requerimento: Requerimento):
             match hist.requerimento_status:
                 case 0:
                     text = f"           Pedido criado por {hist.user_responsavel} em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                    textcomentario= ""
                 case 1:
                     if requerimento.status_anterior == 6:
                         text = f"           Requerimento enviado novamente para a lista de espera por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                        textcomentario= ""
                     else:
                         text = f"           Avaliado por {hist.user_responsavel} em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                        textcomentario= ""
                 case 2:
                     text = f"           Pedido enviado para preparar por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                    textcomentario= ""
                 case 3:
                     text = f"           Preparado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                    textcomentario= ""
                 case 4:
-                    text = f"           Enviado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                    text = f"           Finalizado por {hist.user_responsavel} em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                    if hist.descricao:
+                        descricao_limpa = hist.descricao.replace("Requerimento finalizado.", "").strip()
+                        if descricao_limpa:
+                            textcomentario = f"           Comentário: {descricao_limpa}"
+                        else:
+                            textcomentario = ""
+                    else:
+                        textcomentario = ""
                 case 5:
                     text = f"           Recusado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}." #Motivo: {hist.descricao or 'Não especificado'}"
+                    textcomentario= ""
                 case 6:
                     text = f"           Colocado em Stand By por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                    textcomentario= ""
                 case 7:
                     text = f"           Cancelado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                    textcomentario= ""
                 case 8:
-                    text = f"           Colocado em Validação por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                    text = f"           Enviado por por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                    textcomentario= ""
                 case 9:
                     text = f"           Colocado em Revalidação por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                    textcomentario= ""
                 case 10:
                     text = f"           Retornou para a Lista de Espera por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                    textcomentario= ""
                 case _:
                     text = f"           Estado desconhecido registrado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                    textcomentario= ""
+
             c.setFont("Helvetica", 10)
             c.drawString(60, y_offset, text)
             y_offset -= 20
+            if(textcomentario!=""):
+                c.setFont("Helvetica-Oblique", 10)
+                c.drawString(60, y_offset, textcomentario)
+                y_offset -= 20
 
     y_offset -= 10
     draw_status_label(c, 60, y_offset, requerimento.status_atual)
