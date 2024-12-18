@@ -44,7 +44,6 @@ async def API_GetRoles()-> APIResponse:
         
         
 
-
 async def API_GetConsumiveis()-> APIResponse:
     URL = os.getenv('API_URL') + os.getenv('API_GetConsumiveis')
     async with httpx.AsyncClient() as client:
@@ -83,7 +82,7 @@ async def API_GetConsumiveis()-> APIResponse:
             return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
 
 
-async def API_GetRequerimentosByFarmaceutico()-> APIResponse:
+async def API_GetRequerimentosByFarmaceutico() -> APIResponse:
     URL = os.getenv('API_URL') + os.getenv('API_GetRequerimentosByFarmaceutico')
     async with httpx.AsyncClient() as client:
         try:
@@ -94,28 +93,22 @@ async def API_GetRequerimentosByFarmaceutico()-> APIResponse:
                 if response_by_api:
                     requerimentos = []
                     for item in response.json().get("data", []):
-                        itens_pedidos = []
-                        for pedido in item.get("itens_pedidos", []):
-                            try:
-                                itens_pedidos.append(ItemPedido(
-                                    nome_item=pedido.get("nome_consumivel"),
-                                    quantidade=pedido.get("quantidade", 0),
-                                    tipo_item=pedido.get("tipo_consumivel")
-                                ))
-                            except Exception as e:
-                                print(f"Erro ao processar item_pedido: {pedido}, erro: {e}")
+                        itens_pedidos = [
+                            ItemPedido(
+                                nome_item=pedido.get("nome_consumivel"),
+                                quantidade=pedido.get("quantidade", 0),
+                                tipo_item=pedido.get("tipo_consumivel")
+                            ) for pedido in item.get("itens_pedidos", [])
+                        ]
 
-                        historico = []
-                        for h in item.get("historico", []):
-                            try:
-                                historico.append(RequerimentoHistorico(
-                                    requerimento_status=h.get("status"),
-                                    descricao=h.get("descricao", ""),
-                                    data=h.get("data_modificacao"),
-                                    user_responsavel=h.get("user_responsavel", "Desconhecido")
-                                ))
-                            except Exception as e:
-                                print(f"Erro ao processar histórico: {h}, erro: {e}")
+                        historico = [
+                            RequerimentoHistorico(
+                                requerimento_status=h.get("status"),
+                                descricao=h.get("descricao", ""),
+                                data=h.get("data_modificacao"),
+                                user_responsavel=h.get("user_responsavel", "Desconhecido")
+                            ) for h in item.get("historico", [])
+                        ]
 
                         requerimento = Requerimento(
                             requerimento_id=item["requerimento_id"],
@@ -125,6 +118,7 @@ async def API_GetRequerimentosByFarmaceutico()-> APIResponse:
                             status_atual=item["status_atual"],
                             status_anterior=item.get("status_anterior"),
                             urgente=item["urgente"],
+                            tipo_requerimento=item["tipo_requerimento"],
                             itens_pedidos=itens_pedidos,
                             data_pedido=item["data_pedido"],
                             historico=historico
@@ -133,50 +127,40 @@ async def API_GetRequerimentosByFarmaceutico()-> APIResponse:
 
                     return APIResponse(success=True, data=requerimentos)
                 else:
-                    error_message = response.json().get("error", {})
-                    return APIResponse(success=False, error_message=error_message)
-            elif response.status_code == 400:
-                error_message = response.json().get("error", "Erro desconhecido")
-                return APIResponse(success=False, error_message=error_message)
+                    return APIResponse(success=False, error_message=response.json().get("error", "Erro desconhecido"))
             else:
                 return APIResponse(success=False, error_message=f"Erro inesperado: {response.status_code}")
         except httpx.RequestError as e:
             return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
 
 
-async def API_GetRequerimentosByUser(user_id: int)-> APIResponse:
+async def API_GetRequerimentosByUser(user_id: int) -> APIResponse:
     URL = os.getenv('API_URL') + os.getenv('API_GetRequerimentosByUser') + f"?user_id={user_id}"
     async with httpx.AsyncClient() as client:
         try:
             response = await client.get(URL, headers={"Content-Type": "application/json"})
-            
+
             if response.status_code == 200:
                 response_by_api = response.json().get("response", False)
                 if response_by_api:
                     requerimentos = []
                     for item in response.json().get("data", []):
-                        itens_pedidos = []
-                        for pedido in item.get("itens_pedidos", []):
-                            try:
-                                itens_pedidos.append(ItemPedido(
-                                    nome_item=pedido.get("nome_consumivel"),
-                                    quantidade=pedido.get("quantidade", 0),
-                                    tipo_item=pedido.get("tipo_consumivel")
-                                ))
-                            except Exception as e:
-                                print(f"Erro ao processar item_pedido: {pedido}, erro: {e}")
+                        itens_pedidos = [
+                            ItemPedido(
+                                nome_item=pedido.get("nome_consumivel"),
+                                quantidade=pedido.get("quantidade", 0),
+                                tipo_item=pedido.get("tipo_consumivel")
+                            ) for pedido in item.get("itens_pedidos", [])
+                        ]
 
-                        historico = []
-                        for h in item.get("historico", []):
-                            try:
-                                historico.append(RequerimentoHistorico(
-                                    requerimento_status=h.get("status"),
-                                    descricao=h.get("descricao", ""),
-                                    data=h.get("data_modificacao"),
-                                    user_responsavel=h.get("user_responsavel", "Desconhecido")
-                                ))
-                            except Exception as e:
-                                print(f"Erro ao processar histórico: {h}, erro: {e}")
+                        historico = [
+                            RequerimentoHistorico(
+                                requerimento_status=h.get("status"),
+                                descricao=h.get("descricao", ""),
+                                data=h.get("data_modificacao"),
+                                user_responsavel=h.get("user_responsavel", "Desconhecido")
+                            ) for h in item.get("historico", [])
+                        ]
 
                         requerimento = Requerimento(
                             requerimento_id=item["requerimento_id"],
@@ -186,6 +170,7 @@ async def API_GetRequerimentosByUser(user_id: int)-> APIResponse:
                             status_atual=item["status_atual"],
                             status_anterior=item.get("status_anterior"),
                             urgente=item["urgente"],
+                            tipo_requerimento=item["tipo_requerimento"],
                             itens_pedidos=itens_pedidos,
                             data_pedido=item["data_pedido"],
                             historico=historico
@@ -194,51 +179,40 @@ async def API_GetRequerimentosByUser(user_id: int)-> APIResponse:
 
                     return APIResponse(success=True, data=requerimentos)
                 else:
-                    error_message = response.json().get("error", {})
-                    return APIResponse(success=False, error_message=error_message)
-            elif response.status_code == 400:
-                error_message = response.json().get("error", "Erro desconhecido")
-                return APIResponse(success=False, error_message=error_message)
+                    return APIResponse(success=False, error_message=response.json().get("error", "Erro desconhecido"))
             else:
                 return APIResponse(success=False, error_message=f"Erro inesperado: {response.status_code}")
         except httpx.RequestError as e:
             return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
 
 
-
-async def API_GetRequerimentosByResponsavel(user_id: int)-> APIResponse:
+async def API_GetRequerimentosByResponsavel(user_id: int) -> APIResponse:
     URL = os.getenv('API_URL') + os.getenv('API_GetRequerimentosByResponsavel') + f"?responsavel_id={user_id}"
     async with httpx.AsyncClient() as client:
         try:
             response = await client.get(URL, headers={"Content-Type": "application/json"})
-            
+
             if response.status_code == 200:
                 response_by_api = response.json().get("response", False)
                 if response_by_api:
                     requerimentos = []
                     for item in response.json().get("data", []):
-                        itens_pedidos = []
-                        for pedido in item.get("itens_pedidos", []):
-                            try:
-                                itens_pedidos.append(ItemPedido(
-                                    nome_item=pedido.get("nome_consumivel"),
-                                    quantidade=pedido.get("quantidade", 0),
-                                    tipo_item=pedido.get("tipo_consumivel")
-                                ))
-                            except Exception as e:
-                                print(f"Erro ao processar item_pedido: {pedido}, erro: {e}")
+                        itens_pedidos = [
+                            ItemPedido(
+                                nome_item=pedido.get("nome_consumivel"),
+                                quantidade=pedido.get("quantidade", 0),
+                                tipo_item=pedido.get("tipo_consumivel")
+                            ) for pedido in item.get("itens_pedidos", [])
+                        ]
 
-                        historico = []
-                        for h in item.get("historico", []):
-                            try:
-                                historico.append(RequerimentoHistorico(
-                                    requerimento_status=h.get("status"),
-                                    descricao=h.get("descricao", ""),
-                                    data=h.get("data_modificacao"),
-                                    user_responsavel=h.get("user_responsavel", "Desconhecido")
-                                ))
-                            except Exception as e:
-                                print(f"Erro ao processar histórico: {h}, erro: {e}")
+                        historico = [
+                            RequerimentoHistorico(
+                                requerimento_status=h.get("status"),
+                                descricao=h.get("descricao", ""),
+                                data=h.get("data_modificacao"),
+                                user_responsavel=h.get("user_responsavel", "Desconhecido")
+                            ) for h in item.get("historico", [])
+                        ]
 
                         requerimento = Requerimento(
                             requerimento_id=item["requerimento_id"],
@@ -248,6 +222,7 @@ async def API_GetRequerimentosByResponsavel(user_id: int)-> APIResponse:
                             status_atual=item["status_atual"],
                             status_anterior=item.get("status_anterior"),
                             urgente=item["urgente"],
+                            tipo_requerimento=item["tipo_requerimento"],
                             itens_pedidos=itens_pedidos,
                             data_pedido=item["data_pedido"],
                             historico=historico
@@ -256,15 +231,12 @@ async def API_GetRequerimentosByResponsavel(user_id: int)-> APIResponse:
 
                     return APIResponse(success=True, data=requerimentos)
                 else:
-                    error_message = response.json().get("error", {})
-                    return APIResponse(success=False, error_message=error_message)
-            elif response.status_code == 400:
-                error_message = response.json().get("error", "Erro desconhecido")
-                return APIResponse(success=False, error_message=error_message)
+                    return APIResponse(success=False, error_message=response.json().get("error", "Erro desconhecido"))
             else:
                 return APIResponse(success=False, error_message=f"Erro inesperado: {response.status_code}")
         except httpx.RequestError as e:
             return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
+
 
 
 

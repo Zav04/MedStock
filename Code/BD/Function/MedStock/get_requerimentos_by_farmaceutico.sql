@@ -9,6 +9,7 @@ RETURNS TABLE(
     status_atual INT,
     status_anterior INT,
     urgente BOOLEAN,
+    tipo_requerimento VARCHAR,
     itens_pedidos JSON,
     data_pedido TIMESTAMP,
     historico JSON
@@ -38,6 +39,7 @@ BEGIN
             LIMIT 1
         )::INT AS status_anterior,
         r.urgente,
+        r.tipo_requerimento,
         (
             SELECT JSON_AGG(
                 JSON_BUILD_OBJECT(
@@ -54,8 +56,14 @@ BEGIN
         (
             SELECT h.data_modificacao
             FROM HistoricoRequerimento h
-            WHERE h.requerimento_id = r.requerimento_id AND h.status = 0
-            ORDER BY h.data_modificacao ASC LIMIT 1
+            WHERE h.requerimento_id = r.requerimento_id 
+            AND h.status = CASE 
+                                WHEN r.tipo_requerimento = 'Externo' THEN 11 
+                                WHEN r.urgente = TRUE THEN 1 
+                                ELSE 0 
+                            END
+            ORDER BY h.data_modificacao ASC
+            LIMIT 1
         ) AS data_pedido,
         (
             SELECT JSON_AGG(sub_historico)
@@ -73,7 +81,7 @@ BEGIN
         ) AS historico
     FROM 
         Requerimento r
-    INNER JOIN 
+    LEFT JOIN 
         Setor_Hospital s ON r.setor_id = s.setor_id
     INNER JOIN 
         Utilizador u_pedido ON r.user_id_pedido = u_pedido.utilizador_id
@@ -86,6 +94,6 @@ BEGIN
             WHERE h.requerimento_id = r.requerimento_id
             ORDER BY h.data_modificacao DESC
             LIMIT 1
-        ) IN (1, 2, 3, 4, 6, 8, 9,10);
+        ) IN (1, 2, 3, 4, 6, 8, 9, 10, 11);
 END;
 $$ LANGUAGE plpgsql;

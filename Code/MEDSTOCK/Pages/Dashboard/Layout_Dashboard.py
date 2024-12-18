@@ -16,7 +16,6 @@ from Pages.p_Gestor_Setor import AssociateUserToSectorPage
 
 
 class Dashboard(QMainWindow):
-    #TODO IMPLEMENTAR USER 
     def __init__(self, user: Utilizador):
         super(Dashboard, self).__init__()
         self.ui = Ui_MainWindow()

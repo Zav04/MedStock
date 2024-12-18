@@ -70,6 +70,7 @@ class RequerimentoPage(QWidget):
                 ("Finalizado", "Status_4"),
                 ("Stand-By", "Status_6"),
                 ("Em Validação", "Status_8"),
+                ("Externo", "Externo")
             ]
         else:
             filter_buttons = [
@@ -381,7 +382,7 @@ class RequerimentoPage(QWidget):
 
             if self.user.role_nome == "Farmacêutico":
                 requerimentos_urgentes = [
-                    req for req in self.current_requerimentos if req.urgente and req.status in (1, 3)
+                    req for req in self.current_requerimentos if req.urgente and req.status_atual in (1, 3,11)
                 ]
                 if requerimentos_urgentes:
                     Overlay.show_warning(
@@ -409,7 +410,7 @@ class RequerimentoPage(QWidget):
             elif self.user.role_nome == "Farmacêutico":
                 return [
                     req for req in self.current_requerimentos 
-                    if req.status_atual in (1, 6, 3, 10)
+                    if req.status_atual in (1, 6, 3, 10, 11)
                 ]
             else:
                 return [
@@ -420,6 +421,8 @@ class RequerimentoPage(QWidget):
         elif filter_key.startswith("Status_"):
             status = int(filter_key.split("_")[1])
             return [req for req in self.current_requerimentos if req.status_atual == status]
+        elif filter_key == "Externo":
+            return [req for req in self.current_requerimentos if req.tipo_requerimento == "Externo"]
         else:
             return self.current_requerimentos
 

@@ -5,4 +5,5 @@ INSERT INTO Role (nome_role) VALUES
 ('Enfermeiro'),           
 ('Médico'),
 ('Secretário Clínico'),
-('Assistente');
+('Assistente'),
+('Serviço Externo');

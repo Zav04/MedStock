@@ -12,6 +12,7 @@ class Requerimento:
                  status_atual: int,
                  status_anterior: Optional[int],
                  urgente: bool,
+                 tipo_requerimento: str,
                  itens_pedidos: List[ItemPedido],
                  data_pedido: datetime,
                  historico: List[RequerimentoHistorico]):
@@ -23,6 +24,7 @@ class Requerimento:
         self.status_atual = status_atual
         self.status_anterior = status_anterior
         self.urgente = urgente
+        self.tipo_requerimento = tipo_requerimento
         self.itens_pedidos = itens_pedidos
         self.data_pedido = data_pedido
         self.historico = historico
@@ -38,6 +40,7 @@ class Requerimento:
             self.status_atual == other.status_atual and
             self.status_anterior == other.status_anterior and
             self.urgente == other.urgente and
+            self.tipo_requerimento == other.tipo_requerimento and
             self.itens_pedidos == other.itens_pedidos and
             self.data_pedido == other.data_pedido and
             self.historico == other.historico

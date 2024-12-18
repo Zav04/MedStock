@@ -13,7 +13,7 @@ from fastapi import Depends
 
 
 
-@router.post("/MedReader_Login/")
+@router.post("/MedOcurrencias_Login/")
 async def MedStock_ValidateAndFetchUser(user: C_Login, db=Depends(get_db_MEDSTOCK)):
     try:
         login_verification_response = await MedStock_Login(user, db)
@@ -31,10 +31,10 @@ async def MedStock_ValidateAndFetchUser(user: C_Login, db=Depends(get_db_MEDSTOC
                 "response": False,
                 "error": "Erro ao obter os dados do Utilizador."
             }
-        if user_data_response["data"]["role_nome"] != "Farmaceutico":
+        if user_data_response["data"]["role_nome"] != "Serviço Externo":
             return {
                 "response": False,
-                "error": "Erro ao verificar o login: Utilizador não é um Farmaceutico."
+                "error": "Erro ao verificar o login: Utilizador não é um Serviço Externo."
             }
         else:
             return {

@@ -42,6 +42,7 @@ async def MedStock_GetRequerimentosByUser(user_id: int, db = Depends(get_db_MEDS
                 "status_atual": row.status_atual,
                 "status_anterior": row.status_anterior,
                 "urgente": row.urgente,
+                "tipo_requerimento": row.tipo_requerimento,
                 "itens_pedidos": itens_pedidos,
                 "data_pedido": row.data_pedido,
                 "historico": historico
@@ -49,7 +50,6 @@ async def MedStock_GetRequerimentosByUser(user_id: int, db = Depends(get_db_MEDS
 
             requerimentos.append(requerimento)
 
-        
         return {
             "response": True,
             "data": requerimentos
@@ -107,6 +107,7 @@ async def MedStock_GetRequerimentosByFarmaceutico(db=Depends(get_db_MEDSTOCK)):
                 "status_atual": row.status_atual,
                 "status_anterior": row.status_anterior,
                 "urgente": row.urgente,
+                "tipo_requerimento": row.tipo_requerimento,
                 "itens_pedidos": itens_pedidos,
                 "data_pedido": row.data_pedido,
                 "historico": historico
@@ -133,7 +134,6 @@ async def MedStock_GetRequerimentosByFarmaceutico(db=Depends(get_db_MEDSTOCK)):
             "response": False,
             "error": error_messages
         }
-
 
 @router.get("/MedStock_GetRequerimentosByResponsavel/")
 async def MedStock_GetRequerimentosByResponsavel(responsavel_id: int, db=Depends(get_db_MEDSTOCK)):
@@ -173,6 +173,7 @@ async def MedStock_GetRequerimentosByResponsavel(responsavel_id: int, db=Depends
                 "status_atual": row.status_atual,
                 "status_anterior": row.status_anterior,
                 "urgente": row.urgente,
+                "tipo_requerimento": row.tipo_requerimento,
                 "itens_pedidos": itens_pedidos,
                 "data_pedido": row.data_pedido,
                 "historico": historico
@@ -190,14 +191,6 @@ async def MedStock_GetRequerimentosByResponsavel(responsavel_id: int, db=Depends
         return {
             "response": False,
             "error": error_msg
-        }
-
-    except Exception as e:
-        db.rollback()
-        error_messages = [str(arg) for arg in e.args]
-        return {
-            "response": False,
-            "error": error_messages
         }
 
     except Exception as e:
