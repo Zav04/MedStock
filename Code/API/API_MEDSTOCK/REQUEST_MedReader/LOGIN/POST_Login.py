@@ -31,7 +31,7 @@ async def MedStock_ValidateAndFetchUser(user: C_Login, db=Depends(get_db_MEDSTOC
                 "response": False,
                 "error": "Erro ao obter os dados do Utilizador."
             }
-        if user_data_response["data"]["role_nome"] != "Farmaceutico":
+        if user_data_response["data"]["role_nome"] != "Farmacêutico":
             return {
                 "response": False,
                 "error": "Erro ao verificar o login: Utilizador não é um Farmaceutico."
