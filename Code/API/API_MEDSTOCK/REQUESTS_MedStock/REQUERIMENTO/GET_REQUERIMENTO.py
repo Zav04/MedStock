@@ -6,7 +6,7 @@ from dependencies import get_db_MEDSTOCK
 router = APIRouter()
 
 @router.get("/MedStock_GetRequerimentosByUser/")
-async def MedStock_GetRequerimentosByUser(user_id: int, db = Depends(get_db_MEDSTOCK)):
+async def MedStock_GetRequerimentosByUser(user_id: int, db=Depends(get_db_MEDSTOCK)):
     try:
         query = text("SELECT * FROM get_requerimentos_by_user(:user_id);")
         result = db.execute(query, {"user_id": user_id}).fetchall()
@@ -43,6 +43,8 @@ async def MedStock_GetRequerimentosByUser(user_id: int, db = Depends(get_db_MEDS
                 "status_anterior": row.status_anterior,
                 "urgente": row.urgente,
                 "tipo_requerimento": row.tipo_requerimento,
+                "paciente_nome": row.paciente_nome,
+                "paciente_estado": row.paciente_estado,
                 "itens_pedidos": itens_pedidos,
                 "data_pedido": row.data_pedido,
                 "historico": historico
@@ -69,6 +71,7 @@ async def MedStock_GetRequerimentosByUser(user_id: int, db = Depends(get_db_MEDS
             "response": False,
             "error": error_messages
         }
+
 
 @router.get("/MedStock_GetRequerimentosByFarmaceutico/")
 async def MedStock_GetRequerimentosByFarmaceutico(db=Depends(get_db_MEDSTOCK)):
@@ -108,6 +111,8 @@ async def MedStock_GetRequerimentosByFarmaceutico(db=Depends(get_db_MEDSTOCK)):
                 "status_anterior": row.status_anterior,
                 "urgente": row.urgente,
                 "tipo_requerimento": row.tipo_requerimento,
+                "paciente_nome": row.paciente_nome,
+                "paciente_estado": row.paciente_estado,
                 "itens_pedidos": itens_pedidos,
                 "data_pedido": row.data_pedido,
                 "historico": historico
@@ -174,6 +179,8 @@ async def MedStock_GetRequerimentosByResponsavel(responsavel_id: int, db=Depends
                 "status_anterior": row.status_anterior,
                 "urgente": row.urgente,
                 "tipo_requerimento": row.tipo_requerimento,
+                "paciente_nome": row.paciente_nome,
+                "paciente_estado": row.paciente_estado,
                 "itens_pedidos": itens_pedidos,
                 "data_pedido": row.data_pedido,
                 "historico": historico

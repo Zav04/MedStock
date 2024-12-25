@@ -4,6 +4,8 @@ from sqlalchemy import text
 from dependencies import get_db_MEDSTOCK
 from Models.C_Update_Requerimento import C_Update_Requerimento
 from Models.C_ReavaliationRequerimento import C_ReavaliationRequerimento
+from Models.C_RequerimentoExterno import C_RequerimentoExterno
+import json
 
 
 router = APIRouter()
@@ -372,16 +374,20 @@ async def MedStock_FinishRequerimento(requerimento: C_ReavaliationRequerimento, 
 @router.put("/MedStock_ReavaliationRequerimento/")
 async def MedStock_ReavaliationRequerimento(requerimento: C_ReavaliationRequerimento, db=Depends(get_db_MEDSTOCK)):
     try:
-
         query = text("""
-            SELECT update_requerimento_reavaliation(:p_requerimento_id,:p_user_id, :p_comentario, :consumiveis_rejeitados);
+            SELECT update_requerimento_reavaliation(
+                :p_user_id, 
+                :p_requerimento_id, 
+                :p_comentario, 
+                :consumiveis_rejeitados
+            );
         """)
 
         result = db.execute(query, {
             "p_requerimento_id": requerimento.requerimento_id,
             "p_user_id": requerimento.user_id,
-            "p_comentario": requerimento.comentario,
-            "consumiveis_rejeitados": requerimento.rejected_items
+            "p_comentario": requerimento.comentario or None,
+            "consumiveis_rejeitados": requerimento.rejected_items or None
         })
 
         success = result.scalar()
@@ -390,13 +396,13 @@ async def MedStock_ReavaliationRequerimento(requerimento: C_ReavaliationRequerim
             db.commit()
             return {
                 "response": True,
-                "data": "Requerimento em Reavaliação."
+                "data": "Requerimento em Reavaliação com sucesso."
             }
         else:
             db.rollback()
             return {
                 "response": False,
-                "error": "Erro ao aceitar o requerimento."
+                "error": "Erro ao enviar o requerimento para reavaliação."
             }
 
     except SQLAlchemyError as e:
@@ -414,3 +420,57 @@ async def MedStock_ReavaliationRequerimento(requerimento: C_ReavaliationRequerim
             "response": False,
             "error": error_messages
         }
+
+
+@router.put("/MedStock_UpdateRequerimentoExterno/")
+async def MedStock_UpdateRequerimentoExterno(requerimento: C_RequerimentoExterno, db=Depends(get_db_MEDSTOCK)):
+    try:
+        items_json = json.dumps([item.model_dump() for item in requerimento.items_list or []])
+        
+        query = text("""
+            SELECT update_requerimento_externo(
+                :p_requerimento_id,
+                :p_setor_id,
+                :items_list,
+                :p_user_id
+            );
+        """)
+
+        result = db.execute(query, {
+            "p_requerimento_id": requerimento.requerimento_id,
+            "p_setor_id": requerimento.setor_id,
+            "items_list": items_json,
+            "p_user_id": requerimento.user_id
+        })
+
+        success = result.scalar()
+
+        if success:
+            db.commit()
+            return {
+                "response": True,
+                "message": "Requerimento externo atualizado com sucesso."
+            }
+        else:
+            db.rollback()
+            return {
+                "response": False,
+                "error": "Erro ao atualizar o requerimento externo."
+            }
+
+    except SQLAlchemyError as e:
+        db.rollback()
+        error_msg = str(e.__dict__['orig']).split('\n')[0]
+        return {
+            "response": False,
+            "error": error_msg
+        }
+
+    except Exception as e:
+        db.rollback()
+        error_messages = [str(arg) for arg in e.args]
+        return {
+            "response": False,
+            "error": error_messages
+        }
+        

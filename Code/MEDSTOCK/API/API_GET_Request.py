@@ -119,6 +119,8 @@ async def API_GetRequerimentosByFarmaceutico() -> APIResponse:
                             status_anterior=item.get("status_anterior"),
                             urgente=item["urgente"],
                             tipo_requerimento=item["tipo_requerimento"],
+                            paciente_nome=item["paciente_nome"],
+                            paciente_estado=item["paciente_estado"],
                             itens_pedidos=itens_pedidos,
                             data_pedido=item["data_pedido"],
                             historico=historico
@@ -169,6 +171,8 @@ async def API_GetRequerimentosByUser(user_id: int) -> APIResponse:
                             email_utilizador_pedido=item["email_utilizador_pedido"],
                             status_atual=item["status_atual"],
                             status_anterior=item.get("status_anterior"),
+                            paciente_nome=item["paciente_nome"],
+                            paciente_estado=item["paciente_estado"],
                             urgente=item["urgente"],
                             tipo_requerimento=item["tipo_requerimento"],
                             itens_pedidos=itens_pedidos,
@@ -223,6 +227,8 @@ async def API_GetRequerimentosByResponsavel(user_id: int) -> APIResponse:
                             status_anterior=item.get("status_anterior"),
                             urgente=item["urgente"],
                             tipo_requerimento=item["tipo_requerimento"],
+                            paciente_nome=item["paciente_nome"],
+                            paciente_estado=item["paciente_estado"],
                             itens_pedidos=itens_pedidos,
                             data_pedido=item["data_pedido"],
                             historico=historico

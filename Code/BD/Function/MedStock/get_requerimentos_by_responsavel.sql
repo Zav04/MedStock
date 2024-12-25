@@ -10,6 +10,8 @@ RETURNS TABLE(
     status_anterior INT,
     urgente BOOLEAN,
     tipo_requerimento VARCHAR,
+    paciente_nome VARCHAR,
+    paciente_estado VARCHAR,
     itens_pedidos JSON,
     data_pedido TIMESTAMP,
     historico JSON
@@ -40,6 +42,14 @@ BEGIN
         )::INT AS status_anterior,
         r.urgente,
         r.tipo_requerimento,
+        CASE
+            WHEN r.tipo_requerimento = 'Externo' THEN re.paciente_nome
+            ELSE NULL
+        END AS paciente_nome,
+        CASE
+            WHEN r.tipo_requerimento = 'Externo' THEN re.paciente_estado
+            ELSE NULL
+        END AS paciente_estado,
         (
             SELECT JSON_AGG(
                 JSON_BUILD_OBJECT(
@@ -87,6 +97,8 @@ BEGIN
         Utilizador u_pedido ON r.user_id_pedido = u_pedido.utilizador_id
     LEFT JOIN 
         Utilizador u_responsavel ON s.responsavel_id = u_responsavel.utilizador_id
+    LEFT JOIN
+        Requerimento_Externo re ON r.requerimento_id = re.requerimento_id
     WHERE 
         s.responsavel_id = user_id;
 END;

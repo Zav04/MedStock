@@ -82,7 +82,7 @@ def enviarEmailRequerimentoCriado(nome_utilizador_pedido:str,receiver_email:str,
         </div>
         <div style="padding: 20px; text-align: left;">
             <p>Prezado(a) {nome_utilizador_pedido},</p>
-            <p>O requerimento <strong>REQ-{requerimento_id}</strong> foi criado, fique a espera pela aprovação da gestor responsável.</p>
+            <p>O requerimento <strong>REQ-{requerimento_id}</strong> foi criado, fique a espera pela aprovação do gestor responsável.</p>
             <h3>Itens Solicitados:</h3>
             <ul>
                 {itens_html}

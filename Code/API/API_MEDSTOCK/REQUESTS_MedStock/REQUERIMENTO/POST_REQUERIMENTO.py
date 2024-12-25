@@ -89,7 +89,7 @@ async def MedStock_SendEmailRequerimentoStatus(request: C_RequerimentoRequest, d
         data_modificacao = ultima_entrada["data_modificacao"]
         
         if status_atual == 0:
-            email_sent = enviarEmailRequerimentoStandBy(
+            email_sent = enviarEmailRequerimentoCriado(
                 nome_utilizador_pedido=nome_utilizador_pedido,
                 receiver_email=email_utilizador_pedido,
                 requerimento_id=requerimento_id,
@@ -159,9 +159,7 @@ async def MedStock_SendEmailRequerimentoStatus(request: C_RequerimentoRequest, d
                 requerimento_id=requerimento_id,
                 itens_pedidos=itens_pedidos,
             )
-            email_message = "E-mail de requerimento entregue enviado com sucesso!"      
-            
-            
+            email_message = "E-mail de requerimento voltou para a lista de espera enviado com sucesso!"      
         else:
             return {
                 "response": False,

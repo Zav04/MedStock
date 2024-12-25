@@ -7,9 +7,11 @@ from PyQt5.QtCore import Qt, QTimer, QSize
 from APP.UI.ui_styles import Style
 from APP.Overlays.Overlay import Overlay
 from Class.Utilizador import Utilizador
+from Class.Requerimento import Requerimento
 from API.API_GET_Request import (API_GetRequerimentosByUser, API_GetRequerimentosByResponsavel,
                                 API_GetSectors, API_GetConsumiveis, API_GetRequerimentosByFarmaceutico)
 from API.API_POST_Request import API_CreateRequerimento
+from API.API_PUT_Request import API_UpdateRequerimentoExterno
 from APP.Card.Card import RequerimentoCard
 from APP.UI.ui_functions import UIFunctions
 from Pages.Requerimento.ui_DragAndDrop_Itens import DraggableLabel, DropZone, DropLabel
@@ -46,7 +48,7 @@ class RequerimentoPage(QWidget):
             self.create_button = QPushButton("CRIAR NOVO REQUERIMENTO")
             self.create_button.setFixedSize(400, 40)
             self.create_button.setStyleSheet(Style.style_bt_QPushButton)
-            self.create_button.clicked.connect(self.show_create_requerimento_page_wrapper)
+            self.create_button.clicked.connect(self.show_create_requerimento_interno_page_wrapper)
             title_layout.addWidget(self.create_button, alignment=Qt.AlignRight)
 
 
@@ -120,7 +122,7 @@ class RequerimentoPage(QWidget):
     async def show_create_requerimento_page(self):
         self.clear_layout(self.main_layout)
         self.all_consumivel = []
-        create_page_layout = QVBoxLayout()
+        self.create_page_layout = QVBoxLayout()
 
         back_button = QPushButton()
         back_button.setFixedSize(100, 40)
@@ -129,11 +131,11 @@ class RequerimentoPage(QWidget):
         back_button.clicked.connect(self.reload_page_requerimentos)
         back_button.setText("Voltar")
         back_button.setIconSize(QSize(20, 20))
-        create_page_layout.addWidget(back_button, alignment=Qt.AlignLeft)
+        self.create_page_layout.addWidget(back_button, alignment=Qt.AlignLeft)
 
-        content_layout = QVBoxLayout()
+        self.content_layout = QVBoxLayout()
         
-        create_page_layout.setSpacing(20)
+        self.create_page_layout.setSpacing(20)
         self.filter_line_edit = QLineEdit()
         self.filter_line_edit.setPlaceholderText("Digite para filtrar os itens...")
         self.filter_line_edit.setFixedHeight(30)
@@ -141,7 +143,7 @@ class RequerimentoPage(QWidget):
         self.filter_line_edit.setStyleSheet(Style.style_QlineEdit)
         self.filter_line_edit.textChanged.connect(self.apply_item_filter)
         self.filter_line_edit.setAlignment(Qt.AlignLeft)
-        content_layout.addWidget(self.filter_line_edit)
+        self.content_layout.addWidget(self.filter_line_edit)
 
         left_frame = QFrame()
         self.left_layout = QGridLayout()
@@ -160,50 +162,57 @@ class RequerimentoPage(QWidget):
         right_layout = QVBoxLayout()
         right_frame.setLayout(right_layout)
 
-        drop_zone = DropZone(self)
-        shopping_cart_label = DropLabel(drop_zone)
+        self.drop_zone = DropZone(self)
+        shopping_cart_label = DropLabel(self.drop_zone)
 
         right_layout.addWidget(shopping_cart_label, alignment=Qt.AlignCenter)
-        right_layout.addWidget(drop_zone)
-        right_layout.addWidget(drop_zone.delete_button, alignment=Qt.AlignCenter)
+        right_layout.addWidget(self.drop_zone)
+        right_layout.addWidget(self.drop_zone.delete_button, alignment=Qt.AlignCenter)
 
         horizontal_content_layout = QHBoxLayout()
         horizontal_content_layout.addWidget(left_scroll_area)
         horizontal_content_layout.addWidget(right_frame)
 
-        content_layout.addLayout(horizontal_content_layout)
+        self.content_layout.addLayout(horizontal_content_layout)
 
         self.sector_input = QComboBox()
         self.sector_input.setFixedSize(400, 40)
         self.sector_input.setStyleSheet(Style.style_QComboBox)
-        sector_urgent_layout = QHBoxLayout()
-        sector_urgent_layout.setAlignment(Qt.AlignCenter)
-        sector_urgent_layout.addWidget(self.sector_input)
-        sector_urgent_layout.addSpacing(20)
+        self.sector_urgent_layout = QHBoxLayout()
+        self.sector_urgent_layout.setAlignment(Qt.AlignCenter)
+        self.sector_urgent_layout.addWidget(self.sector_input)
+        self.sector_urgent_layout.addSpacing(20)
+        asyncio.create_task(self.update_sectors())
         
+        
+    async def requerimentoInterno_page(self):
         if self.user.role_nome == "Enfermeiro" or self.user.role_nome == "Médico":
             self.urgent_input = QCheckBox("Urgente")
             self.urgent_input.setChecked(False)
             self.urgent_input.setStyleSheet(Style.style_checkbox)
-            sector_urgent_layout.addWidget(self.urgent_input)
-
-
-        content_layout.addLayout(sector_urgent_layout)
-        asyncio.create_task(self.update_sectors())
+            self.sector_urgent_layout.addWidget(self.urgent_input)
+            
+        self.content_layout.addLayout(self.sector_urgent_layout)
+        create_button = QPushButton("Criar Requerimento")
+        create_button.setFixedSize(500, 40)
+        create_button.setStyleSheet(Style.style_bt_QPushButton)
+        if self.user.role_nome == "Enfermeiro" or self.user.role_nome == "Médico":
+            create_button.clicked.connect(lambda: self.create_requerimento(user_id_pedido=self.user.utilizador_id, urgent=self.urgent_input.isChecked(), drop_zone=self.drop_zone))
+        else:
+            create_button.clicked.connect(lambda: self.create_requerimento(user_id_pedido=self.user.utilizador_id, urgent=False, drop_zone=self.drop_zone))
+        self.content_layout.addWidget(create_button, alignment=Qt.AlignCenter)
+        self.create_page_layout.addLayout(self.content_layout)
+        self.main_layout.addLayout(self.create_page_layout)
         
-        if self.user.role_nome != "Gestor Responsável" or self.user.role_nome != "Farmacêutico":
-            create_button = QPushButton("Criar Requerimento")
-            create_button.setFixedSize(500, 40)
-            create_button.setStyleSheet(Style.style_bt_QPushButton)
-            if self.user.role_nome == "Enfermeiro" or self.user.role_nome == "Médico":
-                create_button.clicked.connect(lambda: self.create_requerimento(user_id_pedido=self.user.utilizador_id, urgent=self.urgent_input.isChecked(), drop_zone=drop_zone))
-            else:
-                create_button.clicked.connect(lambda: self.create_requerimento(user_id_pedido=self.user.utilizador_id, urgent=False, drop_zone=drop_zone))
-            content_layout.addWidget(create_button, alignment=Qt.AlignCenter)
-
-        create_page_layout.addLayout(content_layout)
-
-        self.main_layout.addLayout(create_page_layout)
+    async def requerimentoExterno_page(self, requerimento: Requerimento):
+        self.content_layout.addLayout(self.sector_urgent_layout)
+        create_button = QPushButton("Associar Consumiveis")
+        create_button.setFixedSize(500, 40)
+        create_button.setStyleSheet(Style.style_bt_QPushButton)
+        create_button.clicked.connect(lambda: self.update_requerimento_externo(requerimento_id=requerimento.requerimento_id, setor_id=self.sector_input.currentData(), drop_zone=self.drop_zone))
+        self.content_layout.addWidget(create_button, alignment=Qt.AlignCenter)
+        self.create_page_layout.addLayout(self.content_layout)
+        self.main_layout.addLayout(self.create_page_layout)
 
     async def fetch_consumivel(self):
         response = await API_GetConsumiveis()
@@ -241,7 +250,7 @@ class RequerimentoPage(QWidget):
                 col = 0
                 row += 1
 
-    def create_requerimento(self, user_id_pedido,urgent, drop_zone):
+    def create_requerimento(self, user_id_pedido, drop_zone):
         requerimento_consumivel = []
         for row in range(drop_zone.rowCount()):
             item_widget = drop_zone.item(row, 0)
@@ -256,7 +265,6 @@ class RequerimentoPage(QWidget):
         else:
             urgent = False
 
-        #TODO SE FOR URGENTE NÃO PASSA PELO GESTOR DE ALA
         response = API_CreateRequerimento(user_id_pedido, setor_id,urgent, requerimento_consumivel)
         if response.success:
             #TODO ANTES DE CRIAR TENHO FAZER A GESTÃO PARA VER O QUE SE PODE ALOCAR OS CONSUMIVEIS
@@ -265,6 +273,23 @@ class RequerimentoPage(QWidget):
         else:
             Overlay.show_error(self, response.error_message)
 
+    def update_requerimento_externo(self, requerimento_id, setor_id, drop_zone):
+        requerimento_consumivel = []
+        for row in range(drop_zone.rowCount()):
+            item_widget = drop_zone.item(row, 0)
+            item_id = int(item_widget.data(Qt.UserRole))
+            quantidade = drop_zone.cellWidget(row, 1).value()
+            requerimento_consumivel.append({"consumivel_id": item_id, "quantidade": quantidade})
+
+        setor_id = self.sector_input.currentData()
+        
+        response = API_UpdateRequerimentoExterno(requerimento_id, setor_id, requerimento_consumivel, self.user.utilizador_id)
+        if response.success:
+            #TODO ANTES DE CRIAR TENHO FAZER A GESTÃO PARA VER O QUE SE PODE ALOCAR OS CONSUMIVEIS
+            self.reload_page_requerimentos()
+            Overlay.show_success(self, "Requerimento Externo Atualizado com sucesso!")
+        else:
+            Overlay.show_error(self, response.error_message)
 
     async def load_requerimentos(self, user: Utilizador):
         if user.role_nome == "Gestor Responsável":
@@ -318,9 +343,8 @@ class RequerimentoPage(QWidget):
             if ui_updated:
                 Overlay.show_information(self, "Requerimentos atualizados!")
 
-
     def add_requerimento_card(self, requerimento):
-        card = RequerimentoCard(user=self.user, requerimento=requerimento, update_callback=self.reload_requerimentos)
+        card = RequerimentoCard(user=self.user, requerimento=requerimento, update_callback=self.reload_requerimentos, parent_page=self)
         self.scroll_layout.addWidget(card)
         self.current_requerimentos_dict[requerimento.requerimento_id] = requerimento
 
@@ -359,9 +383,13 @@ class RequerimentoPage(QWidget):
     def update_sectors_wrapper(self):
         asyncio.ensure_future(self.update_sectors())
     
-    def show_create_requerimento_page_wrapper(self):
+    def show_create_requerimento_interno_page_wrapper(self):
         asyncio.ensure_future(self.show_create_requerimento_page())
-        
+        asyncio.ensure_future(self.requerimentoInterno_page())
+    
+    def show_create_requerimento_externo_page_wrapper(self, requerimento: Requerimento):
+        asyncio.ensure_future(self.show_create_requerimento_page())
+        asyncio.ensure_future(self.requerimentoExterno_page(requerimento=requerimento))
     def clear_layout(self, layout):
         while layout.count():
             child = layout.takeAt(0)
@@ -380,21 +408,22 @@ class RequerimentoPage(QWidget):
 
             self.current_filter = filter_key
 
-            if self.user.role_nome == "Farmacêutico":
-                requerimentos_urgentes = [
-                    req for req in self.current_requerimentos if req.urgente and req.status_atual in (1, 3,11)
-                ]
-                if requerimentos_urgentes:
-                    Overlay.show_warning(
-                        self, 
-                        "Há requerimentos urgentes pendentes. Responda-os antes de continuar com outros requerimentos."
-                    )
-                    filtered_requerimentos = requerimentos_urgentes
-                else:
-                    filtered_requerimentos = self.get_filtered_requerimentos(filter_key)
-            else:
-                filtered_requerimentos = self.get_filtered_requerimentos(filter_key)
-
+            #TODO COLOCAR ISTO OK PARA SO VER OS REQUERIMENTOS URGENTES
+            # if self.user.role_nome == "Farmacêutico":
+            #     requerimentos_urgentes = [
+            #         req for req in self.current_requerimentos if req.urgente and req.status_atual in (1, 3,11)
+            #     ]
+            #     if requerimentos_urgentes:
+            #         Overlay.show_warning(
+            #             self, 
+            #             "Há requerimentos urgentes pendentes. Responda-os antes de continuar com outros requerimentos."
+            #         )
+            #         filtered_requerimentos = requerimentos_urgentes
+            #     else:
+            #         filtered_requerimentos = self.get_filtered_requerimentos(filter_key)
+            # else:
+            filtered_requerimentos = self.get_filtered_requerimentos(filter_key)
+            
             self.clear_layout(self.scroll_layout)
             for requerimento in filtered_requerimentos:
                 self.add_requerimento_card(requerimento)

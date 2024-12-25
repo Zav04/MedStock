@@ -36,15 +36,16 @@ if __name__ == "__main__":
         #
         #role_nome="Gestor Responsável"
         #role_nome="Administrador"
-        role_nome="Farmacêutico"
+        #role_nome="Farmacêutico"
         #role_nome="Enfermeiro"
-        #role_nome="Médico"
+        role_nome="Médico"
         #role_nome="Secretário Clínico"
         #role_nome="Assistente"
     )
     # TODO JUST FOR TESTING
 
     try:
+        #window=Login()
         window = Dashboard(user=user)
         window.show()
 

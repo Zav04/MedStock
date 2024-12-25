@@ -15,8 +15,8 @@ BEGIN
         RAISE EXCEPTION 'O estado do paciente não pode ser vazio.';
     END IF;
 
-    INSERT INTO Requerimento (user_id_pedido, urgente, tipo_requerimento)
-    VALUES (user_id_pedido, TRUE, 'Externo')
+    INSERT INTO Requerimento (user_id_pedido, setor_id, urgente, tipo_requerimento)
+    VALUES (user_id_pedido,NULL, TRUE, 'Externo')
     RETURNING requerimento_id INTO new_requerimento_id;
 
     INSERT INTO HistoricoRequerimento (requerimento_id, data_modificacao, status, descricao, user_id_responsavel)

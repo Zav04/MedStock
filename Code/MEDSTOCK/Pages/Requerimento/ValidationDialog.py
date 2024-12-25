@@ -46,8 +46,6 @@ class ValidationDialog(QDialog):
         header_label_validated.setStyleSheet("font-size: 18px; font-weight: bold; color: black;")
         items_layout.addWidget(header_label_validated, 0, 2)
         
-        
-
         # Adicionar itens na grade
         self.item_widgets = []
         for row, item in enumerate(requerimento.itens_pedidos, start=1):
@@ -134,12 +132,12 @@ class ValidationDialog(QDialog):
                 "quantidade_pedida": item.quantidade,
                 "quantidade_recebida": spin_box.value(),
             }
-            for item, spin_box in self.item_widgets
+            for item, spin_box, _ in self.item_widgets
             if spin_box.value() != item.quantidade
         ]
+
         self.observations = self.observation_box.toPlainText()
         self.reject()
-        
 
     def cancel_validation(self):
         self.was_cancelled = True

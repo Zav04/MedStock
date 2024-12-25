@@ -54,7 +54,6 @@ api.include_router(PUT_requerimento_router)
 api.include_router(POST_login_router_MedOcurrencias)
 api.include_router(GET_requerimento_router_MedOcurrencias)
 
-
 api.include_router(POST_login_router_MedReader)
 api.include_router(GET_requerimento_router_MedReader)
 api.include_router(PUT_requerimento_router_MedReader)
