@@ -120,12 +120,25 @@ def GeneratePdfRequerimento(file_path: str, requerimento: Requerimento):
     y_offset = height - 130
 
     # Detalhes básicos
-    details = [
-        ("Setor", requerimento.setor_nome_localizacao or "Não especificado"),
-        ("Nome do Solicitante", requerimento.nome_utilizador_pedido or "Desconhecido"),
-        ("Data do Pedido", datetime.strptime(requerimento.data_pedido, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M') if requerimento.data_pedido else "------------"),
-        ("Urgente", "Sim" if requerimento.urgente else "Não"),
-    ]
+    
+    if requerimento.tipo_requerimento=="Interno":
+        details = [
+            ("Tipo de Requerimento", requerimento.tipo_requerimento),
+            ("Setor", requerimento.setor_nome_localizacao or "Não especificado"),
+            ("Nome do Solicitante", requerimento.nome_utilizador_pedido or "Desconhecido"),
+            ("Data do Pedido", datetime.strptime(requerimento.data_pedido, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M') if requerimento.data_pedido else "------------"),
+            ("Urgente", "Sim" if requerimento.urgente else "Não"),
+        ]
+    else:
+        details = [
+            ("Tipo de Requerimento", requerimento.tipo_requerimento),
+            ("Setor", requerimento.setor_nome_localizacao or "Não associado"),
+            ("Nome do Solicitante", requerimento.nome_utilizador_pedido or "Desconhecido"),
+            ("Data do Pedido", datetime.strptime(requerimento.data_pedido, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M') if requerimento.data_pedido else "------------"),
+            ("Nome do Doente", requerimento.paciente_nome or "Desconhecido"),
+            ("Estado do Doente", requerimento.paciente_estado or "Desconhecido"),
+            ("Urgente", "Sim" if requerimento.urgente else "Não"),
+        ]
 
     for label, value in details:
         y_offset = check_page_space(y_offset, 20)
@@ -157,21 +170,29 @@ def GeneratePdfRequerimento(file_path: str, requerimento: Requerimento):
                         text = f"           Avaliado por {hist.user_responsavel} em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
                         textcomentario= ""
                 case 2:
-                    text = f"           Pedido enviado para preparar por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
-                    textcomentario= ""
+                    if requerimento.tipo_requerimento=="Interno":
+                        text = f"           Pedido enviado para preparar por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                        textcomentario= ""
+                    else:
+                        text = f"           Consumiveis e Setor Selecionado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                        textcomentario= ""
                 case 3:
                     text = f"           Preparado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
                     textcomentario= ""
                 case 4:
-                    text = f"           Finalizado e Validado por {hist.user_responsavel} em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
-                    if hist.descricao:
-                        descricao_limpa = hist.descricao.replace("Requerimento finalizado.", "").strip()
-                        if descricao_limpa:
-                            textcomentario = f"           Comentário: {descricao_limpa}"
+                    if requerimento.tipo_requerimento=="Interno":
+                        text = f"           Finalizado e Validado por {hist.user_responsavel} em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                        if hist.descricao:
+                            descricao_limpa = hist.descricao.replace("Requerimento finalizado.", "").strip()
+                            if descricao_limpa:
+                                textcomentario = f"           Comentário: {descricao_limpa}"
+                            else:
+                                textcomentario = ""
                         else:
                             textcomentario = ""
                     else:
-                        textcomentario = ""
+                        text = f"           Pedido Finalizado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                        textcomentario= ""
                 case 5:
                     text = f"           Recusado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}." #Motivo: {hist.descricao or 'Não especificado'}"
                     textcomentario= ""
@@ -188,8 +209,15 @@ def GeneratePdfRequerimento(file_path: str, requerimento: Requerimento):
                     text = f"           Colocado em Revalidação por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
                     textcomentario= ""
                 case 10:
-                    text = f"           Retornou para a Lista de Espera por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
-                    textcomentario= ""
+                    if(requerimento.tipo_requerimento=="Interno"):
+                        text = f"           Retornou para a Lista de Espera por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                        textcomentario= ""
+                    else:
+                        text = f"           Enviado para Entrega por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                        textcomentario= ""
+                case 11:
+                        text = f"          Pedido Externo criado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                        textcomentario= ""
                 case _:
                     text = f"           Estado desconhecido registrado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
                     textcomentario= ""

@@ -163,24 +163,14 @@ class RequerimentoCard(QWidget):
                 actions_layout.addWidget(add_consumivel_button, alignment=Qt.AlignRight)
                 add_consumivel_button.clicked.connect(lambda: self.open_create_requerimento_page())
 
-        if self.requerimento.tipo_requerimento=="Interno":
-            download_button = QPushButton()
-            download_button.setIcon(QIcon("./icons/MaterialIcons/picture_as_pdf.png"))
-            download_button.setIconSize(QSize(24, 24))
-            download_button.setCursor(QCursor(Qt.PointingHandCursor))
-            download_button.setStyleSheet(self.button_style("#f54251"))
-            download_button.clicked.connect(lambda: self.choose_file_location_GeneratePdfRequerimento())
-            actions_layout.addWidget(download_button, alignment=Qt.AlignRight)
-        else:
-            download_button = QPushButton()
-            download_button.setIcon(QIcon("./icons/MaterialIcons/picture_as_pdf.png"))
-            download_button.setIconSize(QSize(24, 24))
-            download_button.setCursor(QCursor(Qt.PointingHandCursor))
-            download_button.setStyleSheet(self.button_style("#f54251"))
-            #TODO NOVO FUNÇÃO PARA DOWNLOAD PDF
-            download_button.clicked.connect(lambda: self.choose_file_location_GeneratePdfRequerimento())
-            actions_layout.addWidget(download_button, alignment=Qt.AlignRight)
-        #TODO FAZER PARTE DO REQUERIMENTO EXTERNO
+        download_button = QPushButton()
+        download_button.setIcon(QIcon("./icons/MaterialIcons/picture_as_pdf.png"))
+        download_button.setIconSize(QSize(24, 24))
+        download_button.setCursor(QCursor(Qt.PointingHandCursor))
+        download_button.setStyleSheet(self.button_style("#f54251"))
+        download_button.clicked.connect(lambda: self.choose_file_location_GeneratePdfRequerimento())
+        actions_layout.addWidget(download_button, alignment=Qt.AlignRight)
+
         
         self.details_button = QPushButton()
         recolored_icon_details = QIcon(UIFunctions.recolor_icon(os.path.abspath("./icons/MaterialIcons/visibility.png"), "#4287f5"))
