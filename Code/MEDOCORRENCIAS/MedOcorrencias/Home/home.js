@@ -1,21 +1,22 @@
 document.getElementById('occurrenceForm').addEventListener('submit', function(event) {
     event.preventDefault(); // Previne o envio padrão do formulário
 
-    const paciente_nome = document.getElementById('patientName').value;
-    const paciente_estado = document.getElementById('description').value;
+    const nome = document.getElementById('patientName').value;
+    const estado = document.getElementById('description').value;
+    const user_id = localStorage.getItem('user_id');
 
-    if (patientName && description) {
+    if (paciente_nome && paciente_estado) {
         // Dados a serem enviados
         const data = {
-            user_id_pedido: 12,
-            paciente_nome: paciente_nome,
-            paciente_estado: paciente_estado
+            user_id_pedido: user_id,
+            paciente_nome: nome,
+            paciente_estado: estado
         };
 
         console.log('Enviando dados para a API:', data); // Log dos dados enviados
 
         // Envio para a API
-        fetch('https://medstock-api-ce98.onrender.com/MedStock_CreateRequerimentoExterno/', { 
+        fetch((config.API_URL) + (config.API_CreateRequerimentoExterno), { 
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -29,7 +30,7 @@ document.getElementById('occurrenceForm').addEventListener('submit', function(ev
                     alert('Ocorrência enviada com sucesso!');
                     console.log('Resposta da API:', data);
                 } else {
-                    throw new Error(`Erro ao enviar os dados para a API: ${data.message || 'Erro desconhecido'}`);
+                    throw new Error('Erro ao enviar os dados para a API:' + (data.message || 'Erro desconhecido'));
                 }
             });
         })
