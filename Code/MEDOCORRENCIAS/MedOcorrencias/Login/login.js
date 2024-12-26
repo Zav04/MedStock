@@ -1,3 +1,8 @@
+document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('loginForm');
+    loginForm.addEventListener('submit', handleLogin);
+});
+
 function handleLogin(event) {
     event.preventDefault(); // Previne o envio padrão do formulário
 
@@ -28,7 +33,7 @@ function handleLogin(event) {
                     if (userId != null) {
                         localStorage.setItem('user_id', userId);
                     }
-                    window.location.href = 'home.html';
+                    window.location.href = '../Home/home.html';
                 } else {
                     alert(data.error || 'Erro ao realizar login.');
                 }
