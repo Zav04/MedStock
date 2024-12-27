@@ -555,3 +555,15 @@ class Style():
             margin-right: 12px;
         }""")
 
+
+    style_QtoolTip = ("""
+        QToolTip {
+            font-size: 12px; 
+            color: #333; 
+            background-color: #f9f9f9; 
+            border: 1px solid #ccc;
+            min-width: 300px;  /* Define a largura mínima */
+            min-height: 100px; /* Define a altura mínima */
+            padding: 5px;      /* Espaçamento interno */
+        }
+        """)

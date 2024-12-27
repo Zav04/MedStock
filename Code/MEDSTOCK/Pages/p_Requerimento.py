@@ -13,15 +13,17 @@ from API.API_GET_Request import (API_GetRequerimentosByUser, API_GetRequerimento
 from API.API_POST_Request import API_CreateRequerimento
 from API.API_PUT_Request import API_UpdateRequerimentoExterno
 from APP.Card.Card import RequerimentoCard
+from Class.ConsumivelManager import ConsumivelManager
 from APP.UI.ui_functions import UIFunctions
 from Pages.Requerimento.ui_DragAndDrop_Itens import DraggableLabel, DropZone, DropLabel
 import asyncio
 
 
 class RequerimentoPage(QWidget):
-    def __init__(self, user: Utilizador):
+    def __init__(self, user: Utilizador, consumivel_manager: ConsumivelManager):
         super().__init__()
         self.user = user
+        self.consumivel_manager = consumivel_manager
         self.main_layout = QVBoxLayout(self)
         self.current_requerimentos = []
         self.ui_updated = False
@@ -153,10 +155,8 @@ class RequerimentoPage(QWidget):
         left_scroll_area.setWidgetResizable(True)
         left_scroll_area.setWidget(left_frame)
 
-        try:
-            asyncio.create_task(self.fetch_consumivel())
-        except Exception as e:
-            print(e)
+        #TODO VALIDAR SE ISTO ASSIM NÃO CRASHA
+        asyncio.create_task(self.fetch_consumivel())
 
         right_frame = QFrame()
         right_layout = QVBoxLayout()
@@ -241,8 +241,6 @@ class RequerimentoPage(QWidget):
                 consumivel_id=item.consumivel_id,
                 nome_consumivel=item.nome_consumivel,
                 tipo_consumivel=item.nome_tipo,
-                #TODO VERIFICAR COMO VAI FICAR COM TIVER ALGORITMO DE ALOCAÇÃO E GESTÃO DE STOCK
-                quantidade_disponivel=item.quantidade_total
             )
             self.left_layout.addWidget(item_label, row, col)
             col += 1
@@ -250,7 +248,7 @@ class RequerimentoPage(QWidget):
                 col = 0
                 row += 1
 
-    def create_requerimento(self, user_id_pedido, drop_zone):
+    def create_requerimento(self, user_id_pedido,urgent, drop_zone):
         requerimento_consumivel = []
         for row in range(drop_zone.rowCount()):
             item_widget = drop_zone.item(row, 0)
@@ -264,10 +262,9 @@ class RequerimentoPage(QWidget):
             urgent = True
         else:
             urgent = False
-
+        #TODO ANTES DE CRIAR TENHO FAZER A GESTÃO PARA VER O QUE SE PODE ALOCAR OS CONSUMIVEIS
         response = API_CreateRequerimento(user_id_pedido, setor_id,urgent, requerimento_consumivel)
         if response.success:
-            #TODO ANTES DE CRIAR TENHO FAZER A GESTÃO PARA VER O QUE SE PODE ALOCAR OS CONSUMIVEIS
             self.reload_page_requerimentos()
             Overlay.show_success(self, "Requerimento criado com sucesso!")
         else:
@@ -285,7 +282,6 @@ class RequerimentoPage(QWidget):
         
         response = API_UpdateRequerimentoExterno(requerimento_id, setor_id, requerimento_consumivel, self.user.utilizador_id)
         if response.success:
-            #TODO ANTES DE CRIAR TENHO FAZER A GESTÃO PARA VER O QUE SE PODE ALOCAR OS CONSUMIVEIS
             self.reload_page_requerimentos()
             Overlay.show_success(self, "Requerimento Externo Atualizado com sucesso!")
         else:
@@ -344,7 +340,9 @@ class RequerimentoPage(QWidget):
                 Overlay.show_information(self, "Requerimentos atualizados!")
 
     def add_requerimento_card(self, requerimento):
-        card = RequerimentoCard(user=self.user, requerimento=requerimento, update_callback=self.reload_requerimentos, parent_page=self)
+        self.consumivel_manager.add_requerimento(requerimento)
+        self.consumivel_manager.requerimento_manager(requerimento=requerimento,parent_page=self)
+        card = RequerimentoCard(user=self.user, requerimento=requerimento, consumivel_manager=self.consumivel_manager, update_callback=self.reload_requerimentos, parent_page=self)
         self.scroll_layout.addWidget(card)
         self.current_requerimentos_dict[requerimento.requerimento_id] = requerimento
 

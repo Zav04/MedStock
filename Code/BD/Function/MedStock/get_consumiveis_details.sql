@@ -17,7 +17,12 @@ BEGIN
         t.nome_tipo,
         i.codigo,
         i.quantidade_total,
-        i.quantidade_alocada,
+        COALESCE(
+            (SELECT SUM(cr.quantidade_alocada)::BIGINT
+             FROM Consumivel_Requerimento cr
+             WHERE cr.consumivel_id = i.consumivel_id),
+            0
+        ) AS quantidade_alocada,
         i.quantidade_minima,
         i.quantidade_pedido
     FROM 

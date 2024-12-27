@@ -6,12 +6,11 @@ from APP.UI.ui_styles import Style
 
 
 class DraggableLabel(QWidget):
-    def __init__(self, consumivel_id, nome_consumivel, tipo_consumivel, quantidade_disponivel):
+    def __init__(self, consumivel_id, nome_consumivel, tipo_consumivel):
         super().__init__()
         self.consumivel_id = consumivel_id
         self.nome_consumivel = nome_consumivel
         self.tipo_consumivel = tipo_consumivel
-        self.quantidade_disponivel = quantidade_disponivel
 
         container = QWidget(self)
         container_layout = QVBoxLayout(container)
@@ -55,7 +54,7 @@ class DraggableLabel(QWidget):
         if event.button() == Qt.LeftButton:
             pixmap = self.create_combined_pixmap()
             mime_data = QMimeData()
-            mime_data.setText(f"{self.consumivel_id}|{self.nome_consumivel}|{self.quantidade_disponivel}")
+            mime_data.setText(f"{self.consumivel_id}|{self.nome_consumivel}")
 
             drag = QDrag(self)
             drag.setMimeData(mime_data)
@@ -102,14 +101,11 @@ class DropZone(QTableWidget):
         self.itemSelectionChanged.connect(self.show_delete_button)
 
 
-    def add_consumivel_to_list(self, consumivel_id, consumivel_name, quantidade_disponivel):
+    def add_consumivel_to_list(self, consumivel_id, consumivel_name):
         for row in range(self.rowCount()):
             if self.item(row, 0).text() == consumivel_name:
                 spinbox = self.cellWidget(row, 1)
-                
-                #TODO QUANDO FOR PARA FAZER SEM LIMITES DE QUANTIDADE
-                spinbox.setValue(min(spinbox.value() + 1, quantidade_disponivel))
-                #TODO QUANDO FOR PARA FAZER SEM LIMITES DE QUANTIDADE
+                spinbox.setValue(spinbox.value() + 1)
                 return
 
         row = self.rowCount()
@@ -123,7 +119,7 @@ class DropZone(QTableWidget):
         spinbox.setStyleSheet(Style.style_SpinBox)
         spinbox.setValue(1)
         spinbox.setMinimum(1)
-        spinbox.setMaximum(quantidade_disponivel)
+        spinbox.setMaximum(99999)
         self.setCellWidget(row, 1, spinbox)
 
     def show_delete_button(self):
@@ -173,7 +169,7 @@ class DropLabel(QLabel):
     def dropEvent(self, event):
         if event.mimeData().hasText():
             data = event.mimeData().text().split("|")
-            consumivel_id, consumivel_name, quantidade_disponivel = data[0], data[1], int(data[2])
-            self.drop_zone.add_consumivel_to_list(consumivel_id,consumivel_name, quantidade_disponivel)
+            consumivel_id, consumivel_name = data[0], data[1]
+            self.drop_zone.add_consumivel_to_list(consumivel_id,consumivel_name)
             self.update_icon(self.default_icon)
             event.accept()

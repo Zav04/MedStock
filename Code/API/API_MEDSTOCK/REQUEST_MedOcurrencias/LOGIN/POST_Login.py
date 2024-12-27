@@ -34,7 +34,7 @@ async def MedStock_ValidateAndFetchUser(user: C_Login, db=Depends(get_db_MEDSTOC
         if user_data_response["data"]["role_nome"] != "Serviço Externo":
             return {
                 "response": False,
-                "error": "Erro ao verificar o login: Utilizador não é um Serviço Externo."
+                "error": "Erro ao verificar o login: Utilizador não é um do tipo Serviço Externo."
             }
         else:
             return {

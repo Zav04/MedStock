@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional, List
-from Class.ItemPedido import ItemPedido
+from Class.ConsumivelPedido import ConsumivelPedido
 from Class.RequerimentoHistorico import RequerimentoHistorico
 
 class Requerimento:
@@ -15,7 +15,7 @@ class Requerimento:
                  tipo_requerimento: str,
                  paciente_nome: Optional[str],
                  paciente_estado: Optional[str],
-                 itens_pedidos: List[ItemPedido],
+                 itens_pedidos: List[ConsumivelPedido],
                  data_pedido: datetime,
                  historico: List[RequerimentoHistorico]):
         
@@ -32,6 +32,7 @@ class Requerimento:
         self.itens_pedidos = itens_pedidos
         self.data_pedido = data_pedido
         self.historico = historico
+        self.pendete_alocacao = False
 
     def __eq__(self, other):
         if not isinstance(other, Requerimento):

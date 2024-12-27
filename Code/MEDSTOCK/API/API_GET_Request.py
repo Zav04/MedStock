@@ -5,7 +5,7 @@ from Class.API_Response import APIResponse
 from Class.Roles import Roles
 from Class.Consumivel import Consumivel
 from Class.Requerimento import Requerimento
-from Class.ItemPedido import ItemPedido
+from Class.ConsumivelPedido import ConsumivelPedido
 from Class.Utilizador import Utilizador
 from Class.Setor import SetorHospital
 from Class.TipoConsumivel import Tipo_Consumivel
@@ -31,11 +31,9 @@ async def API_GetRoles()-> APIResponse:
             
             elif response.status_code == 400:
                 error_message = response.json().get("error", "Erro desconhecido")
-                print("Erro:", error_message)
                 return APIResponse(success=False, error_message=error_message)
             
             else:
-                print("Erro inesperado:", response.status_code)
                 return APIResponse(success=False, error_message=f"Erro inesperado: {response.status_code}")
             
 
@@ -94,9 +92,11 @@ async def API_GetRequerimentosByFarmaceutico() -> APIResponse:
                     requerimentos = []
                     for item in response.json().get("data", []):
                         itens_pedidos = [
-                            ItemPedido(
+                            ConsumivelPedido(
+                                consumivel_id=pedido["consumivel_id"],
                                 nome_item=pedido.get("nome_consumivel"),
                                 quantidade=pedido.get("quantidade", 0),
+                                quantidade_alocada=pedido.get("quantidade_alocada", 0),
                                 tipo_item=pedido.get("tipo_consumivel")
                             ) for pedido in item.get("itens_pedidos", [])
                         ]
@@ -148,9 +148,11 @@ async def API_GetRequerimentosByUser(user_id: int) -> APIResponse:
                     requerimentos = []
                     for item in response.json().get("data", []):
                         itens_pedidos = [
-                            ItemPedido(
+                            ConsumivelPedido(
+                                consumivel_id=pedido["consumivel_id"],
                                 nome_item=pedido.get("nome_consumivel"),
                                 quantidade=pedido.get("quantidade", 0),
+                                quantidade_alocada=pedido.get("quantidade_alocada", 0),
                                 tipo_item=pedido.get("tipo_consumivel")
                             ) for pedido in item.get("itens_pedidos", [])
                         ]
@@ -202,9 +204,11 @@ async def API_GetRequerimentosByResponsavel(user_id: int) -> APIResponse:
                     requerimentos = []
                     for item in response.json().get("data", []):
                         itens_pedidos = [
-                            ItemPedido(
+                            ConsumivelPedido(
+                                consumivel_id=pedido["consumivel_id"],
                                 nome_item=pedido.get("nome_consumivel"),
                                 quantidade=pedido.get("quantidade", 0),
+                                quantidade_alocada=pedido.get("quantidade_alocada", 0),
                                 tipo_item=pedido.get("tipo_consumivel")
                             ) for pedido in item.get("itens_pedidos", [])
                         ]

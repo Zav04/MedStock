@@ -1,11 +1,13 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QFrame,QFileDialog, QScrollArea, QSizePolicy, QDialog
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSpacerItem,QHBoxLayout, QLabel, QPushButton, QFrame,QFileDialog, QScrollArea, QSizePolicy, QDialog
 from PyQt5.QtGui import QFont, QIcon, QCursor,QPixmap
 from PyQt5.QtCore import Qt, QSize, QTimer
 from datetime import datetime
 from Class.Requerimento import Requerimento
 from Class.Utilizador import Utilizador
 from Pages.Requerimento.ValidationDialog import ValidationDialog
+from Class.ConsumivelManager import ConsumivelManager
 from APP.UI.ui_functions import UIFunctions
+from APP.UI.ui_styles import Style
 import os
 from APP.Label.Label import add_status_lable
 from APP.Overlays.Overlay import Overlay
@@ -18,9 +20,11 @@ from API.API_POST_Request import API_SendEmailRequerimentoStatus
 
 
 class RequerimentoCard(QWidget):
-    def __init__(self, user:Utilizador, requerimento: Requerimento, update_callback=None,parent_page=None):
+    def __init__(self, user:Utilizador, requerimento: Requerimento,consumivel_manager: ConsumivelManager,
+                update_callback=None,parent_page=None):
         super().__init__()
         self.user = user
+        self.consumivel_manager = consumivel_manager
         self.requerimento = requerimento
         self.parent_page = parent_page
         self.expanded = False
@@ -66,15 +70,50 @@ class RequerimentoCard(QWidget):
         # Centro: Status
         status_layout = QVBoxLayout()
         status_layout.setAlignment(Qt.AlignCenter)
+
         status_label = add_status_lable(self.requerimento.status_atual)
         status_layout.addWidget(status_label, alignment=Qt.AlignCenter)
-        header_layout.addLayout(status_layout)
 
-        # Direita: Botões de ação
+        center_layout = QHBoxLayout()
+        center_layout.setAlignment(Qt.AlignCenter)
+        center_layout.addLayout(status_layout)
+        
+        icon_layout = QVBoxLayout()
+        icon_layout.setAlignment(Qt.AlignCenter)
+        
+        consumivel_alocado = self.consumivel_manager.verificar_alocacao(self.requerimento.requerimento_id)
+
+        if consumivel_alocado[0] == False and self.requerimento.status_atual <= 1:
+            warning_icon = QLabel()
+            warning_icon.setStyleSheet("border: none; background: none; padding: 0;")
+            warning_icon.setPixmap(
+                    QPixmap(UIFunctions.recolor_icon(os.path.abspath("./icons/MaterialIcons/warning.png"), "#f44336"))
+                    .scaled(100, 100, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+            warning_icon.setCursor(QCursor(Qt.PointingHandCursor))
+
+            tooltip_text = "<b>Itens não alocados:</b><br>"
+            for item in consumivel_alocado[1]:
+                tooltip_text += (
+                    f"• <b>{item['nome_consumivel']}</b>: "
+                    f"Pedido: {item['quantidade_pedida']}, "
+                    f"Alocado: {item['quantidade_alocada']}<br>"
+                )
+
+            warning_icon.setToolTip(tooltip_text)
+            warning_icon.setStyleSheet(Style.style_QtoolTip)
+            icon_layout.addWidget(warning_icon, alignment=Qt.AlignCenter)
+        else:
+            placeholder_icon = QLabel()
+            placeholder_icon.setFixedSize(100, 100)
+            placeholder_icon.setStyleSheet("border: none;")
+            icon_layout.addWidget(placeholder_icon, alignment=Qt.AlignCenter)
+
+        center_layout.addLayout(icon_layout)
+        header_layout.addLayout(center_layout)
+
         actions_layout = QVBoxLayout()
         actions_layout.setSpacing(10)
         actions_layout.setAlignment(Qt.AlignRight)
-        
 
         if self.requerimento.status_atual == 0 and (user.role_nome=="Gestor Responsável" or user.role_nome!="Farmacêutico") and self.requerimento.tipo_requerimento=="Interno":
             delete_button = QPushButton()

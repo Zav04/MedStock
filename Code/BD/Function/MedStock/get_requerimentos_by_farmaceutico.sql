@@ -53,8 +53,10 @@ BEGIN
         (
             SELECT JSON_AGG(
                 JSON_BUILD_OBJECT(
+                    'consumivel_id', c.consumivel_id,
                     'nome_consumivel', c.nome_consumivel,
                     'quantidade', cr.quantidade,
+                    'quantidade_alocada', cr.quantidade_alocada,
                     'tipo_consumivel', tc.nome_tipo
                 )
             )

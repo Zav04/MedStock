@@ -2,6 +2,7 @@ import os
 import httpx
 import asyncio
 from Class.API_Response import APIResponse
+from typing import List
 import json
 
 async def API_UpdateConsumivel(consumivel_id, quantidade_minima, quantidade_pedido)-> APIResponse:
@@ -318,6 +319,34 @@ def API_UpdateRequerimentoExterno(requerimento_id, setor_id, items_list, user_id
     }
     try:
         response = httpx.put(URL, json=payload, headers={"Content-Type": "application/json"})
+        
+        if response.status_code == 200:
+            success = response.json().get("response", {})
+            
+            if not success:
+                error_message = response.json().get("error", {})
+                return APIResponse(success=False, error_message=error_message)
+            else:
+                data = response.json().get("data", {})
+                return APIResponse(success=True, data=data)
+        elif response.status_code == 400:
+            error_message = response.json().get("error", "Erro desconhecido")
+            return APIResponse(success=False, error_message=error_message)
+        else:
+            return APIResponse(success=False, error_message="Erro inesperado")
+    except httpx.RequestError as e:
+        return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
+    
+async def API_UpdateConsumivelAlocado(requerimento_id: int, consumiveis: list) -> APIResponse:
+    URL = os.getenv('API_URL') + os.getenv('API_UpdateConsumivelAlocado')
+
+    payload = {
+        "requerimento_id": requerimento_id,
+        "consumiveis": consumiveis
+    }
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.put(URL, json=payload, headers={"Content-Type": "application/json"})
         
         if response.status_code == 200:
             success = response.json().get("response", {})

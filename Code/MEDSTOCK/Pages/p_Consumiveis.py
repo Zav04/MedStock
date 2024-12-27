@@ -8,15 +8,17 @@ from PyQt5.QtCore import Qt, QSize, QTimer
 from APP.UI.ui_styles import Style
 from APP.Overlays.Overlay import Overlay
 from APP.UI.ui_functions import UIFunctions
+from Class.ConsumivelManager import ConsumivelManager
 from API.API_GET_Request import API_GetConsumiveis
 from API.API_PUT_Request import API_UpdateConsumivel
 from APP.PDF.Generate_PDF import GeneratePdfItens
 import asyncio
 import os
 
-class ItemTablePage(QWidget):
-    def __init__(self):
+class ConsumiveisTablePage(QWidget):
+    def __init__(self,consumivel_manager:ConsumivelManager):
         super().__init__()
+        self.consumivel_manager = consumivel_manager
         self.editing_rows = set()
         self.main_layout = QVBoxLayout(self)
         self.main_layout.setAlignment(Qt.AlignCenter)
@@ -68,6 +70,7 @@ class ItemTablePage(QWidget):
         response = await API_GetConsumiveis()
         if response.success:
             items = response.data
+            self.consumivel_manager.add_consumivel(items)
             self.update_table(items)
         else:
             Overlay.show_error(self, response.error_message)

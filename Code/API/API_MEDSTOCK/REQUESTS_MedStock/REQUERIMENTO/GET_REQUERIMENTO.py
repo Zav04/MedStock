@@ -27,7 +27,9 @@ async def MedStock_GetRequerimentosByUser(user_id: int, db=Depends(get_db_MEDSTO
             if row.itens_pedidos:
                 for item in row.itens_pedidos:
                     itens_pedidos.append({
+                        "consumivel_id": item.get("consumivel_id"),
                         "nome_consumivel": item.get("nome_consumivel"),
+                        "quantidade_alocada": item.get("quantidade_alocada"),
                         "quantidade": item.get("quantidade"),
                         "tipo_consumivel": item.get("tipo_consumivel")
                     })
@@ -95,7 +97,9 @@ async def MedStock_GetRequerimentosByFarmaceutico(db=Depends(get_db_MEDSTOCK)):
             if row.itens_pedidos:
                 for item in row.itens_pedidos:
                     itens_pedidos.append({
+                        "consumivel_id": item.get("consumivel_id"),
                         "nome_consumivel": item.get("nome_consumivel"),
+                        "quantidade_alocada": item.get("quantidade_alocada"),
                         "quantidade": item.get("quantidade"),
                         "tipo_consumivel": item.get("tipo_consumivel")
                     })
@@ -163,7 +167,9 @@ async def MedStock_GetRequerimentosByResponsavel(responsavel_id: int, db=Depends
             if row.itens_pedidos:
                 for item in row.itens_pedidos:
                     itens_pedidos.append({
+                        "consumivel_id": item.get("consumivel_id"),
                         "nome_consumivel": item.get("nome_consumivel"),
+                        "quantidade_alocada": item.get("quantidade_alocada"),
                         "quantidade": item.get("quantidade"),
                         "tipo_consumivel": item.get("tipo_consumivel")
                     })
