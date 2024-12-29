@@ -158,7 +158,7 @@ class CreateUserPage(QWidget):
     async def update_role(self):
         DbRoles = await API_GetRoles()
         if DbRoles.success:
-            QTimer.singleShot(0, lambda: self.create_roles(DbRoles.data))
+            asyncio.ensure_future(self.create_roles(DbRoles.data))
         else:
             Overlay.show_error(self, DbRoles.error_message)
 
@@ -173,7 +173,7 @@ class CreateUserPage(QWidget):
     async def update_sectors(self):
         response = await API_GetSectors()
         if response.success:
-            QTimer.singleShot(0, lambda: self.create_sectors(response.data))
+            asyncio.ensure_future(self.create_sectors(response.data))
         else:
             Overlay.show_error(self, response.error_message)
 

@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSpacerItem,QHBoxLayout, QLabel, QPushButton, QFrame,QFileDialog, QScrollArea, QSizePolicy, QDialog
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QFrame,QFileDialog, QScrollArea, QSizePolicy, QDialog
 from PyQt5.QtGui import QFont, QIcon, QCursor,QPixmap
-from PyQt5.QtCore import Qt, QSize, QTimer
+from PyQt5.QtCore import Qt, QSize
 from datetime import datetime
 from Class.Requerimento import Requerimento
 from Class.Utilizador import Utilizador
@@ -9,13 +9,13 @@ from Class.ConsumivelManager import ConsumivelManager
 from APP.UI.ui_functions import UIFunctions
 from APP.UI.ui_styles import Style
 import os
+import asyncio
 from APP.Label.Label import add_status_lable
 from APP.Overlays.Overlay import Overlay
 from APP.PDF.Generate_PDF import GeneratePdfRequerimento
 from API.API_PUT_Request import (API_CancelRequerimento, API_AcceptRequerimento, API_RejectRequerimento, 
-                                API_StandByRequerimento, API_ResumeRequerimento, API_PrepareRequerimento,
-                                API_SendRequerimento, API_FinishRequerimento, API_ReavaliationRequerimento,
-                                API_UpdateRequerimentoExterno)
+                                API_PrepareRequerimento,API_SendRequerimento, API_FinishRequerimento, API_ReavaliationRequerimento,
+                                )
 from API.API_POST_Request import API_SendEmailRequerimentoStatus
 
 
@@ -25,6 +25,8 @@ class RequerimentoCard(QWidget):
         super().__init__()
         self.user = user
         self.consumivel_manager = consumivel_manager
+        self.consumivel_alocado = None
+        self.list_consumiveis_NA = []
         self.requerimento = requerimento
         self.parent_page = parent_page
         self.expanded = False
@@ -81,9 +83,9 @@ class RequerimentoCard(QWidget):
         icon_layout = QVBoxLayout()
         icon_layout.setAlignment(Qt.AlignCenter)
         
-        consumivel_alocado = self.consumivel_manager.verificar_alocacao(self.requerimento.requerimento_id)
+        self.consumivel_alocado, self.list_consumiveis_NA = self.consumivel_manager.verificar_alocacao(self.requerimento.requerimento_id)
 
-        if consumivel_alocado[0] == False and self.requerimento.status_atual <= 1:
+        if self.consumivel_alocado == False and self.requerimento.status_atual <= 1:
             warning_icon = QLabel()
             warning_icon.setStyleSheet("border: none; background: none; padding: 0;")
             warning_icon.setPixmap(
@@ -92,7 +94,7 @@ class RequerimentoCard(QWidget):
             warning_icon.setCursor(QCursor(Qt.PointingHandCursor))
 
             tooltip_text = "<b>Itens não alocados:</b><br>"
-            for item in consumivel_alocado[1]:
+            for item in self.list_consumiveis_NA:
                 tooltip_text += (
                     f"• <b>{item['nome_consumivel']}</b>: "
                     f"Pedido: {item['quantidade_pedida']}, "
@@ -138,16 +140,6 @@ class RequerimentoCard(QWidget):
             accept_button.clicked.connect(lambda: self.accept_requerimento())
             actions_layout.addWidget(accept_button, alignment=Qt.AlignRight)
 
-        if (self.requerimento.status_atual == 1 or self.requerimento.status_atual == 10) and user.role_nome=="Farmacêutico" and self.requerimento.tipo_requerimento=="Interno":
-            stand_by_button = QPushButton()
-            recolored_icon_stand_by = QIcon(UIFunctions.recolor_icon(os.path.abspath("./icons/MaterialIcons/pause_circle.png"), "#eb8c34"))
-            stand_by_button.setIcon(recolored_icon_stand_by)
-            stand_by_button.setIconSize(QSize(24, 24))
-            stand_by_button.setCursor(QCursor(Qt.PointingHandCursor))
-            stand_by_button.setStyleSheet(self.button_style("#eb8c34"))
-            actions_layout.addWidget(stand_by_button, alignment=Qt.AlignRight)
-            stand_by_button.clicked.connect(lambda: self.stand_by_requerimento())
-
         if (self.requerimento.status_atual == 1 or self.requerimento.status_atual == 10) and user.role_nome=="Farmacêutico":
             pistola_button = QPushButton()
             recolored_icon_pistola_button = QIcon(UIFunctions.recolor_icon(os.path.abspath("./icons/MaterialIcons/barcode_reader.png"), "#4287f5"))
@@ -158,17 +150,17 @@ class RequerimentoCard(QWidget):
             actions_layout.addWidget(pistola_button, alignment=Qt.AlignRight)
             pistola_button.clicked.connect(lambda: self.prepare_requerimento())
 
-        if self.requerimento.status_atual == 6 and user.role_nome=="Farmacêutico" and self.requerimento.tipo_requerimento=="Interno":
-            resume_button = QPushButton()
-            recolored_icon_resume_button = QIcon(UIFunctions.recolor_icon(os.path.abspath("./icons/MaterialIcons/play.png"), "#b5c6bf"))
-            resume_button.setIcon(recolored_icon_resume_button)
-            resume_button.setIconSize(QSize(24, 24))
-            resume_button.setCursor(QCursor(Qt.PointingHandCursor))
-            resume_button.setStyleSheet(self.button_style("#b5c6bf"))
-            actions_layout.addWidget(resume_button, alignment=Qt.AlignRight)
-            resume_button.clicked.connect(lambda: self.resume_requerimento())
+        #AQUI É QUANDO ESTA EM STAND BY ou quando não esta alocado, mas quando não esta alocado ja esta em stand-by
+        if self.consumivel_alocado == False and user.role_nome=="Farmacêutico":
+            alocation_consumivel_button = QPushButton()
+            recolored_icon_alocation_consumivel_button = QIcon(UIFunctions.recolor_icon(os.path.abspath("./icons/MaterialIcons/Stock_allocation.png"), "#eb8c34"))
+            alocation_consumivel_button.setIcon(recolored_icon_alocation_consumivel_button)
+            alocation_consumivel_button.setIconSize(QSize(24, 24))
+            alocation_consumivel_button.setCursor(QCursor(Qt.PointingHandCursor))
+            alocation_consumivel_button.setStyleSheet(self.button_style("#b5c6bf"))
+            actions_layout.addWidget(alocation_consumivel_button, alignment=Qt.AlignRight)
+            alocation_consumivel_button.clicked.connect(lambda: self.alocation_consumivel_requerimento())
             
-        
         if self.requerimento.status_atual == 3 and user.role_nome=="Farmacêutico":
             send_button = QPushButton()
             recolored_icon_send_button = QIcon(UIFunctions.recolor_icon(os.path.abspath("./icons/MaterialIcons/package.png"), "#4287f5"))
@@ -210,7 +202,6 @@ class RequerimentoCard(QWidget):
         download_button.clicked.connect(lambda: self.choose_file_location_GeneratePdfRequerimento())
         actions_layout.addWidget(download_button, alignment=Qt.AlignRight)
 
-        
         self.details_button = QPushButton()
         recolored_icon_details = QIcon(UIFunctions.recolor_icon(os.path.abspath("./icons/MaterialIcons/visibility.png"), "#4287f5"))
         self.details_button.setIcon(recolored_icon_details)
@@ -368,37 +359,19 @@ class RequerimentoCard(QWidget):
         else:
             Overlay.show_error(self, response.error_message)
             
-    def stand_by_requerimento(self):
+    #TODO VAI DEIXAR DE ASSIM MAS SIM SER VALIDAÇÃO MANUAL
+    def alocation_consumivel_requerimento(self):
         top_parent = self.get_top_parent()
-        response = API_StandByRequerimento(self.user.utilizador_id,self.requerimento.requerimento_id)
-        if response.success:
-            if self.requerimento.tipo_requerimento == "Interno":
-                stringAlerts=f'Requerimento {self.requerimento.requerimento_id} foi colocado em stand by e email enviado ao requerente'
-                QTimer.singleShot(0, lambda: self.send_email_update(self.requerimento.requerimento_id, top_parent, stringAlerts))
-            else:
-                Overlay.show_information(top_parent, f'Requerimento {self.requerimento.requerimento_id} foi colocado em stand by')
-        else:
-            Overlay.show_error(top_parent, response.error_message)
-    
-    def resume_requerimento(self):
-        top_parent = self.get_top_parent()
-        response = API_ResumeRequerimento(self.user.utilizador_id,self.requerimento.requerimento_id)
-        if response.success:
-            if self.requerimento.tipo_requerimento == "Interno":
-                stringAlerts=f'Requerimento {self.requerimento.requerimento_id} voltou para a lista de espera e email enviado ao requerente'
-                QTimer.singleShot(0, lambda: self.send_email_update(self.requerimento.requerimento_id, top_parent, stringAlerts))
-            else:
-                self.callbackUpdate()
-                Overlay.show_information(top_parent, f'Requerimento {self.requerimento.requerimento_id} voltou para a lista de espera')
-        else:
-            Overlay.show_error(top_parent, response.error_message)
+        self.requerimento.pendete_alocacao = False
+        self.consumivel_manager.requerimento_manager(self.requerimento, top_parent,self.user.utilizador_id)
+        self.callbackUpdate()
             
     def prepare_requerimento(self):
         top_parent = self.get_top_parent()
         response = API_PrepareRequerimento(self.user.utilizador_id,self.requerimento.requerimento_id)
         if response.success:
             stringAlerts=f'Requerimento {self.requerimento.requerimento_id} esta em preparação e email enviado ao requerente'
-            QTimer.singleShot(0, lambda: self.send_email_update(self.requerimento.requerimento_id, top_parent, stringAlerts))
+            asyncio.ensure_future(self.send_email_update(self.requerimento.requerimento_id, top_parent, stringAlerts))
         else:
             self.callbackUpdate()
             Overlay.show_error(top_parent, response.error_message)
@@ -409,7 +382,7 @@ class RequerimentoCard(QWidget):
         if response.success:
             if self.requerimento.tipo_requerimento == "Interno":
                 stringAlerts=f'Requerimento {self.requerimento.requerimento_id} foi entregue e email enviado ao requerente'
-                QTimer.singleShot(0, lambda: self.send_email_update(self.requerimento.requerimento_id, top_parent, stringAlerts))
+                asyncio.ensure_future(self.send_email_update(self.requerimento.requerimento_id, top_parent, stringAlerts))
             else:
                 self.callbackUpdate()
                 Overlay.show_information(top_parent, f'Requerimento {self.requerimento.requerimento_id} foi entregue')
@@ -421,7 +394,7 @@ class RequerimentoCard(QWidget):
         response = API_AcceptRequerimento(self.user.utilizador_id,self.requerimento.requerimento_id)
         if response.success:
             stringAlerts=f'Requerimento {self.requerimento.requerimento_id} foi aceite e email enviado ao requerente'
-            QTimer.singleShot(0, lambda: self.send_email_update(self.requerimento.requerimento_id, top_parent, stringAlerts))
+            asyncio.ensure_future(self.send_email_update(self.requerimento.requerimento_id, top_parent, stringAlerts))
         else:
             Overlay.show_error(top_parent, response.error_message)
 
@@ -430,7 +403,7 @@ class RequerimentoCard(QWidget):
         response = API_RejectRequerimento(self.user.utilizador_id,self.requerimento.requerimento_id)
         if response.success:
             stringAlerts=f'Requerimento {self.requerimento.requerimento_id} foi recusado e email enviado ao requerente'
-            QTimer.singleShot(0, lambda: self.send_email_update(self.requerimento.requerimento_id, top_parent, stringAlerts))
+            asyncio.ensure_future(self.send_email_update(self.requerimento.requerimento_id, top_parent, stringAlerts))
         else:
             Overlay.show_error(top_parent, response.error_message)
     
@@ -493,17 +466,18 @@ class RequerimentoCard(QWidget):
                         #f"<br><span style='font-size:14px; color:#555555;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Motivo: {hist.descricao}</span>"
                         )
                 case 6:
+                    user_responsavel = hist.user_responsavel if hist.user_responsavel else "Sistema MedStock"
                     historico_text_label.setText(
                         f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
                         f"Colocado em Stand By por:</span> "
-                        f"<span style='font-size:14px; color:#555555;'>{hist.user_responsavel}</span> "
+                        f"<span style='font-size:14px; color:#555555;'>{user_responsavel}</span> "
                         f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
                         )
                 case 7:
                     historico_text_label.setText(
                         f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
                         f"Cancelado por:</span> "
-                        f"<span style='font-size:14px; color:#555555;'>{hist.user_responsavel}</span> "
+                        f"<span style='font-size:14px; color:#555555;'>{user_responsavel}</span> "
                         f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
                         )
                 case 8:
@@ -521,12 +495,13 @@ class RequerimentoCard(QWidget):
                         f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
                         )
                 case 10:
+                    user_responsavel = hist.user_responsavel if hist.user_responsavel else "Sistema MedStock"
                     historico_text_label.setText(
                         f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
                         f"Requerimento enviado novamente para a lista de espera por:</span> "
-                        f"<span style='font-size:14px; color:#555555;'>{hist.user_responsavel}</span> "
+                        f"<span style='font-size:14px; color:#555555;'>{user_responsavel}</span> "
                         f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
-                        )
+                    )
                     
             historico_text_label.setFont(QFont("Arial"))
             self.details_layout.addWidget(historico_text_label)
@@ -545,7 +520,7 @@ class RequerimentoCard(QWidget):
                         f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>")
                     historico_text_label.setFont(QFont("Arial"))
                     self.details_layout.addWidget(historico_text_label)
-                case 2:
+                case 1:
                     historico_text_label.setText(
                         f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
                         f"Consumiveis e Setor Selecionado por:</span> "
@@ -612,6 +587,13 @@ class RequerimentoCard(QWidget):
                     )
                     historico_text_label_2.setFont(QFont("Arial"))
                     self.details_layout.addWidget(historico_text_label_2)
+                case 2:
+                    historico_text_label.setText(
+                        f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                        f"Pedido enviado para preparar por:</span> "
+                        f"<span style='font-size:14px; color:#555555;'>{hist.user_responsavel}</span> "
+                        f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
+                        )
                 case 3:
                     historico_text_label.setText(
                         f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
@@ -626,6 +608,26 @@ class RequerimentoCard(QWidget):
                         f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
                         f"Finalizado por:</span> "
                         f"<span style='font-size:14px; color:#555555;'>{hist.user_responsavel}</span> "
+                        f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
+                    )
+                    historico_text_label.setFont(QFont("Arial"))
+                    self.details_layout.addWidget(historico_text_label)
+                case 6:
+                    user_responsavel = hist.user_responsavel if hist.user_responsavel else "Sistema MedStock"
+                    historico_text_label.setText(
+                        f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                        f"Colocado em Stand By por:</span> "
+                        f"<span style='font-size:14px; color:#555555;'>{user_responsavel}</span> "
+                        f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
+                        )
+                    historico_text_label.setFont(QFont("Arial"))
+                    self.details_layout.addWidget(historico_text_label)
+                case 10:
+                    user_responsavel = hist.user_responsavel if hist.user_responsavel else "Sistema MedStock"
+                    historico_text_label.setText(
+                        f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                        f"Requerimento enviado novamente para a lista de espera por:</span> "
+                        f"<span style='font-size:14px; color:#555555;'>{user_responsavel}</span> "
                         f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
                     )
                     historico_text_label.setFont(QFont("Arial"))

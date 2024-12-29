@@ -30,7 +30,7 @@ class RequerimentoPage(QWidget):
         self.current_filter = None
         self.current_requerimentos_dict = {}
         self.setup_RequerimentoPage()
-        QTimer.singleShot(0, self.load_requerimentos_wrapper)
+        asyncio.ensure_future(self.load_requerimentos(self.user))
         
         
         self.update_timer = QTimer(self)
@@ -156,7 +156,7 @@ class RequerimentoPage(QWidget):
         left_scroll_area.setWidget(left_frame)
 
         #TODO VALIDAR SE ISTO ASSIM NÃO CRASHA
-        asyncio.create_task(self.fetch_consumivel())
+        asyncio.ensure_future(self.fetch_consumivel())
 
         right_frame = QFrame()
         right_layout = QVBoxLayout()
@@ -365,7 +365,7 @@ class RequerimentoPage(QWidget):
     async def update_sectors(self):
         response = await API_GetSectors()
         if response.success:
-            QTimer.singleShot(0, lambda: self.create_sectors(response.data))
+            asyncio.ensure_future(self.create_sectors(response.data))
         else:
             Overlay.show_error(self, response.error_message)
 

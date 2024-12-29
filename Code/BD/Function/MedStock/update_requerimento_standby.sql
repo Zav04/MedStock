@@ -1,6 +1,5 @@
 CREATE OR REPLACE FUNCTION update_requerimento_standby(
-    p_requerimento_id INT,
-    p_user_id INT
+    p_requerimento_id INT
 ) RETURNS BOOL AS $$
 BEGIN
     INSERT INTO HistoricoRequerimento (
@@ -14,7 +13,7 @@ BEGIN
         CURRENT_TIMESTAMP(0),
         6,
         'Requerimento colocado em standby.',
-        p_user_id
+        NULL
     );
 
     RETURN TRUE;

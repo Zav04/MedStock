@@ -68,7 +68,6 @@ class AssociateUserToSectorPage(QWidget):
         self.table.setSelectionMode(QTableWidget.SingleSelection) 
         self.main_layout.addWidget(self.table)
 
-        
         self.update_data_thread = QTimer(self)
         self.update_data_thread.timeout.connect(self.update_data)
         self.update_data_thread.start(60000)

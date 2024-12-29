@@ -253,3 +253,33 @@ def API_CreateSetorHospitalar(nome_setor: str, localizacao: str) -> APIResponse:
             return APIResponse(success=False, error_message=f"Erro inesperado: {response.status_code}")
     except httpx.RequestError as e:
         return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
+    
+    
+    
+async def API_CreateRedistribuicao(consumivel_id: int, requerimento_origem: int, requerimento_destino: int, quantidade: int) -> APIResponse:
+    URL = os.getenv('API_URL') + os.getenv('API_CreateRedistribuicao')
+    payload = {
+        "consumivel_id": consumivel_id,
+        "requerimento_origem": requerimento_origem,
+        "requerimento_destino": requerimento_destino,
+        "quantidade": quantidade,
+    }
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.post(URL, json=payload, headers={"Content-Type": "application/json"})
+
+            if response.status_code == 200:
+                success = response.json().get("response", False)
+                if not success:
+                    error_message = response.json().get("error", "Erro desconhecido")
+                    return APIResponse(success=False, error_message=error_message)
+                else:
+                    data = response.json().get("data", "Redistribuição criada com sucesso.")
+                    return APIResponse(success=True, data=data)
+            elif response.status_code == 400:
+                error_message = response.json().get("error", "Erro desconhecido")
+                return APIResponse(success=False, error_message=error_message)
+            else:
+                return APIResponse(success=False, error_message="Erro inesperado")
+    except httpx.RequestError as e:
+        return APIResponse(success=False, error_message=f"Erro de conexão: {e}")

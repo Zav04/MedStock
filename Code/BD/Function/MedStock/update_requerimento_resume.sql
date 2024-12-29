@@ -14,7 +14,10 @@ BEGIN
         CURRENT_TIMESTAMP(0),
         10,
         'Requerimento retornou a lista de espera.',
-        p_user_id
+        CASE 
+            WHEN p_user_id = -1 THEN NULL
+            ELSE p_user_id
+        END
     );
 
     RETURN TRUE;

@@ -154,12 +154,11 @@ async def MedStock_StandByRequerimento(requerimento: C_Update_Requerimento, db=D
     try:
 
         query = text("""
-            SELECT update_requerimento_standby(:p_requerimento_id,:p_user_id);
+            SELECT update_requerimento_standby(:p_requerimento_id);
         """)
 
         result = db.execute(query, {
             "p_requerimento_id": requerimento.requerimento_id,
-            "p_user_id": requerimento.user_id
         })
 
         success = result.scalar()
@@ -199,7 +198,7 @@ async def MedStock_ResumeRequerimento(requerimento: C_Update_Requerimento, db=De
     try:
 
         query = text("""
-            SELECT update_requerimento_resume(:p_requerimento_id,:p_user_id);
+            SELECT update_requerimento_resume(:p_requerimento_id, :p_user_id);
         """)
 
         result = db.execute(query, {

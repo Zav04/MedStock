@@ -270,7 +270,8 @@ def enviarEmailRequerimentoStandBy(nome_utilizador_pedido:str,receiver_email: st
         </div>
         <div style="padding: 20px; text-align: left;">
             <p>Prezado(a) {nome_utilizador_pedido},</p>
-            <p>O requerimento <strong>REQ-{requerimento_id}</strong> foi colocado em <strong>Stand-By</strong></p>
+            <p>O requerimento <strong>REQ-{requerimento_id}</strong> foi colocado em <strong>Stand-By</strong> devido a não existir stock 
+            suficente para alocar ao seu requerimento</p>
             <h3>Itens do Requerimento:</h3>
             <ul>
                 {itens_html}
@@ -324,6 +325,7 @@ def enviarEmailRequerimentoListaEspera(nome_utilizador_pedido:str,receiver_email
         <div style="padding: 20px; text-align: left;">
             <p>Prezado(a) {nome_utilizador_pedido},</p>
             <p>O requerimento <strong>REQ-{requerimento_id}</strong> retornou à lista de espera da farmácia.</p>
+            <p>Ja existe stock suficente para satisfazer o seu pedido</p>
             <h3>Itens do Requerimento:</h3>
             <ul>
                 {itens_html}

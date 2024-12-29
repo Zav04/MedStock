@@ -86,11 +86,10 @@ def API_AcceptRequerimento(user_id,requerimento_id):
         return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
     
 
-def API_StandByRequerimento(user_id:int,requerimento_id: int)-> APIResponse:
+def API_StandByRequerimento(requerimento_id: int)-> APIResponse:
     URL = os.getenv('API_URL') + os.getenv('API_StandByRequerimento')
     payload = {
         "requerimento_id": requerimento_id,
-        "user_id": user_id
         }
     try:
         response = httpx.put(URL, json=payload, headers={"Content-Type": "application/json"})

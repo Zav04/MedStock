@@ -47,7 +47,7 @@ BEGIN
 
     descricao_status := 'Requerimento Externo atualizado. Setor e consumíveis modificados. Status alterado para "em preparação".';
     INSERT INTO HistoricoRequerimento (requerimento_id, data_modificacao, status, descricao, user_id_responsavel)
-    VALUES (p_requerimento_id, CURRENT_TIMESTAMP(0), 2, descricao_status, p_user_id);
+    VALUES (p_requerimento_id, CURRENT_TIMESTAMP(0), 1, descricao_status, p_user_id);
 
     RETURN TRUE;
 

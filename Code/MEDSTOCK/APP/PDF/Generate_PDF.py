@@ -163,18 +163,18 @@ def GeneratePdfRequerimento(file_path: str, requerimento: Requerimento):
                     text = f"           Pedido criado por {hist.user_responsavel} em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
                     textcomentario= ""
                 case 1:
-                    if requerimento.status_anterior == 6:
-                        text = f"           Requerimento enviado novamente para a lista de espera por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
-                        textcomentario= ""
-                    else:
-                        text = f"           Avaliado por {hist.user_responsavel} em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
-                        textcomentario= ""
-                case 2:
                     if requerimento.tipo_requerimento=="Interno":
-                        text = f"           Pedido enviado para preparar por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
-                        textcomentario= ""
+                        if requerimento.status_anterior == 6:
+                            text = f"           Requerimento enviado novamente para a lista de espera por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                            textcomentario= ""
+                        else:
+                            text = f"           Avaliado por {hist.user_responsavel} em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                            textcomentario= ""
                     else:
                         text = f"           Consumiveis e Setor Selecionado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                        textcomentario= ""
+                case 2:
+                        text = f"           Pedido enviado para preparar por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
                         textcomentario= ""
                 case 3:
                     text = f"           Preparado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
@@ -197,7 +197,8 @@ def GeneratePdfRequerimento(file_path: str, requerimento: Requerimento):
                     text = f"           Recusado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}." #Motivo: {hist.descricao or 'Não especificado'}"
                     textcomentario= ""
                 case 6:
-                    text = f"           Colocado em Stand By por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                    user_responsavel = hist.user_responsavel if hist.user_responsavel else "Sistema MedStock"
+                    text = f"           Colocado em Stand By por {user_responsavel} em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
                     textcomentario= ""
                 case 7:
                     text = f"           Cancelado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
@@ -209,12 +210,9 @@ def GeneratePdfRequerimento(file_path: str, requerimento: Requerimento):
                     text = f"           Colocado em Revalidação por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
                     textcomentario= ""
                 case 10:
-                    if(requerimento.tipo_requerimento=="Interno"):
-                        text = f"           Retornou para a Lista de Espera por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
-                        textcomentario= ""
-                    else:
-                        text = f"           Enviado para Entrega por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
-                        textcomentario= ""
+                    user_responsavel = hist.user_responsavel if hist.user_responsavel else "Sistema MedStock"
+                    text = f"           Retornou para a Lista de Espera por {user_responsavel} em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                    textcomentario = ""
                 case 11:
                         text = f"          Pedido Externo criado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
                         textcomentario= ""

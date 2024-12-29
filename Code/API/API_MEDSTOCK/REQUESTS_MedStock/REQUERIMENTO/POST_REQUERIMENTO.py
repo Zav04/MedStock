@@ -8,7 +8,7 @@ from send_email import (enviarEmailRequerimentoAceito, enviarEmailRequerimentoRe
                         enviarEmailRequerimentoProntoEntrega,enviarEmailRequerimentoListaEspera, enviarEmailRequerimentoEntregue,
                         enviarEmailRequerimentoCriado)
 from Models.C_RequerimentoRequest import C_RequerimentoRequest
-from Models.C_CreateRequerimentoExterno import C_CreateRequerimentoExterno
+from Models.C_CreateRedistribuicao import C_CreateRedistribuicao
 import json
 
 router = APIRouter()
@@ -184,3 +184,52 @@ async def MedStock_SendEmailRequerimentoStatus(request: C_RequerimentoRequest, d
         }
 
 
+@router.post("/MedStock_CreateRedistribuicao/")
+async def MedStock_CreateRedistribuicao(redistribuicao: C_CreateRedistribuicao, db=Depends(get_db_MEDSTOCK)):
+    try:
+        query = text("""
+            SELECT create_redistribuicao(
+                :p_consumivel_id,
+                :p_requerimento_origem,
+                :p_requerimento_destino,
+                :p_quantidade
+            );
+        """)
+
+        result = db.execute(query, {
+            "p_consumivel_id": redistribuicao.consumivel_id,
+            "p_requerimento_origem": redistribuicao.requerimento_origem,
+            "p_requerimento_destino": redistribuicao.requerimento_destino,
+            "p_quantidade": redistribuicao.quantidade
+        })
+
+        success = result.scalar()
+
+        if success:
+            db.commit()
+            return {
+                "response": True,
+                "data": "Redistribuição criada com sucesso."
+            }
+        else:
+            db.rollback()
+            return {
+                "response": False,
+                "error": "Erro ao criar a redistribuição."
+            }
+
+    except SQLAlchemyError as e:
+        db.rollback()
+        error_msg = str(e.__dict__['orig']).split('\n')[0]
+        return {
+            "response": False,
+            "error": error_msg
+        }
+
+    except Exception as e:
+        db.rollback()
+        error_messages = [str(arg) for arg in e.args]
+        return {
+            "response": False,
+            "error": error_messages
+        }
