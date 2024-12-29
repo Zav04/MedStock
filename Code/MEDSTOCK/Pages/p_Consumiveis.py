@@ -66,6 +66,9 @@ class ConsumiveisTablePage(QWidget):
 
         asyncio.ensure_future(self.load_items())
 
+    def load_items_wrapper(self):
+        asyncio.ensure_future(self.load_items())
+    
     async def load_items(self):
         response = await API_GetConsumiveis()
         if response.success:

@@ -32,6 +32,9 @@ class RequerimentoCard(QWidget):
         self.expanded = False
         self.callbackUpdate = update_callback
         self.minimumHeight_Card = 180
+        
+        self.consumivel_manager.add_requerimento(self.requerimento)
+        self.consumivel_manager.requerimento_manager(requerimento=self.requerimento,parent_page=self)
 
         self.setLayout(QVBoxLayout())
         self.layout().setContentsMargins(10, 10, 10, 10)

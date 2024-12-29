@@ -73,7 +73,7 @@ class Dashboard(QMainWindow):
         self.ui.stackedWidget.setCurrentWidget(self.page_home)
         
     def initSignalsUpdate(self):
-        self.consumivelmanager_child.consumivel_updated.connect(lambda: asyncio.ensure_future(self.page_stock.load_items()))
+        self.consumivelmanager_child.consumivel_updated.connect(lambda: self.page_stock.load_items_wrapper())
         self.consumivelmanager_child.requerimento_updated.connect(lambda: self.page_requerimento.reload_requerimentos())
 
         

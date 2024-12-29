@@ -336,7 +336,7 @@ def API_UpdateRequerimentoExterno(requerimento_id, setor_id, items_list, user_id
     except httpx.RequestError as e:
         return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
     
-async def API_UpdateConsumivelAlocado(requerimento_id: int, consumiveis: list) -> APIResponse:
+def API_UpdateConsumivelAlocado(requerimento_id: int, consumiveis: list) -> APIResponse:
     URL = os.getenv('API_URL') + os.getenv('API_UpdateConsumivelAlocado')
 
     payload = {
@@ -344,8 +344,7 @@ async def API_UpdateConsumivelAlocado(requerimento_id: int, consumiveis: list) -
         "consumiveis": consumiveis
     }
     try:
-        async with httpx.AsyncClient() as client:
-            response = await client.put(URL, json=payload, headers={"Content-Type": "application/json"})
+        response = httpx.put(URL, json=payload, headers={"Content-Type": "application/json"})
         
         if response.status_code == 200:
             success = response.json().get("response", {})

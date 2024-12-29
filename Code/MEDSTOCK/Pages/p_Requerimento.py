@@ -340,8 +340,6 @@ class RequerimentoPage(QWidget):
                 Overlay.show_information(self, "Requerimentos atualizados!")
 
     def add_requerimento_card(self, requerimento):
-        self.consumivel_manager.add_requerimento(requerimento)
-        self.consumivel_manager.requerimento_manager(requerimento=requerimento,parent_page=self)
         card = RequerimentoCard(user=self.user, requerimento=requerimento, consumivel_manager=self.consumivel_manager, update_callback=self.reload_requerimentos, parent_page=self)
         self.scroll_layout.addWidget(card)
         self.current_requerimentos_dict[requerimento.requerimento_id] = requerimento
