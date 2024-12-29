@@ -51,6 +51,11 @@ class ConsumivelManager(QObject):
         for index, existing_requerimento in enumerate(self.requerimentos):
             if existing_requerimento.requerimento_id == requerimento.requerimento_id:
                 self.requerimentos[index] = requerimento
+                result, _ = self.verificar_alocacao(requerimento.requerimento_id)
+                if result:
+                    self.requerimentos[index].pendete_alocacao = False
+                else:
+                    self.requerimentos[index].pendete_alocacao = True
                 return
 
         if requerimento.status_atual <= 1:
@@ -80,35 +85,28 @@ class ConsumivelManager(QObject):
                 all_allocated = False
                 continue
 
-            stock_virtual = consumivel.quantidade_total - consumivel.quantidade_alocada
+            stock_virtual = max(0, consumivel.quantidade_total - consumivel.quantidade_alocada)
             quantidade_necessaria = item_pedido.quantidade - item_pedido.quantidade_alocada
 
             if stock_virtual >= quantidade_necessaria:
                 item_pedido.quantidade_alocada += quantidade_necessaria
                 consumivel.quantidade_alocada += quantidade_necessaria
-                consumivel.quantidade_total -= quantidade_necessaria
                 any_allocated = True
             elif stock_virtual > 0:
                 item_pedido.quantidade_alocada += stock_virtual
                 consumivel.quantidade_alocada += stock_virtual
-                consumivel.quantidade_total -= stock_virtual
                 any_allocated = True
                 all_allocated = False
             else:
                 all_allocated = False
 
-            # Atualiza o consumível na lista principal
-            for idx, c in enumerate(self.consumiveis):
-                if c.consumivel_id == consumivel.consumivel_id:
-                    self.consumiveis[idx] = consumivel
-                    break
+            if consumivel.quantidade_alocada > consumivel.quantidade_total:
+                consumivel.quantidade_alocada = consumivel.quantidade_total
 
         if not any_allocated:
             return -1
 
         return 1 if all_allocated else 0
-
-
 
 
     def redistribuir_para_urgente(self, requerimento_id: int) -> int:
@@ -133,8 +131,36 @@ class ConsumivelManager(QObject):
                 continue
 
             quantidade_necessaria = item_pedido.quantidade - item_pedido.quantidade_alocada
+            quantidade_disponivel_nao_urgentes = sum(
+                    item.quantidade_alocada
+                    for req in self.requerimentos 
+                    if not req.urgente
+                    for item in req.itens_pedidos 
+                    if item.consumivel_id == item_pedido.consumivel_id and item.quantidade_alocada > 0
+            )
+
+
+            if quantidade_disponivel_nao_urgentes < quantidade_necessaria:
+                print(f"Quantidade insuficiente para atender o consumível {item_pedido.consumivel_id} em requerimentos não urgentes.")
+                all_urgent_allocated = False
+                continue
+
+        if not all_urgent_allocated:
+            return -1
+        
+        for item_pedido in requerimento_urgente.itens_pedidos:
+            if item_pedido.quantidade_alocada >= item_pedido.quantidade:
+                continue
+
+            consumivel = next((c for c in self.consumiveis if c.consumivel_id == item_pedido.consumivel_id), None)
+            if consumivel is None:
+                all_urgent_allocated = False
+                continue
+
+            quantidade_necessaria = item_pedido.quantidade - item_pedido.quantidade_alocada
+
             requerimentos_nao_urgentes = sorted(
-                (r for r in self.requerimentos if not r.urgente and r.status_atual != 4),
+                (r for r in self.requerimentos if not r.urgente),
                 key=lambda r: r.data_pedido
             )
 
@@ -143,7 +169,6 @@ class ConsumivelManager(QObject):
                     if item.consumivel_id == item_pedido.consumivel_id and item.quantidade_alocada > 0:
                         quantidade_para_realocar = min(item.quantidade_alocada, quantidade_necessaria)
                         item.quantidade_alocada -= quantidade_para_realocar
-                        consumivel.quantidade_alocada -= quantidade_para_realocar
                         quantidade_necessaria -= quantidade_para_realocar
                         item_pedido.quantidade_alocada += quantidade_para_realocar
                         any_allocated = True
@@ -155,26 +180,19 @@ class ConsumivelManager(QObject):
                             "quantidade_realocada": quantidade_para_realocar
                         })
 
-                        # Atualiza o consumível na lista principal
-                        for idx, c in enumerate(self.consumiveis):
-                            if c.consumivel_id == consumivel.consumivel_id:
-                                self.consumiveis[idx] = consumivel
-                                break
-
                         if quantidade_necessaria <= 0:
                             break
                 if quantidade_necessaria <= 0:
                     break
 
             if quantidade_necessaria > 0:
-                print(f"Quantidade insuficiente para o consumível {item_pedido.consumivel_id}")
+                print(f"Quantidade insuficiente para o consumível {item_pedido.consumivel_id} mesmo após redistribuição.")
                 all_urgent_allocated = False
 
         if not any_allocated:
             return -1
 
         return 1 if all_urgent_allocated else 0
-
 
 
     def processar_requerimento(self, requerimento: Requerimento)->tuple[bool,int]:
@@ -197,18 +215,15 @@ class ConsumivelManager(QObject):
                 elif aloc_urgente == 0:
                     requerimento.pendete_alocacao = True
                     Overlay.show_warning(self.parent_window, f"REQ - {requerimento.requerimento_id} Alguns consumíveis foram alocados, mas não todos.")
-                    self.atualizar_quantidades()
                     self.verificar_stock()
                     self.registrar_realocacoes(self.realocacoes)
                     return True,aloc_urgente
                 elif aloc_urgente == 1:
                     requerimento.pendete_alocacao = False
-                    self.atualizar_quantidades()
                     self.verificar_stock()
                     self.registrar_realocacoes(self.realocacoes)
                     return True,aloc_urgente
             if aloc == 0 and aloc_urgente == -99:
-                self.atualizar_quantidades()
                 Overlay.show_warning(self.parent_window, f"REQ - {requerimento.requerimento_id} Alguns consumíveis foram alocados, mas não todos.")
                 requerimento.pendete_alocacao = True
                 self.verificar_stock()
@@ -218,13 +233,11 @@ class ConsumivelManager(QObject):
                 requerimento.pendete_alocacao = True
                 return False,aloc
         elif aloc == 1:
-            self.atualizar_quantidades()
             requerimento.pendete_alocacao = False
             self.verificar_stock()
             return True,aloc
         else:
             return False,aloc
-
 
 
     # def requerimentos_pendentes(self, requerimento_id: int):
@@ -235,19 +248,9 @@ class ConsumivelManager(QObject):
     #     self.requerimento_manager(requerimento, self.parent_window)
 
 
-    def atualizar_consumivel(self, consumivel: Consumivel):
-        for idx, c in enumerate(self.consumiveis):
-            if c.consumivel_id == consumivel.consumivel_id:
-                self.consumiveis[idx] = consumivel
-                return
-        self.consumiveis.append(consumivel)
-
-
-
-
     def verificar_stock(self):
         for consumivel in self.consumiveis:
-            if consumivel.quantidade_total <= consumivel.quantidade_minima:
+            if consumivel.quantidade_total <= consumivel.quantidade_minima or consumivel.quantidade_alocada <= consumivel.quantidade_minima:
                 quantidade_para_pedir = consumivel.quantidade_pedido
                 #TODO FAZER ISTO DE PEDIDOS EXTERNOS
                 #self.criar_pedido_externo(consumivel, quantidade_para_pedir)
@@ -279,6 +282,8 @@ class ConsumivelManager(QObject):
         #TODO FAZER ISTO DA MANEIRA JA IMPLEMENTADA
         #Falta fazer a implemntação da Função do Postgres, Da Route e Ligação com a API
         #VAI SER PRECISO CRIAR UMA TABLEA NO POSTGRES PARA GUARDAR OS PEDIDOS EXTERNOS
+        print(f"FUNÇÃO PEDIDO EXTERNO Consumivel Total: {consumivel.quantidade_total}, Consumivel Alocado: {consumivel.quantidade_alocada}")
+        
         payload = {
             "consumivel_id": consumivel.consumivel_id,
             "fornecedor_nome": "Fornecedor Padrão",
@@ -314,14 +319,12 @@ class ConsumivelManager(QObject):
         if requerimento.pendete_alocacao:
             return
         result,value = self.processar_requerimento(requerimento)
-        self.atualizar_quantidades()
         if result:
             consumiveis_alocados = self.preparar_dados_alocacao(requerimento.requerimento_id)
             self.update_consumiveis_alocados(consumiveis_alocados)
             self.consumivel_updated.emit()
-            
-            # if(value==0 or value==-1):
-            self.requerimento_updated.emit()
+            if(value!=-2):
+                self.requerimento_updated.emit()
 
             if(requerimento.status_atual==6 and value==1):
                 result, _ = self.verificar_alocacao(requerimento.requerimento_id)
@@ -333,7 +336,6 @@ class ConsumivelManager(QObject):
         requerimento_id=consumiveis_alocados["requerimento_id"]
         consumiveis_alocados=consumiveis_alocados["consumiveis"]
         response = API_UpdateConsumivelAlocado(requerimento_id, consumiveis_alocados)
-        #self.requerimento_updated.emit()
         if response.success:
             Overlay.show_success(self.parent_window, f"REQ - {requerimento_id} Consumíveis alocados e registados com sucesso.")
         else:
@@ -358,8 +360,6 @@ class ConsumivelManager(QObject):
             response = API_CreateRedistribuicao(consumivel_id, requerimento_origem, requerimento_destino, quantidade_realocada)
             if not response.success:
                 Overlay.show_error(self.parent_window, f"Erro ao registar a redistribuição: {response.error_message}")
-
-
 
 
     async def stand_by_requerimento(self, requerimento_id: int):

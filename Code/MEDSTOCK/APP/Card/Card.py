@@ -34,7 +34,7 @@ class RequerimentoCard(QWidget):
         self.minimumHeight_Card = 180
         
         self.consumivel_manager.add_requerimento(self.requerimento)
-        self.consumivel_manager.requerimento_manager(requerimento=self.requerimento,parent_page=self)
+        self.consumivel_manager.requerimento_manager(requerimento=self.requerimento,parent_page=self.parent_page)
 
         self.setLayout(QVBoxLayout())
         self.layout().setContentsMargins(10, 10, 10, 10)
@@ -154,7 +154,8 @@ class RequerimentoCard(QWidget):
             pistola_button.clicked.connect(lambda: self.prepare_requerimento())
 
         #AQUI É QUANDO ESTA EM STAND BY ou quando não esta alocado, mas quando não esta alocado ja esta em stand-by
-        if self.consumivel_alocado == False and user.role_nome=="Farmacêutico":
+        if self.consumivel_alocado == False :
+        #and user.role_nome=="Farmacêutico":
             alocation_consumivel_button = QPushButton()
             recolored_icon_alocation_consumivel_button = QIcon(UIFunctions.recolor_icon(os.path.abspath("./icons/MaterialIcons/Stock_allocation.png"), "#eb8c34"))
             alocation_consumivel_button.setIcon(recolored_icon_alocation_consumivel_button)

@@ -60,7 +60,7 @@ class ConsumiveisTablePage(QWidget):
         self.main_layout.addWidget(self.table_widget)
 
         self.update_timer = QTimer(self)
-        self.update_timer.timeout.connect(self.check_for_updates)
+        self.update_timer.timeout.connect(self.load_items_wrapper)
         self.update_timer.start(60000)
         self.current_items = []
 
@@ -227,9 +227,6 @@ class ConsumiveisTablePage(QWidget):
             return QIcon("./icons/MaterialIcons/material_hospitalar.png")
         else:
             return QIcon("./icons/MaterialIcons/outro.png")
-
-    def check_for_updates(self):
-        asyncio.ensure_future(self.load_items())
 
     def choose_file_location_GeneratePdfItens(self):
         options = QFileDialog.Options()

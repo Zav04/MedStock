@@ -32,7 +32,6 @@ class RequerimentoPage(QWidget):
         self.setup_RequerimentoPage()
         asyncio.ensure_future(self.load_requerimentos(self.user))
         
-        
         self.update_timer = QTimer(self)
         self.update_timer.timeout.connect(self.load_requerimentos_wrapper)
         self.update_timer.start(60000)
@@ -154,8 +153,7 @@ class RequerimentoPage(QWidget):
         left_scroll_area = QScrollArea()
         left_scroll_area.setWidgetResizable(True)
         left_scroll_area.setWidget(left_frame)
-
-        #TODO VALIDAR SE ISTO ASSIM NÃO CRASHA
+        
         asyncio.ensure_future(self.fetch_consumivel())
 
         right_frame = QFrame()
@@ -262,8 +260,9 @@ class RequerimentoPage(QWidget):
             urgent = True
         else:
             urgent = False
-        #TODO ANTES DE CRIAR TENHO FAZER A GESTÃO PARA VER O QUE SE PODE ALOCAR OS CONSUMIVEIS
+            
         response = API_CreateRequerimento(user_id_pedido, setor_id,urgent, requerimento_consumivel)
+        
         if response.success:
             self.reload_page_requerimentos()
             Overlay.show_success(self, "Requerimento criado com sucesso!")
