@@ -241,12 +241,7 @@ class ConsumiveisTablePage(QWidget):
             GeneratePdfItens(self, self.table_widget, file_path)
             Overlay.show_information(self, "PDF guardado na localização "+file_path)
 
-    def center_column_content(self, column):
-        for row in range(self.table_widget.rowCount()):
-            item = self.table_widget.item(row, column)
-            if item:
-                item.setTextAlignment(Qt.AlignCenter)
-                
+
 class NumericItemDelegate(QStyledItemDelegate):
     def createEditor(self, parent, option, index):
         editor = QLineEdit(parent)

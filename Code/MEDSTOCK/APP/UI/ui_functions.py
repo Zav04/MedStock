@@ -183,6 +183,13 @@ class UIFunctions(QMainWindow):
     
     
     @staticmethod
+    def center_column_content(column, table_widget):
+        for row in range(table_widget.rowCount()):
+            item = table_widget.item(row, column)
+            if item:
+                item.setTextAlignment(Qt.AlignCenter)
+
+    @staticmethod
     def adjust_column_sizes(table_widget: QTableWidget):
         table_widget.resizeColumnsToContents()
         header = table_widget.horizontalHeader()
@@ -195,7 +202,7 @@ class UIFunctions(QMainWindow):
             
             if column >= table_widget.columnCount() - 5:
                 header.setSectionResizeMode(column, QHeaderView.Stretch)
+                UIFunctions.center_column_content(column, table_widget)
             else:
                 header.setSectionResizeMode(column, QHeaderView.ResizeToContents)
                 header.resizeSection(column, optimal_width)
-
