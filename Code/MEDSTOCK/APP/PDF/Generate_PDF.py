@@ -194,8 +194,15 @@ def GeneratePdfRequerimento(file_path: str, requerimento: Requerimento):
                         text = f"           Pedido Finalizado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
                         textcomentario= ""
                 case 5:
-                    text = f"           Recusado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}." #Motivo: {hist.descricao or 'Não especificado'}"
-                    textcomentario= ""
+                    text = f"           Recusado por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}."
+                    if hist.descricao:
+                        descricao_limpa = hist.descricao.replace("Requerimento rejeitado.", "").strip()
+                        if descricao_limpa:
+                            textcomentario = f"           Comentário: {descricao_limpa}"
+                        else:
+                            textcomentario = ""
+                    else:
+                        textcomentario = ""
                 case 6:
                     user_responsavel = hist.user_responsavel if hist.user_responsavel else "Sistema MedStock"
                     text = f"           Colocado em Stand By por {user_responsavel} em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"

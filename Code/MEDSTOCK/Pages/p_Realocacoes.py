@@ -116,6 +116,7 @@ class RealocacoesTablePage(QWidget):
             "PDF Files (*.pdf);;All Files (*)", 
             options=options
         )
+        self.requeri
         if file_path:
             GeneratePdfRealocacoes(self, self.table_widget, file_path)
-            Overlay.show_information(self, "PDF guardado na localização "+file_path)
+            Overlay.show_information(self, "PDF de Realocações Guardado na Localização " + file_path)

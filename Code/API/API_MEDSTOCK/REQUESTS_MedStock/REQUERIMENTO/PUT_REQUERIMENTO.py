@@ -58,16 +58,17 @@ async def MedStock_CancelRequerimento(requerimento: C_Update_Requerimento, db=De
         }
         
 @router.put("/MedStock_RejectRequerimento/")
-async def MedStock_RejectRequerimento(requerimento: C_Update_Requerimento, db=Depends(get_db_MEDSTOCK)):
+async def MedStock_RejectRequerimento(requerimento: C_ReavaliationRequerimento, db=Depends(get_db_MEDSTOCK)):
     try:
 
         query = text("""
-            SELECT update_requerimento_reject(:p_requerimento_id,:p_user_id);
+            SELECT update_requerimento_reject(:p_requerimento_id,:p_user_id,:p_comentario);
         """)
 
         result = db.execute(query, {
             "p_requerimento_id": requerimento.requerimento_id,
-            "p_user_id": requerimento.user_id
+            "p_user_id": requerimento.user_id,
+            "p_comentario": requerimento.comentario if hasattr(requerimento, 'comentario') else None
         })
 
         success = result.scalar()

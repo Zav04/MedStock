@@ -5,6 +5,7 @@ from datetime import datetime
 from Class.Requerimento import Requerimento
 from Class.Utilizador import Utilizador
 from Pages.Requerimento.ValidationDialog import ValidationDialog
+from Pages.Requerimento.RejectionDialog import RejectionDialog
 from Pages.p_Consumiveis import ConsumiveisTablePage
 from Class.ConsumivelManager import ConsumivelManager
 from APP.UI.ui_functions import UIFunctions
@@ -131,7 +132,7 @@ class RequerimentoCard(QWidget):
             delete_button.setStyleSheet(self.button_style("#f54251"))
             actions_layout.addWidget(delete_button, alignment=Qt.AlignRight)
             if(user.role_nome=="Gestor Responsável"):
-                delete_button.clicked.connect(lambda: self.reject_requerimento())
+                delete_button.clicked.connect(lambda: self.open_reject_window())
             elif user.role_nome!="Farmacêutico":
                 delete_button.clicked.connect(lambda: self.cancel_requerimento())
 
@@ -404,9 +405,22 @@ class RequerimentoCard(QWidget):
         else:
             Overlay.show_error(top_parent, response.error_message)
 
-    def reject_requerimento(self):
+
+    def open_reject_window(self):
         top_parent = self.get_top_parent()
-        response = API_RejectRequerimento(self.user.utilizador_id,self.requerimento.requerimento_id)
+        reject_dialog = RejectionDialog(self.requerimento.requerimento_id, self)
+        result = reject_dialog.exec_()
+
+        if result == QDialog.Accepted:
+            reason = reject_dialog.get_reason()
+            self.reject_requerimento(reason)
+        elif reject_dialog.was_cancelled:
+            Overlay.show_information(top_parent, f"Rejeição REQ-{self.requerimento.requerimento_id} Cancelada!")
+
+
+    def reject_requerimento(self, reason:str):
+        top_parent = self.get_top_parent()
+        response = API_RejectRequerimento(self.user.utilizador_id,self.requerimento.requerimento_id,reason)
         if response.success:
             self.consumivel_manager.desalocar_consumiveis(self.requerimento.requerimento_id)
             stringAlerts=f'Requerimento {self.requerimento.requerimento_id} foi recusado e email enviado ao requerente'
@@ -465,13 +479,22 @@ class RequerimentoCard(QWidget):
                         f"{descricao_texto}"
                     )
                 case 5:
+                    descricao_texto = ""
+                    if hist.descricao:
+                        descricao_limpa = hist.descricao.replace("Requerimento rejeitado.", "").strip()
+                        if descricao_limpa:
+                            descricao_texto = (
+                                f"<br><span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                                f"Comentário:</span> "
+                                f"<span style='font-size:14px; color:#555555;'>{descricao_limpa}</span>"
+                            )
                     historico_text_label.setText(
                         f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
                         f"Recusado por:</span> "
                         f"<span style='font-size:14px; color:#555555;'>{hist.user_responsavel}</span> "
                         f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
-                        #f"<br><span style='font-size:14px; color:#555555;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Motivo: {hist.descricao}</span>"
-                        )
+                        f"{descricao_texto}"
+                    )
                 case 6:
                     user_responsavel = hist.user_responsavel if hist.user_responsavel else "Sistema MedStock"
                     historico_text_label.setText(
@@ -677,12 +700,14 @@ class RequerimentoCard(QWidget):
             observations = validation_dialog.get_observations()
             self.finishRequerimento(observations)
         elif validation_dialog.was_cancelled:
-            Overlay.show_information(top_parent, "Validação Cancelada!")
+            Overlay.show_information(top_parent, "Validação REQ-{self.requerimento.requerimento_id} Cancelada!")
         elif result == QDialog.Rejected:
             rejected_items = validation_dialog.get_rejected_items()
             observations = validation_dialog.get_observations()
             self.reavaliationRequerimento(rejected_items, observations)
-
+            
+            
+    
     def finishRequerimento(self, observations: str = ""):
         top_parent = self.get_top_parent()
         response = API_FinishRequerimento(self.user.utilizador_id, self.requerimento.requerimento_id, observations)
@@ -715,7 +740,7 @@ class RequerimentoCard(QWidget):
         )
         if file_path:
             GeneratePdfRequerimento(file_path, self.requerimento)
-            Overlay.show_information(top_parent, "PDF guardado na localização "+file_path)
+            Overlay.show_information(top_parent, f"PDF do REQ-{self.requerimento.requerimento_id} guardado na localização : {file_path}")
             
             
     def choose_file_location_GeneratePdfRequerimentoExterno(self):

@@ -195,11 +195,12 @@ def API_SendRequerimento(user_id:int, requerimento_id:int)-> APIResponse:
         return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
 
 
-def API_RejectRequerimento(user_id:int,requerimento_id:int)-> APIResponse:
+def API_RejectRequerimento(user_id:int,requerimento_id:int,comentario:str)-> APIResponse:
     URL = os.getenv('API_URL') + os.getenv('API_RejectRequerimento')
     payload = {
         "requerimento_id": requerimento_id,
-        "user_id": user_id
+        "user_id": user_id,
+        "comentario": comentario if comentario else None
         }
     try:
         response = httpx.put(URL, json=payload, headers={"Content-Type": "application/json"})

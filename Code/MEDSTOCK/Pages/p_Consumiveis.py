@@ -239,7 +239,7 @@ class ConsumiveisTablePage(QWidget):
         )
         if file_path:
             GeneratePdfItens(self, self.table_widget, file_path)
-            Overlay.show_information(self, "PDF guardado na localização "+file_path)
+            Overlay.show_information(self, "PDF Consumiveis guardado na localização " + file_path)
 
 
 class NumericItemDelegate(QStyledItemDelegate):

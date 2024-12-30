@@ -1,6 +1,7 @@
 CREATE OR REPLACE FUNCTION update_requerimento_reject(
     p_requerimento_id INT,
-    p_user_id INT
+    p_user_id INT,
+    p_comentario TEXT
 ) RETURNS BOOL AS $$
 BEGIN
     INSERT INTO HistoricoRequerimento (
@@ -13,7 +14,7 @@ BEGIN
         p_requerimento_id,
         CURRENT_TIMESTAMP(0),
         5,
-        'Requerimento rejeitado.',
+        COALESCE(p_comentario, 'Requerimento rejeitado.'),
         p_user_id
     );
 
