@@ -17,6 +17,15 @@ BEGIN
         p_user_id
     );
 
+    UPDATE Consumivel c
+    SET quantidade_alocada = 0
+    FROM Consumivel_Requerimento cr
+    WHERE cr.requerimento_id = p_requerimento_id AND cr.consumivel_id = c.consumivel_id;
+
+    UPDATE Consumivel_Requerimento
+    SET quantidade_alocada = 0
+    WHERE requerimento_id = p_requerimento_id;
+
     RETURN TRUE;
 
 EXCEPTION

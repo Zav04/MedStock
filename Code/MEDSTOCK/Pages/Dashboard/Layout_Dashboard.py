@@ -62,7 +62,7 @@ class Dashboard(QMainWindow):
         self.page_add_setor_hospitalar = CreateSetorPage()
         self.page_associate_user_to_sector = AssociateUserToSectorPage()
         self.page_stock = ConsumiveisTablePage(self.consumivelmanager_child)
-        self.page_requerimento = RequerimentoPage(self.user, self.consumivelmanager_child)
+        self.page_requerimento = RequerimentoPage(self.user, self.consumivelmanager_child, self.page_stock)
         self.ui.stackedWidget.addWidget(self.page_home)
         self.ui.stackedWidget.addWidget(self.page_add_user)
         self.ui.stackedWidget.addWidget(self.page_add_consumivel)
@@ -96,7 +96,6 @@ class Dashboard(QMainWindow):
             UIFunctions.addNewMenu(self, "REQUERIMENTOS", "btn_requerimento", "url(:/20x20/icons/20x20/cil-description.png)", True)
         else:
             UIFunctions.addNewMenu(self, "REQUERIMENTOS", "btn_requerimento", "url(:/20x20/icons/20x20/cil-description.png)", True)
-            UIFunctions.addNewMenu(self, "ITENS STOCK", "btn_stock", "url(:/20x20/icons/20x20/cil-notes.png)", True)
         self.ui.stackedWidget.setMinimumWidth(20)
 
 

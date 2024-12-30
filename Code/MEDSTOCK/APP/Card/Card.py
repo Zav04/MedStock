@@ -5,6 +5,7 @@ from datetime import datetime
 from Class.Requerimento import Requerimento
 from Class.Utilizador import Utilizador
 from Pages.Requerimento.ValidationDialog import ValidationDialog
+from Pages.p_Consumiveis import ConsumiveisTablePage
 from Class.ConsumivelManager import ConsumivelManager
 from APP.UI.ui_functions import UIFunctions
 from APP.UI.ui_styles import Style
@@ -20,11 +21,12 @@ from API.API_POST_Request import API_SendEmailRequerimentoStatus
 
 
 class RequerimentoCard(QWidget):
-    def __init__(self, user:Utilizador, requerimento: Requerimento,consumivel_manager: ConsumivelManager,
+    def __init__(self, user:Utilizador, requerimento: Requerimento,consumivel_manager: ConsumivelManager, page_stock : ConsumiveisTablePage,
                 update_callback=None,parent_page=None):
         super().__init__()
         self.user = user
         self.consumivel_manager = consumivel_manager
+        self.page_stock = page_stock
         self.consumivel_alocado = None
         self.list_consumiveis_NA = []
         self.requerimento = requerimento
@@ -88,7 +90,7 @@ class RequerimentoCard(QWidget):
         
         self.consumivel_alocado, self.list_consumiveis_NA = self.consumivel_manager.verificar_alocacao(self.requerimento.requerimento_id)
 
-        if self.consumivel_alocado == False and self.requerimento.status_atual <= 1:
+        if self.consumivel_alocado == False and (requerimento.status_atual <= 1 or requerimento.status_atual==6) and user.role_nome=="Farmacêutico":
             warning_icon = QLabel()
             warning_icon.setStyleSheet("border: none; background: none; padding: 0;")
             warning_icon.setPixmap(
@@ -143,7 +145,7 @@ class RequerimentoCard(QWidget):
             accept_button.clicked.connect(lambda: self.accept_requerimento())
             actions_layout.addWidget(accept_button, alignment=Qt.AlignRight)
 
-        if (self.requerimento.status_atual == 1 or self.requerimento.status_atual == 10) and user.role_nome=="Farmacêutico":
+        if (self.requerimento.status_atual == 1 or self.requerimento.status_atual == 10) and user.role_nome=="Farmacêutico" and self.consumivel_alocado == True:
             pistola_button = QPushButton()
             recolored_icon_pistola_button = QIcon(UIFunctions.recolor_icon(os.path.abspath("./icons/MaterialIcons/barcode_reader.png"), "#4287f5"))
             pistola_button.setIcon(recolored_icon_pistola_button)
@@ -153,9 +155,7 @@ class RequerimentoCard(QWidget):
             actions_layout.addWidget(pistola_button, alignment=Qt.AlignRight)
             pistola_button.clicked.connect(lambda: self.prepare_requerimento())
 
-        #AQUI É QUANDO ESTA EM STAND BY ou quando não esta alocado, mas quando não esta alocado ja esta em stand-by
-        if self.consumivel_alocado == False :
-        #and user.role_nome=="Farmacêutico":
+        if self.consumivel_alocado == False and user.role_nome=="Farmacêutico" and (self.requerimento.status_atual <= 1 or requerimento.status_atual == 6):
             alocation_consumivel_button = QPushButton()
             recolored_icon_alocation_consumivel_button = QIcon(UIFunctions.recolor_icon(os.path.abspath("./icons/MaterialIcons/Stock_allocation.png"), "#eb8c34"))
             alocation_consumivel_button.setIcon(recolored_icon_alocation_consumivel_button)
@@ -358,12 +358,13 @@ class RequerimentoCard(QWidget):
     def cancel_requerimento(self):
         response = API_CancelRequerimento(self.user.utilizador_id,self.requerimento.requerimento_id)
         if response.success:
+            self.consumivel_manager.desalocar_consumiveis(self.requerimento.requerimento_id)
             Overlay.show_information(self, f'Requerimento {self.requerimento.requerimento_id} foi cancelado')
             self.callbackUpdate()
         else:
             Overlay.show_error(self, response.error_message)
             
-    #TODO VAI DEIXAR DE ASSIM MAS SIM SER VALIDAÇÃO MANUAL
+
     def alocation_consumivel_requerimento(self):
         top_parent = self.get_top_parent()
         self.requerimento.pendete_alocacao = False
@@ -376,6 +377,7 @@ class RequerimentoCard(QWidget):
         if response.success:
             stringAlerts=f'Requerimento {self.requerimento.requerimento_id} esta em preparação e email enviado ao requerente'
             asyncio.ensure_future(self.send_email_update(self.requerimento.requerimento_id, top_parent, stringAlerts))
+            self.consumivel_manager.remover_requerimento(self.requerimento.requerimento_id)
         else:
             self.callbackUpdate()
             Overlay.show_error(top_parent, response.error_message)
@@ -406,6 +408,7 @@ class RequerimentoCard(QWidget):
         top_parent = self.get_top_parent()
         response = API_RejectRequerimento(self.user.utilizador_id,self.requerimento.requerimento_id)
         if response.success:
+            self.consumivel_manager.desalocar_consumiveis(self.requerimento.requerimento_id)
             stringAlerts=f'Requerimento {self.requerimento.requerimento_id} foi recusado e email enviado ao requerente'
             asyncio.ensure_future(self.send_email_update(self.requerimento.requerimento_id, top_parent, stringAlerts))
         else:
@@ -481,7 +484,7 @@ class RequerimentoCard(QWidget):
                     historico_text_label.setText(
                         f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
                         f"Cancelado por:</span> "
-                        f"<span style='font-size:14px; color:#555555;'>{user_responsavel}</span> "
+                        f"<span style='font-size:14px; color:#555555;'>{hist.user_responsavel}</span> "
                         f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
                         )
                 case 8:
@@ -637,7 +640,7 @@ class RequerimentoCard(QWidget):
                     historico_text_label.setFont(QFont("Arial"))
                     self.details_layout.addWidget(historico_text_label)
 
-    def send_email_update(self, requerimento_id, top_parent, stringAlerts):
+    async def send_email_update(self, requerimento_id, top_parent, stringAlerts):
         response=API_SendEmailRequerimentoStatus(requerimento_id)
         if response.success:
             self.callbackUpdate()
@@ -683,6 +686,7 @@ class RequerimentoCard(QWidget):
     def finishRequerimento(self, observations: str = ""):
         top_parent = self.get_top_parent()
         response = API_FinishRequerimento(self.user.utilizador_id, self.requerimento.requerimento_id, observations)
+        self.page_stock.load_items_wrapper()
         if response.success:
             Overlay.show_information(top_parent, f"Requerimento {self.requerimento.requerimento_id} finalizado com sucesso!")
             self.callbackUpdate()

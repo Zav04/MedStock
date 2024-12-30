@@ -22,8 +22,8 @@ BEGIN
     INSERT INTO HistoricoRequerimento (requerimento_id, data_modificacao, status, descricao, user_id_responsavel)
     VALUES (new_requerimento_id, CURRENT_TIMESTAMP(0), 11, 'Requerimento externo criado', user_id_pedido);
 
-    INSERT INTO Requerimento_Externo (paciente_nome, paciente_estado, requerimento_id, data_criacao, status)
-    VALUES (paciente_nome, paciente_estado, new_requerimento_id, CURRENT_TIMESTAMP(0), 0)
+    INSERT INTO Requerimento_Externo (paciente_nome, paciente_estado, requerimento_id, data_criacao)
+    VALUES (paciente_nome, paciente_estado, new_requerimento_id, CURRENT_TIMESTAMP(0))
     RETURNING requerimento_externo_id INTO new_requerimento_externo_id;
 
     RETURN TRUE;

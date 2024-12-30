@@ -16,13 +16,15 @@ from APP.Card.Card import RequerimentoCard
 from Class.ConsumivelManager import ConsumivelManager
 from APP.UI.ui_functions import UIFunctions
 from Pages.Requerimento.ui_DragAndDrop_Itens import DraggableLabel, DropZone, DropLabel
+from Pages.p_Consumiveis import ConsumiveisTablePage
 import asyncio
 
 
 class RequerimentoPage(QWidget):
-    def __init__(self, user: Utilizador, consumivel_manager: ConsumivelManager):
+    def __init__(self, user: Utilizador, consumivel_manager: ConsumivelManager , page_stock: ConsumiveisTablePage):
         super().__init__()
         self.user = user
+        self.page_stock = page_stock
         self.consumivel_manager = consumivel_manager
         self.main_layout = QVBoxLayout(self)
         self.current_requerimentos = []
@@ -90,7 +92,7 @@ class RequerimentoPage(QWidget):
                 ("Cancelado", "Status_7"),
             ]
             
-            self.current_filter = "Pendentes de Resposta"
+        self.current_filter = "Pendentes de Resposta"
 
         for label, key in filter_buttons:
             button = QPushButton(label)
@@ -339,7 +341,8 @@ class RequerimentoPage(QWidget):
                 Overlay.show_information(self, "Requerimentos atualizados!")
 
     def add_requerimento_card(self, requerimento):
-        card = RequerimentoCard(user=self.user, requerimento=requerimento, consumivel_manager=self.consumivel_manager, update_callback=self.reload_requerimentos, parent_page=self)
+        card = RequerimentoCard(user=self.user, requerimento=requerimento, consumivel_manager=self.consumivel_manager, 
+                                update_callback=self.reload_requerimentos,page_stock=self.page_stock, parent_page=self)
         self.scroll_layout.addWidget(card)
         self.current_requerimentos_dict[requerimento.requerimento_id] = requerimento
 
@@ -385,6 +388,7 @@ class RequerimentoPage(QWidget):
     def show_create_requerimento_externo_page_wrapper(self, requerimento: Requerimento):
         asyncio.ensure_future(self.show_create_requerimento_page())
         asyncio.ensure_future(self.requerimentoExterno_page(requerimento=requerimento))
+        
     def clear_layout(self, layout):
         while layout.count():
             child = layout.takeAt(0)
@@ -444,7 +448,11 @@ class RequerimentoPage(QWidget):
             return [req for req in self.current_requerimentos if req.urgente]
         elif filter_key.startswith("Status_"):
             status = int(filter_key.split("_")[1])
-            return [req for req in self.current_requerimentos if req.status_atual == status]
+            if status == 1:
+                requerimentos_filtrados = [req for req in self.current_requerimentos if req.status_atual == 1 or req.status_atual == 10]
+                return requerimentos_filtrados
+            else:
+                return [req for req in self.current_requerimentos if req.status_atual == status]
         elif filter_key == "Externo":
             return [req for req in self.current_requerimentos if req.tipo_requerimento == "Externo"]
         else:

@@ -58,8 +58,24 @@ class ConsumivelManager(QObject):
                     self.requerimentos[index].pendete_alocacao = True
                 return
 
-        if requerimento.status_atual <= 1:
+        if requerimento.status_atual in {0, 1, 6, 10}:
             self.requerimentos.append(requerimento)
+            
+    def remover_requerimento(self, requerimento_id: int):
+        requerimento = next((r for r in self.requerimentos if r.requerimento_id == requerimento_id), None)
+        
+        if not requerimento:
+            Overlay.show_error(self.parent_window, f"Requerimento {requerimento_id} não encontrado.")
+            return
+
+        if any(item.quantidade_alocada > 0 for item in requerimento.itens_pedidos):
+            Overlay.show_information(self.parent_window, f"Requerimento {requerimento_id} removido sem liberar consumíveis alocados.")
+        else:
+            Overlay.show_information(self.parent_window, f"Requerimento {requerimento_id} removido com sucesso.")
+        
+        self.requerimentos = [r for r in self.requerimentos if r.requerimento_id != requerimento_id]
+        self.requerimento_updated.emit()
+        return
 
 
     def alocar_consumiveis(self, requerimento_id: int) -> int:
@@ -141,7 +157,6 @@ class ConsumivelManager(QObject):
 
 
             if quantidade_disponivel_nao_urgentes < quantidade_necessaria:
-                print(f"Quantidade insuficiente para atender o consumível {item_pedido.consumivel_id} em requerimentos não urgentes.")
                 all_urgent_allocated = False
                 continue
 
@@ -186,7 +201,6 @@ class ConsumivelManager(QObject):
                     break
 
             if quantidade_necessaria > 0:
-                print(f"Quantidade insuficiente para o consumível {item_pedido.consumivel_id} mesmo após redistribuição.")
                 all_urgent_allocated = False
 
         if not any_allocated:
@@ -210,6 +224,7 @@ class ConsumivelManager(QObject):
                 aloc_urgente = self.redistribuir_para_urgente(requerimento.requerimento_id)
                 if aloc_urgente == -1:
                     requerimento.pendete_alocacao = True
+                    asyncio.ensure_future(self.stand_by_requerimento(requerimento.requerimento_id))
                     Overlay.show_error(self.parent_window, f"REQ - {requerimento.requerimento_id} Não foi possível alocar os consumíveis para o requerimento urgente.")
                     return False,aloc_urgente
                 elif aloc_urgente == 0:
@@ -229,6 +244,7 @@ class ConsumivelManager(QObject):
                 self.verificar_stock()
                 return True, aloc
             elif aloc == -1 and aloc_urgente == -99:
+                asyncio.ensure_future(self.stand_by_requerimento(requerimento.requerimento_id))
                 Overlay.show_error(self.parent_window, f"REQ - {requerimento.requerimento_id} Não foi possível alocar nenhum consumível.")
                 requerimento.pendete_alocacao = True
                 return False,aloc
@@ -263,6 +279,9 @@ class ConsumivelManager(QObject):
         if requerimento is None:
             return False, []
         
+        if not requerimento.itens_pedidos or len(requerimento.itens_pedidos) == 0:
+            return False, []
+        
         nao_alocados = []
         for item_pedido in requerimento.itens_pedidos:
             if item_pedido.quantidade != item_pedido.quantidade_alocada:
@@ -282,7 +301,6 @@ class ConsumivelManager(QObject):
         #TODO FAZER ISTO DA MANEIRA JA IMPLEMENTADA
         #Falta fazer a implemntação da Função do Postgres, Da Route e Ligação com a API
         #VAI SER PRECISO CRIAR UMA TABLEA NO POSTGRES PARA GUARDAR OS PEDIDOS EXTERNOS
-        print(f"FUNÇÃO PEDIDO EXTERNO Consumivel Total: {consumivel.quantidade_total}, Consumivel Alocado: {consumivel.quantidade_alocada}")
         
         payload = {
             "consumivel_id": consumivel.consumivel_id,
@@ -330,6 +348,9 @@ class ConsumivelManager(QObject):
                 result, _ = self.verificar_alocacao(requerimento.requerimento_id)
                 if result:
                     asyncio.ensure_future(self.resume_requerimento(user_id,requerimento.requerimento_id))
+        else:
+            if(value!=-2):
+                self.requerimento_updated.emit()
 
 
     def update_consumiveis_alocados(self,consumiveis_alocados: list):
@@ -341,7 +362,28 @@ class ConsumivelManager(QObject):
         else:
             Overlay.show_error(self.parent_window,  f"REQ - {requerimento_id} Erro ao registar os consumíveis alocados: {response.error_message}")
             
-            
+
+    def desalocar_consumiveis(self, requerimento_id: int):
+        requerimento = next((r for r in self.requerimentos if r.requerimento_id == requerimento_id), None)
+        
+        if not requerimento:
+            return
+
+        if not requerimento.itens_pedidos or len(requerimento.itens_pedidos) == 0:
+            return
+
+        for item_pedido in requerimento.itens_pedidos:
+            if item_pedido.quantidade_alocada > 0:
+                consumivel = next((c for c in self.consumiveis if c.consumivel_id == item_pedido.consumivel_id), None)
+                if consumivel:
+                    consumivel.quantidade_alocada -= item_pedido.quantidade_alocada
+                    if consumivel.quantidade_alocada < 0:
+                        consumivel.quantidade_alocada = 0
+                    item_pedido.quantidade_alocada = 0
+
+        self.consumivel_updated.emit()
+        return True
+
 
     def registrar_realocacoes(self, realocacoes: list):
         realocacoes_sorted = sorted(realocacoes, key=lambda x: x["requerimento_origem"])
@@ -364,7 +406,7 @@ class ConsumivelManager(QObject):
 
     async def stand_by_requerimento(self, requerimento_id: int):
         requerimento = next((r for r in self.requerimentos if r.requerimento_id == requerimento_id), None)
-        if requerimento.status_atual > 0:
+        if requerimento.status_atual > 0 and requerimento.status_atual != 6:
             response = API_StandByRequerimento(requerimento_id)
             if response.success:
                 if requerimento.tipo_requerimento == "Interno":

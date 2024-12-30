@@ -30,14 +30,24 @@ async def MedStock_CreateRequerimento(requerimento: C_CreateRequerimento, db=Dep
             "urgente": requerimento.urgente
         })
 
-        success = result.scalar()
+        requerimento_id = result.scalar()
 
-        if success:
+        if requerimento_id:
             db.commit()
-            return {
-                "response": True,
-                "data": "Requerimento criado com sucesso."
-            }
+            
+            email_request = C_RequerimentoRequest(requerimento_id=requerimento_id)
+            email_response = await MedStock_SendEmailRequerimentoStatus(email_request, db)
+            
+            if email_response["response"]:
+                return {
+                    "response": True,
+                    "data": f"Requerimento {requerimento_id} criado com sucesso. E-mail enviado ao requerente."
+                }
+            else:
+                return {
+                    "response": True,
+                    "data": f"Requerimento {requerimento_id} criado com sucesso. Erro ao enviar e-mail: {email_response['error']}."
+                }
         else:
             db.rollback()
             return {
@@ -60,6 +70,7 @@ async def MedStock_CreateRequerimento(requerimento: C_CreateRequerimento, db=Dep
             "response": False,
             "error": error_messages
         }
+
 
 
 

@@ -3,7 +3,7 @@ CREATE OR REPLACE FUNCTION create_requerimento(
     p_setor_id INT,
     items_list JSON,
     urgente BOOLEAN
-) RETURNS BOOLEAN AS $$
+) RETURNS INT AS $$
 DECLARE
     new_requerimento_id INT;
     item RECORD;
@@ -48,7 +48,7 @@ BEGIN
         VALUES (item.consumivel_id, new_requerimento_id, item.quantidade);
     END LOOP;
 
-    RETURN TRUE;
+    RETURN new_requerimento_id;
 
 EXCEPTION
     WHEN OTHERS THEN

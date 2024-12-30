@@ -4,6 +4,8 @@ from sqlalchemy.sql import text
 from datetime import datetime
 from dependencies import get_db_MEDSTOCK
 from Models.C_Update_Requerimento_Preparacao import C_UpdateRequerimentoPreparacao
+from Models.C_RequerimentoRequest import C_RequerimentoRequest
+from REQUESTS_MedStock.REQUERIMENTO.POST_REQUERIMENTO import MedStock_SendEmailRequerimentoStatus
 
 router = APIRouter()
 
@@ -23,6 +25,16 @@ async def MedStock_Update_Requerimento_Preparacao(
 
         if result:
             db.commit()
+
+            email_request = C_RequerimentoRequest(requerimento_id=payload.requerimento_id)
+            email_response = await MedStock_SendEmailRequerimentoStatus(email_request, db)
+
+            if not email_response["response"]:
+                return {
+                    "response": False,
+                    "error": f"Requerimento atualizado, mas houve erro no envio do e-mail: {email_response['error']}"
+                }
+            
             return {
                 "response": True,
                 "data": f"Requerimento {payload.requerimento_id} atualizado com sucesso."
