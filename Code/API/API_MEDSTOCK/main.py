@@ -19,6 +19,7 @@ from REQUEST_MedReader.LOGIN.POST_Login import router as POST_login_router_MedRe
 from REQUEST_MedReader.REQUERIMENTO.GET_REQUERIMENTO import router as GET_requerimento_router_MedReader
 from REQUEST_MedReader.REQUERIMENTO.PUT_REQUERIMENTO import router as PUT_requerimento_router_MedReader
 from REQUESTS_MedStock.REQUERIMENTO.PUT_REQUERIMENTO import router as PUT_requerimento_router
+from REQUESTS_MedStock.REALOCACOES.GET_Realocacoes import router as GET_realocacoes_router
 
 from REQUEST_MedOcurrencias.LOGIN.POST_Login import router as POST_login_router_MedOcurrencias
 from REQUEST_MedOcurrencias.REQUERIMENTO.POST_Requerimento import router as GET_requerimento_router_MedOcurrencias
@@ -49,6 +50,7 @@ api.include_router(GET_login_router)
 api.include_router(GET_setor_router)
 api.include_router(POST_setor_router)
 api.include_router(PUT_requerimento_router)
+api.include_router(GET_realocacoes_router)
 
 
 api.include_router(POST_login_router_MedOcurrencias)

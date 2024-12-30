@@ -9,6 +9,7 @@ import asyncio
 class ConsumivelManager(QObject):
     consumivel_updated = pyqtSignal()
     requerimento_updated = pyqtSignal()
+    realocacoes_updated = pyqtSignal()
     def __init__(self):
         self.consumiveis = []
         self.requerimentos = []
@@ -402,6 +403,8 @@ class ConsumivelManager(QObject):
             response = API_CreateRedistribuicao(consumivel_id, requerimento_origem, requerimento_destino, quantidade_realocada)
             if not response.success:
                 Overlay.show_error(self.parent_window, f"Erro ao registar a redistribuição: {response.error_message}")
+            
+            self.realocacoes_updated.emit()
 
 
     async def stand_by_requerimento(self, requerimento_id: int):

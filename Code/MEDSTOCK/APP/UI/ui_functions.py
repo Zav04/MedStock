@@ -180,4 +180,22 @@ class UIFunctions(QMainWindow):
         colored_pixmap.save(temp_icon_path, "PNG")
         
         return temp_icon_path
+    
+    
+    @staticmethod
+    def adjust_column_sizes(table_widget: QTableWidget):
+        table_widget.resizeColumnsToContents()
+        header = table_widget.horizontalHeader()
+
+        for column in range(table_widget.columnCount()):
+            header_text = table_widget.horizontalHeaderItem(column).text()
+            content_width = header.sectionSize(column)
+            header_width = table_widget.fontMetrics().boundingRect(header_text).width() + 20
+            optimal_width = max(content_width, header_width)
+            
+            if column >= table_widget.columnCount() - 5:
+                header.setSectionResizeMode(column, QHeaderView.Stretch)
+            else:
+                header.setSectionResizeMode(column, QHeaderView.ResizeToContents)
+                header.resizeSection(column, optimal_width)
 

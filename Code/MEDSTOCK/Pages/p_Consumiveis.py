@@ -122,7 +122,7 @@ class ConsumiveisTablePage(QWidget):
             self.table_widget.setItemDelegateForColumn(5, NumericItemDelegate(self.table_widget))
             self.table_widget.setItemDelegateForColumn(6, NumericItemDelegate(self.table_widget))
 
-            self.adjust_column_sizes()
+            UIFunctions.adjust_column_sizes(self.table_widget)
 
 
     def enable_editing(self, row):
@@ -240,23 +240,6 @@ class ConsumiveisTablePage(QWidget):
         if file_path:
             GeneratePdfItens(self, self.table_widget, file_path)
             Overlay.show_information(self, "PDF guardado na localização "+file_path)
-
-    def adjust_column_sizes(self):
-        self.table_widget.resizeColumnsToContents()
-        header = self.table_widget.horizontalHeader()
-
-        for column in range(self.table_widget.columnCount()):
-            header_text = self.table_widget.horizontalHeaderItem(column).text()
-            content_width = header.sectionSize(column)
-            header_width = self.fontMetrics().boundingRect(header_text).width() + 20
-            optimal_width = max(content_width, header_width)
-            
-            if column >= self.table_widget.columnCount() - 5:
-                header.setSectionResizeMode(column, QHeaderView.Stretch)
-                self.center_column_content(column)
-            else:
-                header.setSectionResizeMode(column, QHeaderView.ResizeToContents)
-                header.resizeSection(column, optimal_width)
 
     def center_column_content(self, column):
         for row in range(self.table_widget.rowCount()):
