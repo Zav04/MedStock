@@ -39,7 +39,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         loginButton.setOnClickListener {
-            val username = usernameEditText.text.toString()
+            val username = usernameEditText.text.toString().trim()
             val password = passwordEditText.text.toString()
 
             if (username.isBlank() || password.isBlank()) {
@@ -88,6 +88,9 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun togglePasswordVisibility() {
+        val start = passwordEditText.selectionStart
+        val end = passwordEditText.selectionEnd
+
         if (passwordEditText.transformationMethod == PasswordTransformationMethod.getInstance()) {
             passwordEditText.transformationMethod = HideReturnsTransformationMethod.getInstance()
             showPasswordButton.setImageResource(R.drawable.ic_eye_open)
@@ -95,5 +98,7 @@ class LoginActivity : AppCompatActivity() {
             passwordEditText.transformationMethod = PasswordTransformationMethod.getInstance()
             showPasswordButton.setImageResource(R.drawable.ic_eye_close)
         }
+        passwordEditText.setSelection(start, end)
     }
+
 }

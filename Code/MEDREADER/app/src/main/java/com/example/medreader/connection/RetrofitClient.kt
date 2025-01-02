@@ -7,9 +7,10 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-
 object RetrofitClient {
+
     private const val BASE_URL = "https://medstock-api-ce98.onrender.com/"
+//    private const val BASE_URL = "http://192.168.1.188:8000/"
 
     private val client: OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
@@ -23,12 +24,12 @@ object RetrofitClient {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
+    val loginApi: LoginApi by lazy {
+        retrofit.create(LoginApi::class.java)
+    }
 
     val requeimentosApi: RequerimentosApi by lazy {
         retrofit.create(RequerimentosApi::class.java)
     }
 
-    val loginApi: LoginApi by lazy {
-        retrofit.create(LoginApi::class.java)
-    }
 }

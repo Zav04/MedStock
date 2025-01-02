@@ -72,7 +72,9 @@
             android:text="Entrar"
             android:textSize="16sp"
             android:backgroundTint="@android:color/holo_green_dark"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:background="@drawable/buttons"
+            />
 
         <ProgressBar
             android:id="@+id/progressBar"

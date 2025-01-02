@@ -16,19 +16,21 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewRequerimentos"
         android:layout_width="match_parent"
-        android:layout_height="739dp"
+        android:layout_height="730dp"
         android:layout_weight="1"
         android:scrollbars="vertical"
         android:overScrollMode="always"
-        android:fadeScrollbars="false" />
+        android:fadeScrollbars="false"
+        android:background="@drawable/rounded_background"
+        android:layout_marginBottom="12dp" />
 
     <Button
         android:id="@+id/btnAtualizar"
-        android:layout_width="wrap_content"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:backgroundTint="@android:color/holo_green_dark"
-        android:textColor="@android:color/white"
-        android:text="Atualizar Lista" />
+        android:background="@drawable/buttons"
+        android:text="Atualizar Lista"
+        android:textColor="@android:color/white" />
 
 </LinearLayout>

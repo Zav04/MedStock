@@ -30,7 +30,7 @@ class ItemPedidoAdapter(private var itemList: List<ItemPedido>) :
         private val textQuantidadeItem: TextView = itemView.findViewById(R.id.quantidadeItem)
 
         fun bind(item: ItemPedido) {
-            textNomeItem.text = item.nome_item
+            textNomeItem.text = item.nome_consumivel
             textQuantidadeItem.text = "Quantidade: ${item.quantidade}"
         }
     }

@@ -40,7 +40,7 @@ data class Requerimento(
 
 @Parcelize
 data class ItemPedido(
-    val nome_item: String,
+    val nome_consumivel: String,
     val codigo: String,
     val quantidade: Int
 ) : Parcelable

@@ -1,5 +1,6 @@
 package com.example.medreader
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -39,6 +40,7 @@ class ScanActivity : AppCompatActivity() {
     private var requerimentos: List<Requerimento> = listOf()
     private lateinit var itemLidoAdapter: ItemLidoAdapter
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scan)
@@ -144,17 +146,19 @@ class ScanActivity : AppCompatActivity() {
         })
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun carregarItensRequerimento(requerimento: Requerimento) {
         itemPedidoList.clear()
 
-        requerimento.itens_pedidos?.forEach { item ->
-            itemPedidoList.add(ItemPedido(item.nome_item, item.codigo, item.quantidade))
+        requerimento.itens_pedidos.forEach { item ->
+            itemPedidoList.add(ItemPedido(item.nome_consumivel, item.codigo, item.quantidade))
         }
 
         recyclerViewItensPedido.adapter = ItemPedidoAdapter(itemPedidoList)
         recyclerViewItensPedido.adapter?.notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun processarCodigo(codigo: String) {
         val item = itemPedidoList.find { it.codigo == codigo }
 
@@ -170,13 +174,13 @@ class ScanActivity : AppCompatActivity() {
                     Toast.makeText(this, "Quantidade atualizada: ${existingLido.quantidade_lida}/${item.quantidade}", Toast.LENGTH_SHORT).show()
                     verificarItens()
                 } else {
-                    Toast.makeText(this, "Quantidade máxima já atingida para o item ${item.nome_item}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Quantidade máxima já atingida para o item ${item.nome_consumivel}", Toast.LENGTH_SHORT).show()
                 }
             } else {
-                val itemLido = ItemLido(item.nome_item, item.codigo, 1)
+                val itemLido = ItemLido(item.nome_consumivel, item.codigo, 1)
                 itemLidosList.add(itemLido)
                 itemLidoAdapter.notifyItemInserted(itemLidosList.size - 1)
-                Toast.makeText(this, "Código Lido: ${item.nome_item}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Código Lido: ${item.nome_consumivel}", Toast.LENGTH_SHORT).show()
                 verificarItens()
             }
         }
