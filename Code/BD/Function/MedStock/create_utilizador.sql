@@ -36,7 +36,6 @@ BEGIN
     INSERT INTO utilizador (nome, email, sexo, data_nascimento, role_id)
     VALUES (p_nome, p_email, p_sexo, p_data_nascimento, p_role_id);
     
-    -- Retorna true indicando sucesso
     RETURN true;
 END;
 $$ LANGUAGE plpgsql;
