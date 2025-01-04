@@ -14,8 +14,13 @@ class ConsumivelManager(QObject):
         self.consumiveis = []
         self.requerimentos = []
         self.parent_window = None
+        self.user_role=None
         self.realocacoes = []
         super().__init__()
+        
+    
+    def add_user_role(self,role):
+        self.user_role=role
 
     def add_consumivel(self, consumiveis: list[Consumivel]):
         for novo_consumivel in consumiveis:
@@ -66,13 +71,16 @@ class ConsumivelManager(QObject):
         requerimento = next((r for r in self.requerimentos if r.requerimento_id == requerimento_id), None)
         
         if not requerimento:
-            Overlay.show_error(self.parent_window, f"Requerimento {requerimento_id} não encontrado.")
+            if(self.user_role=="Farmacêutico"):
+                Overlay.show_error(self.parent_window, f"Requerimento {requerimento_id} não encontrado.")
             return
 
         if any(item.quantidade_alocada > 0 for item in requerimento.itens_pedidos):
-            Overlay.show_information(self.parent_window, f"Requerimento {requerimento_id} removido sem liberar consumíveis alocados.")
+            if(self.user_role=="Farmacêutico"):
+                Overlay.show_information(self.parent_window, f"Requerimento {requerimento_id} removido sem libertar consumíveis alocados.")
         else:
-            Overlay.show_information(self.parent_window, f"Requerimento {requerimento_id} removido com sucesso.")
+            if(self.user_role=="Farmacêutico"):
+                Overlay.show_information(self.parent_window, f"Requerimento {requerimento_id} removido com sucesso.")
         
         self.requerimentos = [r for r in self.requerimentos if r.requerimento_id != requerimento_id]
         self.requerimento_updated.emit()
@@ -226,11 +234,13 @@ class ConsumivelManager(QObject):
                 if aloc_urgente == -1:
                     requerimento.pendete_alocacao = True
                     asyncio.ensure_future(self.stand_by_requerimento(requerimento.requerimento_id))
-                    Overlay.show_error(self.parent_window, f"REQ - {requerimento.requerimento_id} Não foi possível alocar os consumíveis para o requerimento urgente.")
+                    if(self.user_role=="Farmacêutico"):
+                        Overlay.show_error(self.parent_window, f"REQ - {requerimento.requerimento_id} Não foi possível alocar os consumíveis para o requerimento urgente.")
                     return False,aloc_urgente
                 elif aloc_urgente == 0:
                     requerimento.pendete_alocacao = True
-                    Overlay.show_warning(self.parent_window, f"REQ - {requerimento.requerimento_id} Alguns consumíveis foram alocados, mas não todos.")
+                    if(self.user_role=="Farmacêutico"):
+                        Overlay.show_warning(self.parent_window, f"REQ - {requerimento.requerimento_id} Alguns consumíveis foram alocados, mas não todos.")
                     self.verificar_stock()
                     self.registrar_realocacoes(self.realocacoes)
                     return True,aloc_urgente
@@ -240,13 +250,15 @@ class ConsumivelManager(QObject):
                     self.registrar_realocacoes(self.realocacoes)
                     return True,aloc_urgente
             if aloc == 0 and aloc_urgente == -99:
-                Overlay.show_warning(self.parent_window, f"REQ - {requerimento.requerimento_id} Alguns consumíveis foram alocados, mas não todos.")
+                if(self.user_role=="Farmacêutico"):
+                    Overlay.show_warning(self.parent_window, f"REQ - {requerimento.requerimento_id} Alguns consumíveis foram alocados, mas não todos.")
                 requerimento.pendete_alocacao = True
                 self.verificar_stock()
                 return True, aloc
             elif aloc == -1 and aloc_urgente == -99:
                 asyncio.ensure_future(self.stand_by_requerimento(requerimento.requerimento_id))
-                Overlay.show_error(self.parent_window, f"REQ - {requerimento.requerimento_id} Não foi possível alocar nenhum consumível.")
+                if(self.user_role=="Farmacêutico"):
+                    Overlay.show_error(self.parent_window, f"REQ - {requerimento.requerimento_id} Não foi possível alocar nenhum consumível.")
                 requerimento.pendete_alocacao = True
                 return False,aloc
         elif aloc == 1:
@@ -359,9 +371,11 @@ class ConsumivelManager(QObject):
         consumiveis_alocados=consumiveis_alocados["consumiveis"]
         response = API_UpdateConsumivelAlocado(requerimento_id, consumiveis_alocados)
         if response.success:
-            Overlay.show_success(self.parent_window, f"REQ - {requerimento_id} Consumíveis alocados e registados com sucesso.")
+            if self.user_role=="Farmacêutico":
+                Overlay.show_success(self.parent_window, f"REQ - {requerimento_id} Consumíveis alocados e registados com sucesso.")
         else:
-            Overlay.show_error(self.parent_window,  f"REQ - {requerimento_id} Erro ao registar os consumíveis alocados: {response.error_message}")
+            if self.user_role=="Farmacêutico":
+                Overlay.show_error(self.parent_window,  f"REQ - {requerimento_id} Erro ao registar os consumíveis alocados: {response.error_message}")
             
 
     def desalocar_consumiveis(self, requerimento_id: int):
@@ -402,7 +416,8 @@ class ConsumivelManager(QObject):
 
             response = API_CreateRedistribuicao(consumivel_id, requerimento_origem, requerimento_destino, quantidade_realocada)
             if not response.success:
-                Overlay.show_error(self.parent_window, f"Erro ao registar a redistribuição: {response.error_message}")
+                if self.user_role=="Farmacêutico":
+                    Overlay.show_error(self.parent_window, f"Erro ao registar a redistribuição: {response.error_message}")
             
             self.realocacoes_updated.emit()
 
@@ -416,13 +431,16 @@ class ConsumivelManager(QObject):
                     response = API_SendEmailRequerimentoStatus(requerimento_id)
                     if response.success:
                         stringAlerts=f'Requerimento {requerimento_id} foi colocado em Stand By por falta de stock e email enviado ao requerente'
-                        Overlay.show_information(self.parent_window, stringAlerts)
+                        if self.user_role=="Farmacêutico":
+                            Overlay.show_information(self.parent_window, stringAlerts)
                         self.requerimento_updated.emit()
                 else:
-                    Overlay.show_information(self.parent_window, f'Requerimento {requerimento_id} foi colocado em Stand By por falta de stock')
+                    if self.user_role=="Farmacêutico":
+                        Overlay.show_information(self.parent_window, f'Requerimento {requerimento_id} foi colocado em Stand By por falta de stock')
                     self.requerimento_updated.emit()
             else:
-                Overlay.show_error(self.parent_window, response.error_message)
+                if self.user_role=="Farmacêutico":
+                    Overlay.show_error(self.parent_window, response.error_message)
             
 
 
@@ -434,10 +452,13 @@ class ConsumivelManager(QObject):
                 response = API_SendEmailRequerimentoStatus(requerimento_id)
                 if response.success:
                     stringAlerts=f'Requerimento {requerimento_id} voltou para a lista de espera e email enviado ao requerente'
-                    Overlay.show_information(self.parent_window, stringAlerts)
+                    if self.user_role=="Farmacêutico":
+                        Overlay.show_information(self.parent_window, stringAlerts)
                     self.requerimento_updated.emit()
             else:
-                Overlay.show_information(self.parent_window, f'Requerimento {requerimento_id} voltou para a lista de espera')
+                if self.user_role=="Farmacêutico":
+                    Overlay.show_information(self.parent_window, f'Requerimento {requerimento_id} voltou para a lista de espera')
                 self.requerimento_updated.emit()
         else:
-            Overlay.show_error(self.parent_window, response.error_message)
+            if self.user_role=="Farmacêutico":
+                Overlay.show_error(self.parent_window, response.error_message)

@@ -36,6 +36,7 @@ class RequerimentoCard(QWidget):
         self.callbackUpdate = update_callback
         self.minimumHeight_Card = 180
         
+        self.consumivel_manager.add_user_role(self.user.role_nome)
         self.consumivel_manager.add_requerimento(self.requerimento)
         self.consumivel_manager.requerimento_manager(requerimento=self.requerimento,parent_page=self.parent_page)
 
