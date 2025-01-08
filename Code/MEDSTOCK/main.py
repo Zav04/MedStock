@@ -34,8 +34,8 @@ if __name__ == "__main__":
         utilizador_id=12, 
         role_id=1, 
         #
-        role_nome="Gestor Responsável"
-        #role_nome="Administrador"
+        #role_nome="Gestor Responsável"
+        role_nome="Administrador"
         #role_nome="Farmacêutico"
         #role_nome="Enfermeiro"
         #role_nome="Médico"
@@ -45,8 +45,8 @@ if __name__ == "__main__":
     # TODO JUST FOR TESTING
 
     try:
-        #window=Login()
-        window = Dashboard(user=user)
+        window=Login()
+        #window = Dashboard(user=user)
         window.show()
 
         with loop:

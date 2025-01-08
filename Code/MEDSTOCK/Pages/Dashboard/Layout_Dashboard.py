@@ -1,5 +1,6 @@
 
 from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QEventLoop
 from Pages.p_Home import HomePage
 from APP.UI.WindowFunctions import WindowFunctions
 from Pages.Dashboard.ui_dashboard import Ui_MainWindow
@@ -38,11 +39,17 @@ class Dashboard(QMainWindow):
 
 
     def initmanager(self):
-        loop = asyncio.get_event_loop()
-        response = loop.run_until_complete(API_GetConsumiveis())
+        loop = QEventLoop()
+        asyncio.create_task(self.load_consumiveis(loop))
+        loop.exec_()
+
+    async def load_consumiveis(self, loop: QEventLoop):
+        response = await API_GetConsumiveis()
         if response.success:
             items = response.data
             self.consumivelmanager_child.add_consumivel(items)
+        loop.quit()
+
 
     def userIconName(self,name:str):
         words = name.strip().split()
@@ -92,8 +99,6 @@ class Dashboard(QMainWindow):
             UIFunctions.addNewMenu(self, "CRIAR NOVA ALA HOSPITALAR", "btn_new_setor", "url(:/20x20/icons/20x20/hospital.png)", True)
             UIFunctions.addNewMenu(self, "GESTOR DE ALA HOSPITALAR", "btn_gestor_setor", "url(:/20x20/icons/20x20/manage_accounts.png)", True)
             UIFunctions.addNewMenu(self, "ITENS STOCK", "btn_stock", "url(:/20x20/icons/20x20/cil-notes.png)", True)
-            UIFunctions.addNewMenu(self, "REQUERIMENTOS", "btn_requerimento", "url(:/20x20/icons/20x20/cil-description.png)", True)
-            UIFunctions.addNewMenu(self, "REALOCAÇÕES", "btn_realocacoes", "url(:/20x20/icons/20x20/cil-swap-vertical.png)", True)
         elif role == "Gestor Responsável":
             UIFunctions.addNewMenu(self, "REQUERIMENTOS", "btn_requerimento", "url(:/20x20/icons/20x20/cil-description.png)", True)
         elif role == "Farmacêutico":
