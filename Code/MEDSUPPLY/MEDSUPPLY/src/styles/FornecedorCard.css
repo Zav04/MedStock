@@ -1,0 +1,55 @@
+/* src/styles/FornecedorCard.css */
+.grid-item {
+  border: 1px solid #ddd;
+  padding: 20px;
+  margin: 10px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  height: 100%; /* Ajusta a altura para preencher o quadrante */
+  display: flex; /* Para centralizar o conteúdo */
+  flex-direction: column; /* Centralização vertical */
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box; /* Inclui o padding dentro das dimensões */
+}
+
+.grid-item h2 {
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.requerimentos {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.estado {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5px;
+  padding: 10px;
+  border-radius: 5px;
+  color: white;
+  text-align: center;
+  width: 120px;
+  height: 60px;
+  box-sizing: border-box;
+}
+
+.em-espera {
+  background-color: orange;
+}
+
+.em-preparacao {
+  background-color: lightcoral;
+}
+
+.enviado {
+  background-color: lightgreen;
+}
+
+.finalizado {
+  background-color: lightgray;
+}

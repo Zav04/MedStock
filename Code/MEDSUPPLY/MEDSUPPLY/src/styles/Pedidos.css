@@ -1,0 +1,178 @@
+/* src/styles/Pedidos.css */
+
+/* Contêiner principal da página */
+.home-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Duas colunas de largura igual */
+  grid-template-rows: auto 1fr 1fr; /* Linha extra para o cabeçalho */
+  gap: 10px; /* Espaçamento entre os quadrantes */
+  padding: 20px;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* Cabeçalho com o nome do fornecedor */
+.header {
+  grid-column: 1 / -1; /* O cabeçalho ocupa toda a largura */
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.header h1 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* Estilo para os botões dentro do cabeçalho */
+.header button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+
+/* Estilo dos quadrantes */
+.grid-item {
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  padding: 20px;
+  margin: 10px;
+  text-align: center;
+}
+
+.grid-item h2 {
+  margin-bottom: 15px;
+  font-size: 18px;
+  color: #333;
+}
+
+/* Estilo das caixas de requerimentos */
+.requerimento-box {
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  padding: 10px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.requerimento-box:hover {
+  background-color: #e0e0e0;
+}
+
+/* Detalhes dentro da mesma caixa */
+.requerimento-detalhes {
+  background-color: #ffffff;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  display: none; /* Detalhes ocultos por padrão */
+}
+
+/* Exibir detalhes quando expandido */
+.requerimento-box.expandido .requerimento-detalhes {
+  display: block;
+}
+
+/* Estilo da lista de produtos */
+.produtos-list {
+  grid-column: 1 / -1; /* A lista ocupa toda a largura */
+  padding: 10px;
+  background-color: #f1f1f1;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.produtos-list h3 {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.produtos-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.produtos-list li {
+  padding: 5px 0;
+  border-bottom: 1px solid #ddd;
+  font-size: 16px;
+  color: #555;
+}
+
+.produtos-list li:last-child {
+  border-bottom: none;
+}
+
+/* Tornar o layout responsivo */
+@media (max-width: 768px) {
+  .home-container {
+    grid-template-columns: 1fr; /* Uma coluna para telas menores */
+    grid-template-rows: auto auto; /* Ajustar linhas automaticamente */
+  }
+
+  .grid-item {
+    margin: 5px; /* Reduzir margens em telas pequenas */
+  }
+}
+
+
+/* Requerimento ações container */
+.requerimento-acoes {
+  margin-top: 10px;
+  text-align: right;
+}
+
+
+
+/* Botão aceitar */
+.botao-aceitar {
+  display: inline-block;
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  text-decoration: none; /* Remove o sublinhado do link */
+  text-align: center;
+}
+
+.botao-aceitar:hover {
+  background-color: #218838;
+}
+
+/* Botão Voltar para o Home */
+.botao-voltar-home {
+  display: inline-block;
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: none;
+  text-align: center;
+}
+
+
+/* Contêiner para os botões, garantindo que eles fiquem na mesma linha */
+.buttons-container {
+  display: flex;
+  gap: 10px; /* Adiciona um espaço de 10px entre os botões */
+  justify-content: center; /* Centraliza os botões */
+  margin-top: 20px; /* Adiciona um pequeno espaçamento acima dos botões */
+}
