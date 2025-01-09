@@ -6,8 +6,8 @@ from Models.C_CreateRequerimentoExterno import C_CreateRequerimentoExterno
 
 router = APIRouter()
 
-@router.post("/MedStock_CreateRequerimentoExterno/")
-async def MedStock_CreateRequerimentoExterno(requerimentoexterno: C_CreateRequerimentoExterno, db=Depends(get_db_MEDSTOCK)):
+@router.post("/MedOcurrencias_CreateRequerimentoExterno/")
+async def MedOcurrencias_CreateRequerimentoExterno(requerimentoexterno: C_CreateRequerimentoExterno, db=Depends(get_db_MEDSTOCK)):
     try:
         query = text("""
             SELECT create_requerimento_externo(:user_id_pedido, :paciente_nome, :paciente_estado);

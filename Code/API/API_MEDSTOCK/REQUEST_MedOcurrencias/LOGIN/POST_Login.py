@@ -14,7 +14,7 @@ from fastapi import Depends
 
 
 @router.post("/MedOcurrencias_Login/")
-async def MedStock_ValidateAndFetchUser(user: C_Login, db=Depends(get_db_MEDSTOCK)):
+async def MedOcurrencias_ValidateAndFetchUser(user: C_Login, db=Depends(get_db_MEDSTOCK)):
     try:
         login_verification_response = await MedStock_Login(user, db)
         
