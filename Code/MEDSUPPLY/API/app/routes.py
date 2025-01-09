@@ -428,58 +428,53 @@ def criar_requerimento_com_pedidos():
             return jsonify({'error': 'Content-Type must be application/json'}), 415
 
         # Extraindo os dados do JSON enviado na requisição
-        pedidos = request.get_json()
+        data = request.get_json()
 
-        # Verificar se é uma lista e contém pelo menos um pedido
-        if not isinstance(pedidos, list) or len(pedidos) == 0:
-            return jsonify({'error': 'Uma lista de pedidos é obrigatória'}), 400
+        # A requisição deve conter pelo menos um pedido e o fornecedor_id
+        fornecedor_id = data.get('fornecedor_id')
+        pedidos = data.get('pedidos')
 
-        # Validar que todos os itens têm os campos necessários e que o fornecedor é consistente
-        fornecedor_id = None
-        for pedido in pedidos:
-            if not isinstance(pedido, dict):
-                return jsonify({'error': 'Cada pedido deve ser um objeto JSON'}), 400
+        if not fornecedor_id or not pedidos:
+            return jsonify({'error': 'Fornecedor ID e Pedidos são obrigatórios'}), 400
 
-            # Extrair campos obrigatórios
-            pedido_fornecedor_id = pedido.get('fornecedor_id')
-            produto_id = pedido.get('produto_id')
-            quantidade = pedido.get('quantidade')
+        # Obter o maior id_requerimento atual no banco de dados utilizando SQLAlchemy text()
+        max_id_requerimento = db.session.execute(text('SELECT MAX(id_requerimento) FROM requerimentos')).scalar()
 
-            if not pedido_fornecedor_id or not produto_id or not quantidade:
-                return jsonify({'error': 'Fornecedor ID, Produto ID e Quantidade são obrigatórios para cada pedido'}), 400
+        # Se não houver nenhum id_requerimento, o valor será None, então iniciamos com 1
+        if max_id_requerimento is None:
+            id_requerimento = 1
+        else:
+            id_requerimento = max_id_requerimento + 1  # Incrementa o maior ID encontrado
 
-            # Garantir que o fornecedor_id seja consistente entre os pedidos
-            if fornecedor_id is None:
-                fornecedor_id = pedido_fornecedor_id
-            elif fornecedor_id != pedido_fornecedor_id:
-                return jsonify({'error': 'Todos os pedidos devem pertencer ao mesmo fornecedor'}), 400
-
-        # Criar o novo requerimento com estado 'EM ESPERA'
+        # Criar o novo requerimento com o id_requerimento gerado e estado 'EM ESPERA'
         novo_requerimento = Requerimento(
+            id_requerimento=id_requerimento,
             fornecedor_id=fornecedor_id,
             estado='EM ESPERA'
         )
 
         # Adicionar o novo requerimento no banco de dados
         db.session.add(novo_requerimento)
-        db.session.flush()  # Garante que o requerimento_id seja gerado
+        db.session.flush()  # Para garantir que o requerimento_id seja gerado
 
-        # Obter o id_requerimento gerado
-        id_requerimento = novo_requerimento.requerimento_id
+        # Agora, vamos adicionar os pedidos relacionados a este requerimento
+        for pedido in pedidos:
+            # Acessar diretamente os valores do pedido, já que 'pedido' é um dicionário
+            produto_id = pedido['produto_id']
+            quantidade = pedido['quantidade']
 
-        # Criar os pedidos associados ao mesmo requerimento
-        pedidos_para_inserir = [
-            Pedido(
+            if not produto_id or not quantidade:
+                return jsonify({'error': 'Produto ID e Quantidade são obrigatórios para cada pedido'}), 400
+
+            # Criar o pedido associado ao requerimento
+            novo_pedido = Pedido(
                 requerimento_id=id_requerimento,
-                produto_id=pedido['produto_id'],
+                produto_id=produto_id,
                 fornecedor_id=fornecedor_id,
-                quantidade=pedido['quantidade']
+                quantidade=quantidade
             )
-            for pedido in pedidos
-        ]
 
-        # Adicionando todos os pedidos ao banco de dados
-        db.session.bulk_save_objects(pedidos_para_inserir)
+            db.session.add(novo_pedido)
 
         # Commit para salvar no banco de dados
         db.session.commit()
