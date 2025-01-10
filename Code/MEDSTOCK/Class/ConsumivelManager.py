@@ -241,19 +241,19 @@ class ConsumivelManager(QObject):
                     requerimento.pendete_alocacao = True
                     if(self.user_role=="Farmacêutico"):
                         Overlay.show_warning(self.parent_window, f"REQ - {requerimento.requerimento_id} Alguns consumíveis foram alocados, mas não todos.")
-                    self.verificar_stock()
+                    asyncio.ensure_future(self.verificar_stock())
                     self.registrar_realocacoes(self.realocacoes)
                     return True,aloc_urgente
                 elif aloc_urgente == 1:
                     requerimento.pendete_alocacao = False
-                    self.verificar_stock()
+                    asyncio.ensure_future(self.verificar_stock())
                     self.registrar_realocacoes(self.realocacoes)
                     return True,aloc_urgente
             if aloc == 0 and aloc_urgente == -99:
                 if(self.user_role=="Farmacêutico"):
                     Overlay.show_warning(self.parent_window, f"REQ - {requerimento.requerimento_id} Alguns consumíveis foram alocados, mas não todos.")
                 requerimento.pendete_alocacao = True
-                self.verificar_stock()
+                asyncio.ensure_future(self.verificar_stock())
                 return True, aloc
             elif aloc == -1 and aloc_urgente == -99:
                 asyncio.ensure_future(self.stand_by_requerimento(requerimento.requerimento_id))
@@ -263,7 +263,7 @@ class ConsumivelManager(QObject):
                 return False,aloc
         elif aloc == 1:
             requerimento.pendete_alocacao = False
-            self.verificar_stock()
+            asyncio.ensure_future(self.verificar_stock())
             return True,aloc
         else:
             return False,aloc
@@ -277,13 +277,14 @@ class ConsumivelManager(QObject):
     #     self.requerimento_manager(requerimento, self.parent_window)
 
 
-    def verificar_stock(self):
+    async def verificar_stock(self):
         for consumivel in self.consumiveis:
             if consumivel.quantidade_total <= consumivel.quantidade_minima or consumivel.quantidade_alocada <= consumivel.quantidade_minima:
-                quantidade_para_pedir = consumivel.quantidade_pedido
-                #TODO FAZER ISTO DE PEDIDOS EXTERNOS
-                #self.criar_pedido_externo(consumivel, quantidade_para_pedir)
                 
+                if(consumivel.pedidoexterno==False):
+                    consumivel.pedidoexterno=True
+                    #asyncio.ensure_future(self.criar_pedido_externo(consumivel, quantidade_para_pedir))
+                #TODO FAZER ISTO DE PEDIDOS EXTERNOS
 
 
     def verificar_alocacao(self, requerimento_id: int) -> tuple[bool, list[dict]]:
@@ -310,7 +311,7 @@ class ConsumivelManager(QObject):
 
 
 
-    def criar_pedido_externo(self, consumivel: Consumivel, quantidade: int):
+    async def criar_pedido_externo(self, consumivel: Consumivel):
         #TODO FAZER ISTO DA MANEIRA JA IMPLEMENTADA
         #Falta fazer a implemntação da Função do Postgres, Da Route e Ligação com a API
         #VAI SER PRECISO CRIAR UMA TABLEA NO POSTGRES PARA GUARDAR OS PEDIDOS EXTERNOS
@@ -318,7 +319,7 @@ class ConsumivelManager(QObject):
         payload = {
             "consumivel_id": consumivel.consumivel_id,
             "fornecedor_nome": "Fornecedor Padrão",
-            "quantidade": quantidade
+            "quantidade": consumivel.quantidade_pedido
         }
         try:
             print(f"Registrando pedido externo: {payload}")

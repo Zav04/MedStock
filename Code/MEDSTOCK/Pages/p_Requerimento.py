@@ -228,6 +228,7 @@ class RequerimentoPage(QWidget):
             item for item in self.all_consumivel if filter_text in item.nome_consumivel.lower()
         ]
         self.update_item_display(filtered_consumivel)
+        
     def update_item_display(self, consumivel):
         for i in reversed(range(self.left_layout.count())):
             widget = self.left_layout.itemAt(i).widget()
@@ -275,9 +276,14 @@ class RequerimentoPage(QWidget):
         requerimento_consumivel = []
         for row in range(drop_zone.rowCount()):
             item_widget = drop_zone.item(row, 0)
-            item_id = int(item_widget.data(Qt.UserRole))
+            item_data = item_widget.data(Qt.UserRole)
+            item_parts = item_data.split("|")
+            item_id = int(item_parts[0])
             quantidade = drop_zone.cellWidget(row, 1).value()
-            requerimento_consumivel.append({"consumivel_id": item_id, "quantidade": quantidade})
+            requerimento_consumivel.append({
+                "consumivel_id": item_id,
+                "quantidade": quantidade
+            })
 
         setor_id = self.sector_input.currentData()
         

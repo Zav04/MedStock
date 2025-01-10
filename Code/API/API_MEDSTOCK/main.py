@@ -21,6 +21,7 @@ from REQUEST_MedReader.REQUERIMENTO.PUT_REQUERIMENTO import router as PUT_requer
 from REQUESTS_MedStock.REQUERIMENTO.PUT_REQUERIMENTO import router as PUT_requerimento_router
 from REQUESTS_MedStock.REALOCACOES.GET_Realocacoes import router as GET_realocacoes_router
 
+
 from REQUEST_MedOcurrencias.LOGIN.POST_Login import router as POST_login_router_MedOcurrencias
 from REQUEST_MedOcurrencias.REQUERIMENTO.POST_Requerimento import router as GET_requerimento_router_MedOcurrencias
 
@@ -53,6 +54,7 @@ api.include_router(PUT_requerimento_router)
 api.include_router(GET_realocacoes_router)
 
 
+
 api.include_router(POST_login_router_MedOcurrencias)
 api.include_router(GET_requerimento_router_MedOcurrencias)
 
@@ -62,4 +64,4 @@ api.include_router(PUT_requerimento_router_MedReader)
 
 if __name__ == "__main__":
     #uvicorn.run("main:api", reload=True)
-    uvicorn.run("main:api", host="localhost", port=5000, reload=True)
+    uvicorn.run("main:api", host="localhost", port=8888, reload=True)

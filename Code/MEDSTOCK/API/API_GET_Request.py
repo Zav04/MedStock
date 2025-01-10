@@ -12,6 +12,8 @@ from Class.TipoConsumivel import Tipo_Consumivel
 from Class.RequerimentoHistorico import RequerimentoHistorico
 from Class.UtilizadorSetor import UtilizadorSetor
 from Class.Realocacao import Realocacao
+from Class.ConsumivelFornecedor import Consumivel_Fornecedor
+from Class.RequerimentoFornecedor import Consumivel_Requerimento_Fornecedor, RequerimentoFornecedor
 from datetime import datetime
 
 
@@ -454,3 +456,85 @@ async def API_GetRealocacoes() -> APIResponse:
 
         except httpx.RequestError as e:
             return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
+        
+        
+
+async def API_GetConsumiveisFornecedores() -> APIResponse:
+    URL = os.getenv('API_EXTERNAL_URL') + os.getenv('API_EXTERNAL_GET_PRODUTOS')
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(URL, headers={"Content-Type": "application/json"})
+
+            if response.status_code == 200:
+                fornecedores_data = response.json()
+                consumiveis = []
+
+                for fornecedor_entry in fornecedores_data:
+                    fornecedor_id = fornecedor_entry["fornecedor"]["id"]
+                    fornecedor_nome = fornecedor_entry["fornecedor"]["nome"]
+
+                    for produto in fornecedor_entry["produtos"]:
+                        consumivel = Consumivel_Fornecedor(
+                            fornecedor_id=fornecedor_id,
+                            fornecedor_nome=fornecedor_nome,
+                            consumivel_id=produto["id_produto"],
+                            nome_consumivel=produto["nome"],
+                            nome_tipo=produto["categoria"],
+                            tempoentrega=produto["tempo"],
+                            quantidade=produto["quantidade"]
+                        )
+                        consumiveis.append(consumivel)
+
+                return APIResponse(success=True, data=consumiveis)
+
+            elif response.status_code == 400:
+                error_message = response.json().get("error", "Erro desconhecido")
+                return APIResponse(success=False, error_message=error_message)
+
+            else:
+                return APIResponse(success=False, error_message=f"Erro inesperado: {response.status_code}")
+
+        except httpx.RequestError as e:
+            return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
+        
+        
+async def API_GetRequerimentosFornecedor() -> APIResponse:
+    URL = os.getenv('API_EXTERNAL_URL') + os.getenv('API_EXTERNAL_GET_REQUERIMENTO')
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(URL, headers={"Content-Type": "application/json"})
+
+            if response.status_code == 200:
+                requerimentos_data = response.json()
+                requerimentos = []
+
+                for requerimento_entry in requerimentos_data:
+                    consumiveis = [
+                        Consumivel_Requerimento_Fornecedor(
+                            categoria=consumivel["categoria"],
+                            nome=consumivel["nome"],
+                            quantidade_pedida=consumivel["quantidade_pedida"]
+                        )
+                        for consumivel in requerimento_entry["consumiveis"]
+                    ]
+                    requerimento = RequerimentoFornecedor(
+                        id_requerimento=requerimento_entry["id_requerimento"],
+                        fornecedor_nome=requerimento_entry["fornecedor"],
+                        status=requerimento_entry["status"],
+                        data_requerimento=requerimento_entry["data_requerimento"],
+                        consumiveis=consumiveis
+                    )
+                    requerimentos.append(requerimento)
+
+                return APIResponse(success=True, data=requerimentos)
+
+            elif response.status_code == 400:
+                error_message = response.json().get("error", "Erro desconhecido")
+                return APIResponse(success=False, error_message=error_message)
+
+            else:
+                return APIResponse(success=False, error_message=f"Erro inesperado: {response.status_code}")
+
+        except httpx.RequestError as e:
+            return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
+

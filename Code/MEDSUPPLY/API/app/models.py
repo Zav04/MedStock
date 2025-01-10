@@ -36,7 +36,7 @@ class Produto(db.Model):
 
 class Requerimento(db.Model):
     __tablename__ = 'requerimentos'
-    id_requerimento = db.Column(db.Integer, primary_key=True)
+    id_requerimento = db.Column(db.Integer, primary_key=True, autoincrement=True)
     fornecedor_id = db.Column(db.Integer, db.ForeignKey('fornecedores.id_fornecedor'), nullable=False)
     estado = db.Column(
         db.String(50),

@@ -18,3 +18,4 @@ class Consumivel:
         self.quantidade_alocada = quantidade_alocada
         self.quantidade_minima = quantidade_minima
         self.quantidade_pedido = quantidade_pedido
+        self.pedidoexterno = False

@@ -389,14 +389,15 @@ def get_produtos_de_todos_os_fornecedores():
             'fornecedor': {
                 'id': fornecedor.id_fornecedor,
                 'nome': fornecedor.nome,
-                'tempo': fornecedor.tempo_min
                 
             },
             'produtos': [
                 {
                     'id_produto': produto.id_produto,
                     'nome': produto.nome,
-                    'quantidade': produto.quantidade
+                    'categoria': fornecedor.categoria,
+                    'quantidade': produto.quantidade,
+                    'tempo': fornecedor.tempo_min
                 }
                 for produto in produtos
             ]
@@ -434,21 +435,14 @@ def criar_requerimento_com_pedidos():
         fornecedor_id = data.get('fornecedor_id')
         pedidos = data.get('pedidos')
 
-        if not fornecedor_id or not pedidos:
-            return jsonify({'error': 'Fornecedor ID e Pedidos são obrigatórios'}), 400
-
-        # Obter o maior id_requerimento atual no banco de dados utilizando SQLAlchemy text()
-        max_id_requerimento = db.session.execute(text('SELECT MAX(id_requerimento) FROM requerimentos')).scalar()
-
-        # Se não houver nenhum id_requerimento, o valor será None, então iniciamos com 1
-        if max_id_requerimento is None:
-            id_requerimento = 1
-        else:
-            id_requerimento = max_id_requerimento + 1  # Incrementa o maior ID encontrado
+        if not fornecedor_id:
+            return jsonify({'error': 'Fornecedor ID não esta a ser enviado'}), 400
+        
+        if not pedidos:
+            return jsonify({'error': 'Selecione pelo menos um consumivel'}), 400
 
         # Criar o novo requerimento com o id_requerimento gerado e estado 'EM ESPERA'
         novo_requerimento = Requerimento(
-            id_requerimento=id_requerimento,
             fornecedor_id=fornecedor_id,
             estado='EM ESPERA'
         )
@@ -456,6 +450,7 @@ def criar_requerimento_com_pedidos():
         # Adicionar o novo requerimento no banco de dados
         db.session.add(novo_requerimento)
         db.session.flush()  # Para garantir que o requerimento_id seja gerado
+        id_requerimento = novo_requerimento.id_requerimento
 
         # Agora, vamos adicionar os pedidos relacionados a este requerimento
         for pedido in pedidos:
@@ -480,9 +475,67 @@ def criar_requerimento_com_pedidos():
         db.session.commit()
 
         # Retornar a resposta com sucesso
-        return jsonify({'message': 'Requerimento e pedidos criados com sucesso', 'requerimento_id': id_requerimento}), 201
+        return jsonify({'message': 'Requerimento e pedidos criados com sucesso', 'requerimento_id': id_requerimento}), 200
 
     except Exception as e:
         # Captura qualquer erro e faz o rollback para evitar dados inconsistentes
         db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+
+@api.route('/requerimentos', methods=['GET'])
+def get_todos_requerimentos():
+    try:
+        # Consultar todos os requerimentos
+        query = text("""
+        SELECT 
+            r.id_requerimento,
+            r.data AS data_requerimento,
+            f.nome AS fornecedor_nome,
+            p.nome AS produto_nome,
+            f.categoria AS produto_categoria,
+            pd.quantidade AS quantidade_pedida,
+            r.estado AS status_requerimento
+        FROM requerimentos r
+        JOIN fornecedores f ON r.fornecedor_id = f.id_fornecedor
+        JOIN pedidos pd ON r.id_requerimento = pd.requerimento_id
+        JOIN produtos p ON pd.produto_id = p.id_produto
+        ORDER BY r.id_requerimento;
+        """)
+
+        result = db.session.execute(query).fetchall()
+
+        # Organizar os dados em um dicionário por `id_requerimento`
+        requerimentos = {}
+
+        for row in result:
+            id_requerimento = row[0]
+            data_requerimento = row[1]
+            fornecedor_nome = row[2]
+            produto_nome = row[3]
+            produto_categoria = row[4]
+            quantidade_pedida = row[5]
+            status_requerimento = row[6]
+
+            # Adicionar o requerimento ao dicionário, se ainda não estiver
+            if id_requerimento not in requerimentos:
+                requerimentos[id_requerimento] = {
+                    'id_requerimento': id_requerimento,
+                    'data_requerimento': data_requerimento.strftime('%Y-%m-%d %H:%M:%S') if data_requerimento else None,
+                    'fornecedor': fornecedor_nome,
+                    'status': status_requerimento,
+                    'consumiveis': []
+                }
+
+            # Adicionar o consumível ao requerimento
+            requerimentos[id_requerimento]['consumiveis'].append({
+                'nome': produto_nome,
+                'categoria': produto_categoria,
+                'quantidade_pedida': quantidade_pedida
+            })
+
+        # Converter o dicionário para uma lista e retornar como JSON
+        return jsonify(list(requerimentos.values()))
+
+    except Exception as e:
         return jsonify({'error': str(e)}), 500

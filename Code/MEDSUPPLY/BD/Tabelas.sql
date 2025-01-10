@@ -1,5 +1,5 @@
 CREATE TABLE fornecedores (
-    id_fornecedor SERIAL PRIMARY KEY,
+    id_fornecedor BIGSERIAL PRIMARY KEY,
     nome VARCHAR(100) UNIQUE NOT NULL,
     categoria VARCHAR(50) NOT NULL,
     tempo_min INT NOT NULL
@@ -7,7 +7,7 @@ CREATE TABLE fornecedores (
 
 -- Tabela Produto
 CREATE TABLE produtos (
-    id_produto SERIAL PRIMARY KEY,
+    id_produto BIGSERIAL PRIMARY KEY,
     nome VARCHAR(100) UNIQUE NOT NULL,
     quantidade INT NOT NULL,
     fornecedor_id INT NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE produtos (
 
 -- Tabela Requerimentos
 CREATE TABLE requerimentos (
-    id_rquerimento INT PRIMARY KEY,
+    id_requerimento BIGSERIAL PRIMARY KEY,
     fornecedor_id INT NOT NULL,
     estado VARCHAR(50) CHECK (estado IN ('EM ESPERA', 'EM PREPARAÇÃO', 'ENVIADO', 'FINALIZADO')) NOT NULL,
     data TIMESTAMP DEFAULT NOW(), 
@@ -35,4 +35,3 @@ CREATE TABLE pedidos (
     FOREIGN KEY (produto_id) REFERENCES produtos (id_produto),
     FOREIGN KEY (fornecedor_id) REFERENCES fornecedores (id_fornecedor)
 );
-

@@ -15,6 +15,7 @@ from Pages.p_Add_Setor import CreateSetorPage
 from Pages.p_Gestor_Setor import AssociateUserToSectorPage
 from Class.ConsumivelManager import ConsumivelManager
 from Pages.p_Realocacoes import RealocacoesTablePage
+from Pages.p_RequerimentoFornecedor import RequerimentoFornecedor
 from API.API_GET_Request import API_GetConsumiveis
 import asyncio
 
@@ -28,7 +29,6 @@ class Dashboard(QMainWindow):
         WindowFunctions.setupWindow(self, 'MedStock', "icons/MedStock/favicon.png")
         WindowFunctions.enableWindowDragging(self, self.ui.frame_top)
         self.ui.btn_toggle_menu.clicked.connect(lambda: UIFunctions.toggleMenu(self, 400, True))
-        
         self.userIconName(user.nome)
         self.consumivelmanager_child=ConsumivelManager()
         self.initmanager()
@@ -71,6 +71,7 @@ class Dashboard(QMainWindow):
         self.page_associate_user_to_sector = AssociateUserToSectorPage()
         self.page_stock = ConsumiveisTablePage(self.consumivelmanager_child)
         self.page_requerimento = RequerimentoPage(self.user, self.consumivelmanager_child, self.page_stock)
+        self.fornecedor=RequerimentoFornecedor(self.consumivelmanager_child, self.page_stock)
         self.page_realocacoes = RealocacoesTablePage()
         self.ui.stackedWidget.addWidget(self.page_home)
         self.ui.stackedWidget.addWidget(self.page_add_user)
@@ -79,6 +80,7 @@ class Dashboard(QMainWindow):
         self.ui.stackedWidget.addWidget(self.page_associate_user_to_sector)
         self.ui.stackedWidget.addWidget(self.page_stock)
         self.ui.stackedWidget.addWidget(self.page_requerimento)
+        self.ui.stackedWidget.addWidget(self.fornecedor)
         self.ui.stackedWidget.addWidget(self.page_realocacoes)
         self.ui.stackedWidget.setCurrentWidget(self.page_home)
         
@@ -105,6 +107,7 @@ class Dashboard(QMainWindow):
             UIFunctions.addNewMenu(self, "ITENS STOCK", "btn_stock", "url(:/20x20/icons/20x20/cil-notes.png)", True)
             UIFunctions.addNewMenu(self, "REQUERIMENTOS", "btn_requerimento", "url(:/20x20/icons/20x20/cil-description.png)", True)
             UIFunctions.addNewMenu(self, "REALOCAÇÕES", "btn_realocacoes", "url(:/20x20/icons/20x20/cil-swap-vertical.png)", True)
+            UIFunctions.addNewMenu(self, "PEDIDO FORNECEDOR", "btn_fornecedor", "url(:/20x20/icons/20x20/cil-truck.png)", True)
         else:
             UIFunctions.addNewMenu(self, "REQUERIMENTOS", "btn_requerimento", "url(:/20x20/icons/20x20/cil-description.png)", True)
         self.ui.stackedWidget.setMinimumWidth(20)
@@ -123,6 +126,7 @@ class Dashboard(QMainWindow):
             "btn_gestor_setor": (self.page_associate_user_to_sector, "Gestor de Setor"),
             "btn_stock": (self.page_stock, "Stock"),
             "btn_requerimento": (self.page_requerimento, "Requerimento"),
+            "btn_fornecedor": (self.fornecedor, "Pedido Fornecedor"),
             "btn_realocacoes": (self.page_realocacoes, "Realocações"),
             "btn_log_out": None
         }
