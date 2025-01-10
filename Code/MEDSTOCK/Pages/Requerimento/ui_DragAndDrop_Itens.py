@@ -203,6 +203,7 @@ class DropLabel(QLabel):
                 fornecedor_id = None
                 consumivel_id, consumivel_name = data
                 quantidade = None
+                fornecedor_nome = None
 
             self.drop_zone.add_consumivel_to_list(consumivel_id,consumivel_name,quantidade,fornecedor_id,fornecedor_nome)
             self.update_icon(self.default_icon)

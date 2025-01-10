@@ -164,8 +164,8 @@ def GeneratePdfRequerimento(file_path: str, requerimento: Requerimento):
                     textcomentario= ""
                 case 1:
                     if requerimento.tipo_requerimento=="Interno":
-                        if requerimento.status_anterior == 6:
-                            text = f"           Requerimento enviado novamente para a lista de espera por {hist.user_responsavel } em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
+                        if requerimento.urgente:
+                            text = f"           Pedido criado por {hist.user_responsavel} em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"
                             textcomentario= ""
                         else:
                             text = f"           Avaliado por {hist.user_responsavel} em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}"

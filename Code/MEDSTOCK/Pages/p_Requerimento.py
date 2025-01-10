@@ -253,7 +253,10 @@ class RequerimentoPage(QWidget):
         requerimento_consumivel = []
         for row in range(drop_zone.rowCount()):
             item_widget = drop_zone.item(row, 0)
-            item_id = int(item_widget.data(Qt.UserRole))
+            consumivel_data = item_widget.data(Qt.UserRole)
+            data_parts = consumivel_data.split("|")
+            id ,nome_consumivel = data_parts
+            item_id= int(id) if id.isdigit() else None
             quantidade = drop_zone.cellWidget(row, 1).value()
             requerimento_consumivel.append({"consumivel_id": item_id, "quantidade": quantidade})
 

@@ -215,24 +215,23 @@ class RequerimentoFornecedor(QWidget):
                 (req for req in self.current_requerimentos_externos if req.id_requerimento == novo_requerimento.id_requerimento),
                 None
             )
+
             if existing_requerimento:
                 if existing_requerimento != novo_requerimento:
-                    self.remove_requerimento_fornecedor_card(existing_requerimento)
+                    self.remove_requerimento_fornecedor_card(existing_requerimento.id_requerimento)
                     self.current_requerimentos_externos.remove(existing_requerimento)
-                    self.current_requerimentos_externos.append(novo_requerimento)
-                    self.add_requerimento_fornecedor_card(novo_requerimento)
-            else:
-                self.current_requerimentos_externos.append(novo_requerimento)
-                self.add_requerimento_fornecedor_card(novo_requerimento)
 
-    def remove_requerimento_fornecedor_card(self, requerimento_fornecedor):
+            self.current_requerimentos_externos.append(novo_requerimento)
+            self.add_requerimento_fornecedor_card(novo_requerimento)
 
+    def remove_requerimento_fornecedor_card(self, requerimento_id):
         for i in reversed(range(self.scroll_layout.count())):
             widget = self.scroll_layout.itemAt(i).widget()
-            if widget and hasattr(widget, "requerimento_fornecedor"):
-                if widget.requerimento_fornecedor.id_requerimento == requerimento_fornecedor.id_requerimento:
-                    widget.deleteLater()
-                    break
+            if isinstance(widget, FornecedorCard) and widget.requerimento_fornecedor.id_requerimento == requerimento_id:
+                widget.deleteLater()
+                break
+
+
 
     def add_requerimento_fornecedor_card(self, requerimento_fornecedor):
         card = FornecedorCard(requerimento_fornecedor,self.consumivel_manager,page_stock=self.page_stock)

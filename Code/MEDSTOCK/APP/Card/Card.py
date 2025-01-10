@@ -442,12 +442,20 @@ class RequerimentoCard(QWidget):
                         f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
                     )
                 case 1:
-                    historico_text_label.setText(
+                    if(self.requerimento.urgente):
+                        historico_text_label.setText(
                         f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-                        f"Avaliado por:</span> "
+                        f"Pedido criado por:</span> "
                         f"<span style='font-size:14px; color:#555555;'>{hist.user_responsavel}</span> "
                         f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
                         )
+                    else:
+                        historico_text_label.setText(
+                            f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                            f"Avaliado por:</span> "
+                            f"<span style='font-size:14px; color:#555555;'>{hist.user_responsavel}</span> "
+                            f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
+                            )
                 case 2:
                     historico_text_label.setText(
                         f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
