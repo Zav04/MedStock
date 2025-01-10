@@ -1,0 +1,430 @@
+2025-01-10 03:46:45,304 - INFO - Forcing use of PyQt5 as Qt Implementation
+2025-01-10 03:46:45,347 - DEBUG - Using proactor: _IocpProactor
+2025-01-10 03:46:45,739 - DEBUG - Starting (proactor: <_IocpProactor overlapped#=0 result#=0>)...
+2025-01-10 03:46:45,740 - DEBUG - Thread started
+2025-01-10 03:46:55,482 - DEBUG - load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-01-10 03:46:55,484 - DEBUG - load_verify_locations cafile='c:\\Users\\bruno\\anaconda3\\envs\\medstock\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-01-10 03:46:55,903 - DEBUG - connect_tcp.started host='medstock-api-ce98.onrender.com' port=443 local_address=None timeout=5.0 socket_options=None
+2025-01-10 03:46:55,954 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001C6F8202150>
+2025-01-10 03:46:55,954 - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x000001C6F90E4E60> server_hostname='medstock-api-ce98.onrender.com' timeout=5.0
+2025-01-10 03:46:55,974 - DEBUG - start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001C6FA06CB90>
+2025-01-10 03:46:55,975 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-01-10 03:46:55,975 - DEBUG - send_request_headers.complete
+2025-01-10 03:46:55,975 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-01-10 03:46:55,976 - DEBUG - send_request_body.complete
+2025-01-10 03:46:55,976 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-01-10 03:46:56,714 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Fri, 10 Jan 2025 03:46:56 GMT'), (b'Content-Type', b'application/json'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'CF-Ray', b'8ff9aeca6b31489d-LIS'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Vary', b'Accept-Encoding'), (b'rndr-id', b'7d6a168d-6fa3-4816'), (b'x-render-origin-server', b'uvicorn'), (b'Server', b'cloudflare'), (b'Content-Encoding', b'gzip'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-01-10 03:46:56,716 - INFO - HTTP Request: POST https://medstock-api-ce98.onrender.com/MedStock_Login/ "HTTP/1.1 200 OK"
+2025-01-10 03:46:56,717 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-01-10 03:46:56,717 - DEBUG - receive_response_body.complete
+2025-01-10 03:46:56,717 - DEBUG - response_closed.started
+2025-01-10 03:46:56,718 - DEBUG - response_closed.complete
+2025-01-10 03:46:56,718 - DEBUG - close.started
+2025-01-10 03:46:56,718 - DEBUG - close.complete
+2025-01-10 03:46:56,720 - DEBUG - load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-01-10 03:46:56,721 - DEBUG - load_verify_locations cafile='c:\\Users\\bruno\\anaconda3\\envs\\medstock\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-01-10 03:46:57,117 - DEBUG - connect_tcp.started host='medstock-api-ce98.onrender.com' port=443 local_address=None timeout=5.0 socket_options=None
+2025-01-10 03:46:57,142 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001C6FA088850>
+2025-01-10 03:46:57,142 - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x000001C6F90E5760> server_hostname='medstock-api-ce98.onrender.com' timeout=5.0
+2025-01-10 03:46:57,157 - DEBUG - start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001C6FA088950>
+2025-01-10 03:46:57,157 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-01-10 03:46:57,157 - DEBUG - send_request_headers.complete
+2025-01-10 03:46:57,158 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-01-10 03:46:57,158 - DEBUG - send_request_body.complete
+2025-01-10 03:46:57,158 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-01-10 03:46:57,313 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Fri, 10 Jan 2025 03:46:57 GMT'), (b'Content-Type', b'application/json'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'CF-Ray', b'8ff9aed1df58e3b1-LIS'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Vary', b'Accept-Encoding'), (b'rndr-id', b'5aedf825-d631-44fa'), (b'x-render-origin-server', b'uvicorn'), (b'Server', b'cloudflare'), (b'Content-Encoding', b'gzip'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-01-10 03:46:57,314 - INFO - HTTP Request: GET https://medstock-api-ce98.onrender.com/MedStock_GetUserByEmail/?email=bruno.lt04@gmail.com "HTTP/1.1 200 OK"
+2025-01-10 03:46:57,314 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-01-10 03:46:57,315 - DEBUG - receive_response_body.complete
+2025-01-10 03:46:57,315 - DEBUG - response_closed.started
+2025-01-10 03:46:57,315 - DEBUG - response_closed.complete
+2025-01-10 03:46:57,315 - DEBUG - close.started
+2025-01-10 03:46:57,315 - DEBUG - close.complete
+2025-01-10 03:46:57,351 - DEBUG - load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-01-10 03:46:57,352 - DEBUG - load_verify_locations cafile='c:\\Users\\bruno\\anaconda3\\envs\\medstock\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-01-10 03:46:57,806 - DEBUG - connect_tcp.started host='medstock-api-ce98.onrender.com' port=443 local_address=None timeout=5.0 socket_options=None
+2025-01-10 03:46:57,807 - DEBUG - Submitting callback <function getaddrinfo at 0x000001C6DC0020C0> with args (b'medstock-api-ce98.onrender.com', 443, <AddressFamily.AF_UNSPEC: 0>, <SocketKind.SOCK_STREAM: 1>, 0, 0) and kwargs {} to thread worker queue
+2025-01-10 03:46:57,809 - DEBUG - #3 got callback <function getaddrinfo at 0x000001C6DC0020C0> with args (b'medstock-api-ce98.onrender.com', 443, <AddressFamily.AF_UNSPEC: 0>, <SocketKind.SOCK_STREAM: 1>, 0, 0) and kwargs {} from queue
+2025-01-10 03:46:57,809 - DEBUG - Invoking callback
+2025-01-10 03:46:57,810 - DEBUG - Setting Future result: [(<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_STREAM: 1>, 0, '', ('216.24.57.4', 443)), (<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_STREAM: 1>, 0, '', ('216.24.57.252', 443))]
+2025-01-10 03:46:57,821 - DEBUG - Got events from poll: [(<_OverlappedFuture pending cb=[Task.task_wakeup()]>, <function IocpProactor.connect.<locals>.finish_connect at 0x000001C6FA11F060>, 0, 0, <_overlapped.Overlapped object at 0x000001C6FA0E0E70>)]
+2025-01-10 03:46:57,821 - DEBUG - Invoking event callback <function IocpProactor.connect.<locals>.finish_connect at 0x000001C6FA11F060>
+2025-01-10 03:46:57,823 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C6FA122B50>
+2025-01-10 03:46:57,823 - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x000001C6FA08C3B0> server_hostname='medstock-api-ce98.onrender.com' timeout=5.0
+2025-01-10 03:46:57,837 - DEBUG - Got events from poll: [(<_OverlappedFuture pending cb=[_ProactorReadPipeTransport._loop_reading()]>, <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FA11F380>, 2845, 0, <_overlapped.Overlapped object at 0x000001C6FA0E10B0>)]
+2025-01-10 03:46:57,837 - DEBUG - Invoking event callback <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FA11F380>
+2025-01-10 03:46:57,840 - DEBUG - start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C6FA122710>
+2025-01-10 03:46:57,840 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-01-10 03:46:57,841 - DEBUG - send_request_headers.complete
+2025-01-10 03:46:57,841 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-01-10 03:46:57,842 - DEBUG - send_request_body.complete
+2025-01-10 03:46:57,842 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-01-10 03:46:57,999 - DEBUG - Got events from poll: [(<_OverlappedFuture pending cb=[_ProactorReadPipeTransport._loop_reading()]>, <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FA1149A0>, 1873, 0, <_overlapped.Overlapped object at 0x000001C6FA0E0E70>)]
+2025-01-10 03:46:57,999 - DEBUG - Invoking event callback <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FA1149A0>
+2025-01-10 03:46:58,000 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Fri, 10 Jan 2025 03:46:57 GMT'), (b'Content-Type', b'application/json'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'CF-Ray', b'8ff9aed61ac97112-LIS'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Vary', b'Accept-Encoding'), (b'rndr-id', b'2b60a441-115b-4daf'), (b'x-render-origin-server', b'uvicorn'), (b'Server', b'cloudflare'), (b'Content-Encoding', b'gzip'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-01-10 03:46:58,001 - INFO - HTTP Request: GET https://medstock-api-ce98.onrender.com/MedStock_GetConsumiveis/ "HTTP/1.1 200 OK"
+2025-01-10 03:46:58,001 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-01-10 03:46:58,002 - DEBUG - receive_response_body.complete
+2025-01-10 03:46:58,002 - DEBUG - response_closed.started
+2025-01-10 03:46:58,005 - DEBUG - response_closed.complete
+2025-01-10 03:46:58,006 - DEBUG - close.started
+2025-01-10 03:46:58,006 - DEBUG - close.complete
+2025-01-10 03:46:58,253 - DEBUG - load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-01-10 03:46:58,254 - DEBUG - load_verify_locations cafile='c:\\Users\\bruno\\anaconda3\\envs\\medstock\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-01-10 03:46:58,657 - DEBUG - load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-01-10 03:46:58,658 - DEBUG - load_verify_locations cafile='c:\\Users\\bruno\\anaconda3\\envs\\medstock\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-01-10 03:46:59,070 - DEBUG - load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-01-10 03:46:59,071 - DEBUG - load_verify_locations cafile='c:\\Users\\bruno\\anaconda3\\envs\\medstock\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-01-10 03:46:59,473 - DEBUG - load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-01-10 03:46:59,474 - DEBUG - load_verify_locations cafile='c:\\Users\\bruno\\anaconda3\\envs\\medstock\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-01-10 03:46:59,854 - DEBUG - load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-01-10 03:46:59,855 - DEBUG - load_verify_locations cafile='c:\\Users\\bruno\\anaconda3\\envs\\medstock\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-01-10 03:47:00,241 - DEBUG - load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-01-10 03:47:00,242 - DEBUG - load_verify_locations cafile='c:\\Users\\bruno\\anaconda3\\envs\\medstock\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-01-10 03:47:00,647 - DEBUG - load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-01-10 03:47:00,647 - DEBUG - load_verify_locations cafile='c:\\Users\\bruno\\anaconda3\\envs\\medstock\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-01-10 03:47:01,066 - DEBUG - load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-01-10 03:47:01,066 - DEBUG - load_verify_locations cafile='c:\\Users\\bruno\\anaconda3\\envs\\medstock\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-01-10 03:47:01,479 - DEBUG - connect_tcp.started host='medstock-api-ce98.onrender.com' port=443 local_address=None timeout=5.0 socket_options=None
+2025-01-10 03:47:01,480 - DEBUG - Submitting callback <function getaddrinfo at 0x000001C6DC0020C0> with args (b'medstock-api-ce98.onrender.com', 443, <AddressFamily.AF_UNSPEC: 0>, <SocketKind.SOCK_STREAM: 1>, 0, 0) and kwargs {} to thread worker queue
+2025-01-10 03:47:01,483 - DEBUG - #10 got callback <function getaddrinfo at 0x000001C6DC0020C0> with args (b'medstock-api-ce98.onrender.com', 443, <AddressFamily.AF_UNSPEC: 0>, <SocketKind.SOCK_STREAM: 1>, 0, 0) and kwargs {} from queue
+2025-01-10 03:47:01,484 - DEBUG - connect_tcp.started host='medstock-api-ce98.onrender.com' port=443 local_address=None timeout=5.0 socket_options=None
+2025-01-10 03:47:01,484 - DEBUG - Invoking callback
+2025-01-10 03:47:01,484 - DEBUG - Submitting callback <function getaddrinfo at 0x000001C6DC0020C0> with args (b'medstock-api-ce98.onrender.com', 443, <AddressFamily.AF_UNSPEC: 0>, <SocketKind.SOCK_STREAM: 1>, 0, 0) and kwargs {} to thread worker queue
+2025-01-10 03:47:01,486 - DEBUG - #6 got callback <function getaddrinfo at 0x000001C6DC0020C0> with args (b'medstock-api-ce98.onrender.com', 443, <AddressFamily.AF_UNSPEC: 0>, <SocketKind.SOCK_STREAM: 1>, 0, 0) and kwargs {} from queue
+2025-01-10 03:47:01,486 - DEBUG - Setting Future result: [(<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_STREAM: 1>, 0, '', ('216.24.57.4', 443)), (<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_STREAM: 1>, 0, '', ('216.24.57.252', 443))]
+2025-01-10 03:47:01,486 - DEBUG - connect_tcp.started host='medstock-api-ce98.onrender.com' port=443 local_address=None timeout=5.0 socket_options=None
+2025-01-10 03:47:01,486 - DEBUG - Invoking callback
+2025-01-10 03:47:01,487 - DEBUG - Submitting callback <function getaddrinfo at 0x000001C6DC0020C0> with args (b'medstock-api-ce98.onrender.com', 443, <AddressFamily.AF_UNSPEC: 0>, <SocketKind.SOCK_STREAM: 1>, 0, 0) and kwargs {} to thread worker queue
+2025-01-10 03:47:01,488 - DEBUG - #8 got callback <function getaddrinfo at 0x000001C6DC0020C0> with args (b'medstock-api-ce98.onrender.com', 443, <AddressFamily.AF_UNSPEC: 0>, <SocketKind.SOCK_STREAM: 1>, 0, 0) and kwargs {} from queue
+2025-01-10 03:47:01,488 - DEBUG - Setting Future result: [(<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_STREAM: 1>, 0, '', ('216.24.57.4', 443)), (<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_STREAM: 1>, 0, '', ('216.24.57.252', 443))]
+2025-01-10 03:47:01,488 - DEBUG - connect_tcp.started host='medstock-api-ce98.onrender.com' port=443 local_address=None timeout=5.0 socket_options=None
+2025-01-10 03:47:01,488 - DEBUG - Invoking callback
+2025-01-10 03:47:01,489 - DEBUG - Submitting callback <function getaddrinfo at 0x000001C6DC0020C0> with args (b'medstock-api-ce98.onrender.com', 443, <AddressFamily.AF_UNSPEC: 0>, <SocketKind.SOCK_STREAM: 1>, 0, 0) and kwargs {} to thread worker queue
+2025-01-10 03:47:01,491 - DEBUG - connect_tcp.started host='medstock-api-ce98.onrender.com' port=443 local_address=None timeout=5.0 socket_options=None
+2025-01-10 03:47:01,491 - DEBUG - Setting Future result: [(<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_STREAM: 1>, 0, '', ('216.24.57.4', 443)), (<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_STREAM: 1>, 0, '', ('216.24.57.252', 443))]
+2025-01-10 03:47:01,491 - DEBUG - #4 got callback <function getaddrinfo at 0x000001C6DC0020C0> with args (b'medstock-api-ce98.onrender.com', 443, <AddressFamily.AF_UNSPEC: 0>, <SocketKind.SOCK_STREAM: 1>, 0, 0) and kwargs {} from queue
+2025-01-10 03:47:01,491 - DEBUG - Invoking callback
+2025-01-10 03:47:01,491 - DEBUG - Submitting callback <function getaddrinfo at 0x000001C6DC0020C0> with args (b'medstock-api-ce98.onrender.com', 443, <AddressFamily.AF_UNSPEC: 0>, <SocketKind.SOCK_STREAM: 1>, 0, 0) and kwargs {} to thread worker queue
+2025-01-10 03:47:01,492 - DEBUG - connect_tcp.started host='medstock-api-ce98.onrender.com' port=443 local_address=None timeout=5.0 socket_options=None
+2025-01-10 03:47:01,492 - DEBUG - Setting Future result: [(<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_STREAM: 1>, 0, '', ('216.24.57.4', 443)), (<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_STREAM: 1>, 0, '', ('216.24.57.252', 443))]
+2025-01-10 03:47:01,492 - DEBUG - #5 got callback <function getaddrinfo at 0x000001C6DC0020C0> with args (b'medstock-api-ce98.onrender.com', 443, <AddressFamily.AF_UNSPEC: 0>, <SocketKind.SOCK_STREAM: 1>, 0, 0) and kwargs {} from queue
+2025-01-10 03:47:01,492 - DEBUG - Submitting callback <function getaddrinfo at 0x000001C6DC0020C0> with args (b'medstock-api-ce98.onrender.com', 443, <AddressFamily.AF_UNSPEC: 0>, <SocketKind.SOCK_STREAM: 1>, 0, 0) and kwargs {} to thread worker queue
+2025-01-10 03:47:01,493 - DEBUG - Invoking callback
+2025-01-10 03:47:01,495 - DEBUG - connect_tcp.started host='127.0.0.1' port=5000 local_address=None timeout=5.0 socket_options=None
+2025-01-10 03:47:01,495 - DEBUG - #1 got callback <function getaddrinfo at 0x000001C6DC0020C0> with args (b'medstock-api-ce98.onrender.com', 443, <AddressFamily.AF_UNSPEC: 0>, <SocketKind.SOCK_STREAM: 1>, 0, 0) and kwargs {} from queue
+2025-01-10 03:47:01,497 - DEBUG - Invoking callback
+2025-01-10 03:47:01,497 - DEBUG - Setting Future result: [(<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_STREAM: 1>, 0, '', ('216.24.57.4', 443)), (<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_STREAM: 1>, 0, '', ('216.24.57.252', 443))]
+2025-01-10 03:47:01,497 - DEBUG - connect_tcp.started host='medstock-api-ce98.onrender.com' port=443 local_address=None timeout=5.0 socket_options=None
+2025-01-10 03:47:01,498 - DEBUG - Submitting callback <function getaddrinfo at 0x000001C6DC0020C0> with args (b'medstock-api-ce98.onrender.com', 443, <AddressFamily.AF_UNSPEC: 0>, <SocketKind.SOCK_STREAM: 1>, 0, 0) and kwargs {} to thread worker queue
+2025-01-10 03:47:01,499 - DEBUG - #7 got callback <function getaddrinfo at 0x000001C6DC0020C0> with args (b'medstock-api-ce98.onrender.com', 443, <AddressFamily.AF_UNSPEC: 0>, <SocketKind.SOCK_STREAM: 1>, 0, 0) and kwargs {} from queue
+2025-01-10 03:47:01,499 - DEBUG - Setting Future result: [(<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_STREAM: 1>, 0, '', ('216.24.57.4', 443)), (<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_STREAM: 1>, 0, '', ('216.24.57.252', 443))]
+2025-01-10 03:47:01,499 - DEBUG - Invoking callback
+2025-01-10 03:47:01,500 - DEBUG - Setting Future result: [(<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_STREAM: 1>, 0, '', ('216.24.57.4', 443)), (<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_STREAM: 1>, 0, '', ('216.24.57.252', 443))]
+2025-01-10 03:47:01,533 - DEBUG - Got events from poll: [(<_OverlappedFuture pending cb=[Task.task_wakeup()]>, <function IocpProactor.connect.<locals>.finish_connect at 0x000001C6FB6B2520>, 0, 0, <_overlapped.Overlapped object at 0x000001C6FB6C5830>), (<_OverlappedFuture pending cb=[Task.task_wakeup()]>, <function IocpProactor.connect.<locals>.finish_connect at 0x000001C6FB6B2660>, 0, 0, <_overlapped.Overlapped object at 0x000001C6FB6C5B30>), (<_OverlappedFuture pending cb=[Task.task_wakeup()]>, <function IocpProactor.connect.<locals>.finish_connect at 0x000001C6FB6B2700>, 0, 0, <_overlapped.Overlapped object at 0x000001C6FB6C5CB0>), (<_OverlappedFuture pending cb=[Task.task_wakeup()]>, <function IocpProactor.connect.<locals>.finish_connect at 0x000001C6FB6B25C0>, 0, 0, <_overlapped.Overlapped object at 0x000001C6FB6C59B0>), (<_OverlappedFuture pending cb=[Task.task_wakeup()]>, <function IocpProactor.connect.<locals>.finish_connect at 0x000001C6FB6B1BC0>, 0, 0, <_overlapped.Overlapped object at 0x000001C6FB6C5E30>), (<_OverlappedFuture pending cb=[Task.task_wakeup()]>, <function IocpProactor.connect.<locals>.finish_connect at 0x000001C6FB6B2840>, 0, 0, <_overlapped.Overlapped object at 0x000001C6FB6C5FB0>), (<_OverlappedFuture pending cb=[Task.task_wakeup()]>, <function IocpProactor.connect.<locals>.finish_connect at 0x000001C6FB6B28E0>, 0, 0, <_overlapped.Overlapped object at 0x000001C6FB6C6130>)]
+2025-01-10 03:47:01,533 - DEBUG - Invoking event callback <function IocpProactor.connect.<locals>.finish_connect at 0x000001C6FB6B2520>
+2025-01-10 03:47:01,533 - DEBUG - Invoking event callback <function IocpProactor.connect.<locals>.finish_connect at 0x000001C6FB6B2660>
+2025-01-10 03:47:01,534 - DEBUG - Invoking event callback <function IocpProactor.connect.<locals>.finish_connect at 0x000001C6FB6B2700>
+2025-01-10 03:47:01,534 - DEBUG - Invoking event callback <function IocpProactor.connect.<locals>.finish_connect at 0x000001C6FB6B25C0>
+2025-01-10 03:47:01,534 - DEBUG - Invoking event callback <function IocpProactor.connect.<locals>.finish_connect at 0x000001C6FB6B1BC0>
+2025-01-10 03:47:01,534 - DEBUG - Invoking event callback <function IocpProactor.connect.<locals>.finish_connect at 0x000001C6FB6B2840>
+2025-01-10 03:47:01,534 - DEBUG - Invoking event callback <function IocpProactor.connect.<locals>.finish_connect at 0x000001C6FB6B28E0>
+2025-01-10 03:47:01,538 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C6FB6C8890>
+2025-01-10 03:47:01,538 - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x000001C6FA14BEC0> server_hostname='medstock-api-ce98.onrender.com' timeout=5.0
+2025-01-10 03:47:01,539 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C6FB6CA410>
+2025-01-10 03:47:01,539 - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x000001C6FB6A0200> server_hostname='medstock-api-ce98.onrender.com' timeout=5.0
+2025-01-10 03:47:01,539 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C6FB6D5810>
+2025-01-10 03:47:01,539 - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x000001C6FB6A03B0> server_hostname='medstock-api-ce98.onrender.com' timeout=5.0
+2025-01-10 03:47:01,540 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C6FB6D5950>
+2025-01-10 03:47:01,540 - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x000001C6FB6A0050> server_hostname='medstock-api-ce98.onrender.com' timeout=5.0
+2025-01-10 03:47:01,540 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C6FB6D48D0>
+2025-01-10 03:47:01,541 - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x000001C6FB6A04D0> server_hostname='medstock-api-ce98.onrender.com' timeout=5.0
+2025-01-10 03:47:01,541 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C6FB6D4050>
+2025-01-10 03:47:01,541 - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x000001C6FB6A05F0> server_hostname='medstock-api-ce98.onrender.com' timeout=5.0
+2025-01-10 03:47:01,542 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C6FB6D61D0>
+2025-01-10 03:47:01,542 - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x000001C6FB6A0830> server_hostname='medstock-api-ce98.onrender.com' timeout=5.0
+2025-01-10 03:47:01,556 - DEBUG - Got events from poll: [(<_OverlappedFuture pending cb=[_ProactorReadPipeTransport._loop_reading()]>, <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B27A0>, 2844, 0, <_overlapped.Overlapped object at 0x000001C6FB6C6070>)]
+2025-01-10 03:47:01,556 - DEBUG - Invoking event callback <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B27A0>
+2025-01-10 03:47:01,558 - DEBUG - Got events from poll: [(<_OverlappedFuture pending cb=[_ProactorReadPipeTransport._loop_reading()]>, <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B2A20>, 2844, 0, <_overlapped.Overlapped object at 0x000001C6FB6C5EF0>), (<_OverlappedFuture pending cb=[_ProactorReadPipeTransport._loop_reading()]>, <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B2AC0>, 2844, 0, <_overlapped.Overlapped object at 0x000001C6FB6C5D70>), (<_OverlappedFuture pending cb=[_ProactorReadPipeTransport._loop_reading()]>, <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B2D40>, 2844, 0, <_overlapped.Overlapped object at 0x000001C6FB6C5770>), (<_OverlappedFuture pending cb=[_ProactorReadPipeTransport._loop_reading()]>, <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B2C00>, 2844, 0, <_overlapped.Overlapped object at 0x000001C6FB6C5BF0>)]
+2025-01-10 03:47:01,558 - DEBUG - Got events from poll: [(<_OverlappedFuture pending cb=[_ProactorReadPipeTransport._loop_reading()]>, <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B2B60>, 2844, 0, <_overlapped.Overlapped object at 0x000001C6FB6C58F0>)]
+2025-01-10 03:47:01,559 - DEBUG - Invoking event callback <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B2A20>
+2025-01-10 03:47:01,559 - DEBUG - Invoking event callback <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B2AC0>
+2025-01-10 03:47:01,559 - DEBUG - Invoking event callback <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B2D40>
+2025-01-10 03:47:01,559 - DEBUG - Invoking event callback <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B2C00>
+2025-01-10 03:47:01,559 - DEBUG - Got events from poll: [(<_OverlappedFuture pending cb=[_ProactorReadPipeTransport._loop_reading()]>, <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B2CA0>, 2844, 0, <_overlapped.Overlapped object at 0x000001C6FB6C5A70>)]
+2025-01-10 03:47:01,559 - DEBUG - Invoking event callback <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B2B60>
+2025-01-10 03:47:01,560 - DEBUG - start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C6FB69F010>
+2025-01-10 03:47:01,561 - DEBUG - Invoking event callback <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B2CA0>
+2025-01-10 03:47:01,561 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-01-10 03:47:01,572 - DEBUG - send_request_headers.complete
+2025-01-10 03:47:01,573 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-01-10 03:47:01,573 - DEBUG - send_request_body.complete
+2025-01-10 03:47:01,573 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-01-10 03:47:01,574 - DEBUG - start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C6FB6A99D0>
+2025-01-10 03:47:01,575 - DEBUG - start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C6FB6AAF90>
+2025-01-10 03:47:01,575 - DEBUG - start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C6FB6D5E50>
+2025-01-10 03:47:01,576 - DEBUG - start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C6FB6BC410>
+2025-01-10 03:47:01,579 - DEBUG - start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C6FB6A8550>
+2025-01-10 03:47:01,579 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-01-10 03:47:01,579 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-01-10 03:47:01,580 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-01-10 03:47:01,580 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-01-10 03:47:01,581 - DEBUG - start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C6FB6BD990>
+2025-01-10 03:47:01,581 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-01-10 03:47:01,582 - DEBUG - send_request_headers.complete
+2025-01-10 03:47:01,582 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-01-10 03:47:01,582 - DEBUG - send_request_body.complete
+2025-01-10 03:47:01,582 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-01-10 03:47:01,583 - DEBUG - send_request_headers.complete
+2025-01-10 03:47:01,583 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-01-10 03:47:01,583 - DEBUG - send_request_body.complete
+2025-01-10 03:47:01,583 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-01-10 03:47:01,584 - DEBUG - send_request_headers.complete
+2025-01-10 03:47:01,584 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-01-10 03:47:01,584 - DEBUG - send_request_body.complete
+2025-01-10 03:47:01,584 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-01-10 03:47:01,584 - DEBUG - send_request_headers.complete
+2025-01-10 03:47:01,585 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-01-10 03:47:01,585 - DEBUG - send_request_body.complete
+2025-01-10 03:47:01,585 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-01-10 03:47:01,585 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-01-10 03:47:01,586 - DEBUG - send_request_headers.complete
+2025-01-10 03:47:01,586 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-01-10 03:47:01,586 - DEBUG - send_request_body.complete
+2025-01-10 03:47:01,586 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-01-10 03:47:01,587 - DEBUG - send_request_headers.complete
+2025-01-10 03:47:01,587 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-01-10 03:47:01,587 - DEBUG - send_request_body.complete
+2025-01-10 03:47:01,587 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-01-10 03:47:01,676 - DEBUG - Got events from poll: [(<_OverlappedFuture pending cb=[_ProactorReadPipeTransport._loop_reading()]>, <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B2CA0>, 1276, 0, <_overlapped.Overlapped object at 0x000001C6FB6C5A70>)]
+2025-01-10 03:47:01,676 - DEBUG - Invoking event callback <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B2CA0>
+2025-01-10 03:47:01,677 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Fri, 10 Jan 2025 03:47:01 GMT'), (b'Content-Type', b'application/json'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'CF-Ray', b'8ff9aeed8bb9488e-LIS'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Vary', b'Accept-Encoding'), (b'rndr-id', b'42ae9ddb-db02-4c91'), (b'x-render-origin-server', b'uvicorn'), (b'Server', b'cloudflare'), (b'Content-Encoding', b'gzip'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-01-10 03:47:01,678 - INFO - HTTP Request: GET https://medstock-api-ce98.onrender.com/MedStock_GetSectors/ "HTTP/1.1 200 OK"
+2025-01-10 03:47:01,678 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-01-10 03:47:01,680 - DEBUG - receive_response_body.complete
+2025-01-10 03:47:01,680 - DEBUG - response_closed.started
+2025-01-10 03:47:01,680 - DEBUG - response_closed.complete
+2025-01-10 03:47:01,681 - DEBUG - close.started
+2025-01-10 03:47:01,681 - DEBUG - close.complete
+2025-01-10 03:47:01,682 - ERROR - Task exception was never retrieved
+future: <Task finished name='Task-4' coro=<CreateUserPage.update_sectors() done, defined at c:\Users\bruno\Desktop\TP_Eng_SW\Code\MEDSTOCK\MEDSTOCK_APP\Pages\p_Add_user.py:173> exception=TypeError('An asyncio.Future, a coroutine or an awaitable is required')>
+Traceback (most recent call last):
+  File "c:\Users\bruno\Desktop\TP_Eng_SW\Code\MEDSTOCK\MEDSTOCK_APP\Pages\p_Add_user.py", line 176, in update_sectors
+    asyncio.ensure_future(self.create_sectors(response.data))
+  File "c:\Users\bruno\anaconda3\envs\medstock\Lib\asyncio\tasks.py", line 659, in ensure_future
+    return _ensure_future(coro_or_future, loop=loop)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\bruno\anaconda3\envs\medstock\Lib\asyncio\tasks.py", line 674, in _ensure_future
+    raise TypeError('An asyncio.Future, a coroutine or an awaitable '
+TypeError: An asyncio.Future, a coroutine or an awaitable is required
+2025-01-10 03:47:01,746 - DEBUG - Got events from poll: [(<_OverlappedFuture pending cb=[_ProactorReadPipeTransport._loop_reading()]>, <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B25C0>, 1187, 0, <_overlapped.Overlapped object at 0x000001C6FB6C5EF0>)]
+2025-01-10 03:47:01,746 - DEBUG - Invoking event callback <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B25C0>
+2025-01-10 03:47:01,747 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Fri, 10 Jan 2025 03:47:01 GMT'), (b'Content-Type', b'application/json'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'CF-Ray', b'8ff9aeed7cbf7110-LIS'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Vary', b'Accept-Encoding'), (b'rndr-id', b'5c73da83-33ee-4afa'), (b'x-render-origin-server', b'uvicorn'), (b'Server', b'cloudflare'), (b'Content-Encoding', b'gzip'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-01-10 03:47:01,748 - INFO - HTTP Request: GET https://medstock-api-ce98.onrender.com/MedStock_GetAllUsers/ "HTTP/1.1 200 OK"
+2025-01-10 03:47:01,748 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-01-10 03:47:01,749 - DEBUG - receive_response_body.complete
+2025-01-10 03:47:01,749 - DEBUG - response_closed.started
+2025-01-10 03:47:01,750 - DEBUG - response_closed.complete
+2025-01-10 03:47:01,750 - DEBUG - close.started
+2025-01-10 03:47:01,751 - DEBUG - close.complete
+2025-01-10 03:47:01,752 - DEBUG - load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-01-10 03:47:01,753 - DEBUG - load_verify_locations cafile='c:\\Users\\bruno\\anaconda3\\envs\\medstock\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-01-10 03:47:01,762 - DEBUG - Got events from poll: [(<_OverlappedFuture pending cb=[_ProactorReadPipeTransport._loop_reading()]>, <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B1BC0>, 989, 0, <_overlapped.Overlapped object at 0x000001C6FB6C6070>), (<_OverlappedFuture pending cb=[_ProactorReadPipeTransport._loop_reading()]>, <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B2700>, 1873, 0, <_overlapped.Overlapped object at 0x000001C6FB6C5D70>)]
+2025-01-10 03:47:01,776 - DEBUG - Got events from poll: [(<_OverlappedFuture pending cb=[_ProactorReadPipeTransport._loop_reading()]>, <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B2B60>, 1114, 0, <_overlapped.Overlapped object at 0x000001C6FA0E2370>), (<_OverlappedFuture pending cb=[_ProactorReadPipeTransport._loop_reading()]>, <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B2520>, 1064, 0, <_overlapped.Overlapped object at 0x000001C6FA0E1BF0>)]
+2025-01-10 03:47:01,777 - DEBUG - Got events from poll: [(<_OverlappedFuture pending cb=[_ProactorReadPipeTransport._loop_reading()]>, <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B02C0>, 1873, 0, <_overlapped.Overlapped object at 0x000001C6FA0E1B30>)]
+2025-01-10 03:47:02,141 - DEBUG - Invoking event callback <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B1BC0>
+2025-01-10 03:47:02,141 - DEBUG - Invoking event callback <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B2700>
+2025-01-10 03:47:02,141 - DEBUG - Invoking event callback <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B2B60>
+2025-01-10 03:47:02,142 - DEBUG - Invoking event callback <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B2520>
+2025-01-10 03:47:02,142 - DEBUG - Invoking event callback <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B02C0>
+2025-01-10 03:47:02,142 - DEBUG - connect_tcp.started host='medstock-api-ce98.onrender.com' port=443 local_address=None timeout=5.0 socket_options=None
+2025-01-10 03:47:02,142 - DEBUG - Submitting callback <function getaddrinfo at 0x000001C6DC0020C0> with args (b'medstock-api-ce98.onrender.com', 443, <AddressFamily.AF_UNSPEC: 0>, <SocketKind.SOCK_STREAM: 1>, 0, 0) and kwargs {} to thread worker queue
+2025-01-10 03:47:02,142 - DEBUG - #9 got callback <function getaddrinfo at 0x000001C6DC0020C0> with args (b'medstock-api-ce98.onrender.com', 443, <AddressFamily.AF_UNSPEC: 0>, <SocketKind.SOCK_STREAM: 1>, 0, 0) and kwargs {} from queue
+2025-01-10 03:47:02,143 - DEBUG - Invoking callback
+2025-01-10 03:47:02,143 - DEBUG - Setting Future result: [(<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_STREAM: 1>, 0, '', ('216.24.57.4', 443)), (<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_STREAM: 1>, 0, '', ('216.24.57.252', 443))]
+2025-01-10 03:47:02,158 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Fri, 10 Jan 2025 03:47:01 GMT'), (b'Content-Type', b'application/json'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'CF-Ray', b'8ff9aeed7bb3488e-LIS'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Vary', b'Accept-Encoding'), (b'rndr-id', b'11f3e404-524a-43f6'), (b'x-render-origin-server', b'uvicorn'), (b'Server', b'cloudflare'), (b'Content-Encoding', b'gzip'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-01-10 03:47:02,158 - INFO - HTTP Request: GET https://medstock-api-ce98.onrender.com/MedStock_GetAllTipoConsumiveis/ "HTTP/1.1 200 OK"
+2025-01-10 03:47:02,159 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-01-10 03:47:02,160 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Fri, 10 Jan 2025 03:47:01 GMT'), (b'Content-Type', b'application/json'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'CF-Ray', b'8ff9aeed7c0ce3c4-LIS'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Vary', b'Accept-Encoding'), (b'rndr-id', b'381a521c-e101-4d80'), (b'x-render-origin-server', b'uvicorn'), (b'Server', b'cloudflare'), (b'Content-Encoding', b'gzip'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-01-10 03:47:02,160 - INFO - HTTP Request: GET https://medstock-api-ce98.onrender.com/MedStock_GetConsumiveis/ "HTTP/1.1 200 OK"
+2025-01-10 03:47:02,161 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-01-10 03:47:02,161 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Fri, 10 Jan 2025 03:47:01 GMT'), (b'Content-Type', b'application/json'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'CF-Ray', b'8ff9aeed7df3e3c8-LIS'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Vary', b'Accept-Encoding'), (b'rndr-id', b'35a3803e-2d47-403c'), (b'x-render-origin-server', b'uvicorn'), (b'Server', b'cloudflare'), (b'Content-Encoding', b'gzip'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-01-10 03:47:02,162 - INFO - HTTP Request: GET https://medstock-api-ce98.onrender.com/MedStock_GetRealocacoes/ "HTTP/1.1 200 OK"
+2025-01-10 03:47:02,162 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-01-10 03:47:02,163 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Fri, 10 Jan 2025 03:47:01 GMT'), (b'Content-Type', b'application/json'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'CF-Ray', b'8ff9aeed6fd07111-LIS'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Vary', b'Accept-Encoding'), (b'rndr-id', b'8e8b30c0-d1af-4062'), (b'x-render-origin-server', b'uvicorn'), (b'Server', b'cloudflare'), (b'Content-Encoding', b'gzip'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-01-10 03:47:02,163 - INFO - HTTP Request: GET https://medstock-api-ce98.onrender.com/MedStock_GetRoles/ "HTTP/1.1 200 OK"
+2025-01-10 03:47:02,164 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-01-10 03:47:02,165 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Fri, 10 Jan 2025 03:47:01 GMT'), (b'Content-Type', b'application/json'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'CF-Ray', b'8ff9aeed8def48a4-LIS'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Vary', b'Accept-Encoding'), (b'rndr-id', b'208ec196-3770-401b'), (b'x-render-origin-server', b'uvicorn'), (b'Server', b'cloudflare'), (b'Content-Encoding', b'gzip'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-01-10 03:47:02,165 - INFO - HTTP Request: GET https://medstock-api-ce98.onrender.com/MedStock_GetRequerimentosByFarmaceutico/ "HTTP/1.1 200 OK"
+2025-01-10 03:47:02,165 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-01-10 03:47:02,166 - DEBUG - receive_response_body.complete
+2025-01-10 03:47:02,166 - DEBUG - response_closed.started
+2025-01-10 03:47:02,167 - DEBUG - receive_response_body.complete
+2025-01-10 03:47:02,167 - DEBUG - response_closed.started
+2025-01-10 03:47:02,167 - DEBUG - receive_response_body.complete
+2025-01-10 03:47:02,168 - DEBUG - response_closed.started
+2025-01-10 03:47:02,168 - DEBUG - receive_response_body.complete
+2025-01-10 03:47:02,168 - DEBUG - response_closed.started
+2025-01-10 03:47:02,169 - DEBUG - receive_response_body.complete
+2025-01-10 03:47:02,169 - DEBUG - response_closed.started
+2025-01-10 03:47:02,169 - DEBUG - response_closed.complete
+2025-01-10 03:47:02,170 - DEBUG - close.started
+2025-01-10 03:47:02,170 - DEBUG - response_closed.complete
+2025-01-10 03:47:02,171 - DEBUG - close.started
+2025-01-10 03:47:02,171 - DEBUG - response_closed.complete
+2025-01-10 03:47:02,172 - DEBUG - close.started
+2025-01-10 03:47:02,172 - DEBUG - response_closed.complete
+2025-01-10 03:47:02,173 - DEBUG - close.started
+2025-01-10 03:47:02,173 - DEBUG - response_closed.complete
+2025-01-10 03:47:02,174 - DEBUG - close.started
+2025-01-10 03:47:02,175 - DEBUG - close.complete
+2025-01-10 03:47:02,175 - ERROR - Task exception was never retrieved
+future: <Task finished name='Task-5' coro=<CreateConsumivelPage.update_tipos() done, defined at c:\Users\bruno\Desktop\TP_Eng_SW\Code\MEDSTOCK\MEDSTOCK_APP\Pages\p_Add_Consumiveis.py:99> exception=TypeError('An asyncio.Future, a coroutine or an awaitable is required')>
+Traceback (most recent call last):
+  File "c:\Users\bruno\Desktop\TP_Eng_SW\Code\MEDSTOCK\MEDSTOCK_APP\Pages\p_Add_Consumiveis.py", line 102, in update_tipos
+    asyncio.ensure_future(self.create_tipos(response.data))
+  File "c:\Users\bruno\anaconda3\envs\medstock\Lib\asyncio\tasks.py", line 659, in ensure_future
+    return _ensure_future(coro_or_future, loop=loop)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\bruno\anaconda3\envs\medstock\Lib\asyncio\tasks.py", line 674, in _ensure_future
+    raise TypeError('An asyncio.Future, a coroutine or an awaitable '
+TypeError: An asyncio.Future, a coroutine or an awaitable is required
+2025-01-10 03:47:02,176 - DEBUG - close.complete
+2025-01-10 03:47:02,361 - DEBUG - close.complete
+2025-01-10 03:47:02,364 - DEBUG - close.complete
+2025-01-10 03:47:02,364 - ERROR - Task exception was never retrieved
+future: <Task finished name='Task-3' coro=<CreateUserPage.update_role() done, defined at c:\Users\bruno\Desktop\TP_Eng_SW\Code\MEDSTOCK\MEDSTOCK_APP\Pages\p_Add_user.py:158> exception=TypeError('An asyncio.Future, a coroutine or an awaitable is required')>
+Traceback (most recent call last):
+  File "c:\Users\bruno\Desktop\TP_Eng_SW\Code\MEDSTOCK\MEDSTOCK_APP\Pages\p_Add_user.py", line 161, in update_role
+    asyncio.ensure_future(self.create_roles(DbRoles.data))
+  File "c:\Users\bruno\anaconda3\envs\medstock\Lib\asyncio\tasks.py", line 659, in ensure_future
+    return _ensure_future(coro_or_future, loop=loop)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\bruno\anaconda3\envs\medstock\Lib\asyncio\tasks.py", line 674, in _ensure_future
+    raise TypeError('An asyncio.Future, a coroutine or an awaitable '
+TypeError: An asyncio.Future, a coroutine or an awaitable is required
+2025-01-10 03:47:02,365 - DEBUG - close.complete
+2025-01-10 03:47:03,088 - DEBUG - Got events from poll: [(<_OverlappedFuture pending cb=[Task.task_wakeup()]>, <function IocpProactor.connect.<locals>.finish_connect at 0x000001C6FB6B3E20>, 0, 0, <_overlapped.Overlapped object at 0x000001C6FA0E07B0>)]
+2025-01-10 03:47:03,096 - DEBUG - load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-01-10 03:47:03,097 - DEBUG - load_verify_locations cafile='c:\\Users\\bruno\\anaconda3\\envs\\medstock\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-01-10 03:47:03,517 - DEBUG - Invoking event callback <function IocpProactor.connect.<locals>.finish_connect at 0x000001C6FB6B3E20>
+2025-01-10 03:47:03,537 - DEBUG - Got events from poll: [(<_OverlappedFuture pending cb=[Task.task_wakeup()]>, <function IocpProactor.connect.<locals>.finish_connect at 0x000001C6FB6B1F80>, 0, 0, <_overlapped.Overlapped object at 0x000001C6FA0E2730>)]
+2025-01-10 03:47:03,593 - DEBUG - connect_tcp.started host='medstock-api-ce98.onrender.com' port=443 local_address=None timeout=5.0 socket_options=None
+2025-01-10 03:47:03,594 - DEBUG - Submitting callback <function getaddrinfo at 0x000001C6DC0020C0> with args (b'medstock-api-ce98.onrender.com', 443, <AddressFamily.AF_UNSPEC: 0>, <SocketKind.SOCK_STREAM: 1>, 0, 0) and kwargs {} to thread worker queue
+2025-01-10 03:47:03,594 - DEBUG - #2 got callback <function getaddrinfo at 0x000001C6DC0020C0> with args (b'medstock-api-ce98.onrender.com', 443, <AddressFamily.AF_UNSPEC: 0>, <SocketKind.SOCK_STREAM: 1>, 0, 0) and kwargs {} from queue
+2025-01-10 03:47:03,594 - DEBUG - Invoking callback
+2025-01-10 03:47:03,595 - DEBUG - Setting Future result: [(<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_STREAM: 1>, 0, '', ('216.24.57.4', 443)), (<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_STREAM: 1>, 0, '', ('216.24.57.252', 443))]
+2025-01-10 03:47:03,596 - DEBUG - Invoking event callback <function IocpProactor.connect.<locals>.finish_connect at 0x000001C6FB6B1F80>
+2025-01-10 03:47:03,596 - DEBUG - Event callback failed
+Traceback (most recent call last):
+  File "c:\Users\bruno\anaconda3\envs\medstock\Lib\site-packages\qasync\_windows.py", line 43, in _process_events
+    value = callback(transferred, key, ov)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\bruno\anaconda3\envs\medstock\Lib\asyncio\windows_events.py", line 641, in finish_connect
+    ov.getresult()
+ConnectionRefusedError: [WinError 1225] O computador remoto recusou a ligação da rede
+2025-01-10 03:47:03,605 - DEBUG - Got events from poll: [(<_OverlappedFuture pending cb=[Task.task_wakeup()]>, <function IocpProactor.connect.<locals>.finish_connect at 0x000001C6FB748AE0>, 0, 0, <_overlapped.Overlapped object at 0x000001C6FA0E07B0>)]
+2025-01-10 03:47:03,657 - DEBUG - Invoking event callback <function IocpProactor.connect.<locals>.finish_connect at 0x000001C6FB748AE0>
+2025-01-10 03:47:03,658 - DEBUG - connect_tcp.failed exception=ConnectError(OSError('All connection attempts failed'))
+2025-01-10 03:47:03,666 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C6FB6A8250>
+2025-01-10 03:47:03,666 - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x000001C6FB6A07A0> server_hostname='medstock-api-ce98.onrender.com' timeout=5.0
+2025-01-10 03:47:03,676 - DEBUG - Got events from poll: [(<_OverlappedFuture pending cb=[Task.task_wakeup()]>, <function IocpProactor.connect.<locals>.finish_connect at 0x000001C6FB6B0540>, 0, 0, <_overlapped.Overlapped object at 0x000001C6FA0E3630>)]
+2025-01-10 03:47:03,676 - DEBUG - Invoking event callback <function IocpProactor.connect.<locals>.finish_connect at 0x000001C6FB6B0540>
+2025-01-10 03:47:03,677 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C6FA051ED0>
+2025-01-10 03:47:03,677 - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x000001C6FB743650> server_hostname='medstock-api-ce98.onrender.com' timeout=5.0
+2025-01-10 03:47:03,681 - DEBUG - Got events from poll: [(<_OverlappedFuture pending cb=[_ProactorReadPipeTransport._loop_reading()]>, <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B1E40>, 2845, 0, <_overlapped.Overlapped object at 0x000001C6FA0E30F0>)]
+2025-01-10 03:47:03,681 - DEBUG - Invoking event callback <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B1E40>
+2025-01-10 03:47:03,684 - DEBUG - start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C6FA12EB50>
+2025-01-10 03:47:03,684 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-01-10 03:47:03,685 - DEBUG - send_request_headers.complete
+2025-01-10 03:47:03,685 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-01-10 03:47:03,685 - DEBUG - send_request_body.complete
+2025-01-10 03:47:03,685 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-01-10 03:47:03,691 - DEBUG - Got events from poll: [(<_OverlappedFuture pending cb=[_ProactorReadPipeTransport._loop_reading()]>, <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B3740>, 2843, 0, <_overlapped.Overlapped object at 0x000001C6FA0E1470>)]
+2025-01-10 03:47:03,692 - DEBUG - Invoking event callback <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B3740>
+2025-01-10 03:47:03,695 - DEBUG - start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C6F909B7D0>
+2025-01-10 03:47:03,695 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-01-10 03:47:03,696 - DEBUG - send_request_headers.complete
+2025-01-10 03:47:03,696 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-01-10 03:47:03,696 - DEBUG - send_request_body.complete
+2025-01-10 03:47:03,696 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-01-10 03:47:03,783 - DEBUG - Got events from poll: [(<_OverlappedFuture pending cb=[_ProactorReadPipeTransport._loop_reading()]>, <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B1E40>, 1873, 0, <_overlapped.Overlapped object at 0x000001C6FA0E30F0>)]
+2025-01-10 03:47:03,783 - DEBUG - Invoking event callback <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B1E40>
+2025-01-10 03:47:03,784 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Fri, 10 Jan 2025 03:47:03 GMT'), (b'Content-Type', b'application/json'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'CF-Ray', b'8ff9aefabd0b48a7-LIS'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Vary', b'Accept-Encoding'), (b'rndr-id', b'd6a30d08-871e-4cbd'), (b'x-render-origin-server', b'uvicorn'), (b'Server', b'cloudflare'), (b'Content-Encoding', b'gzip'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-01-10 03:47:03,785 - INFO - HTTP Request: GET https://medstock-api-ce98.onrender.com/MedStock_GetRequerimentosByFarmaceutico/ "HTTP/1.1 200 OK"
+2025-01-10 03:47:03,785 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-01-10 03:47:03,786 - DEBUG - receive_response_body.complete
+2025-01-10 03:47:03,786 - DEBUG - response_closed.started
+2025-01-10 03:47:03,787 - DEBUG - response_closed.complete
+2025-01-10 03:47:03,788 - DEBUG - close.started
+2025-01-10 03:47:03,788 - DEBUG - close.complete
+2025-01-10 03:47:03,842 - DEBUG - Got events from poll: [(<_OverlappedFuture pending cb=[_ProactorReadPipeTransport._loop_reading()]>, <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B0540>, 1286, 0, <_overlapped.Overlapped object at 0x000001C6FA0E3630>)]
+2025-01-10 03:47:04,051 - ERROR - Task exception was never retrieved
+future: <Task finished name='Task-21' coro=<RequerimentoPage.load_requerimentos() done, defined at c:\Users\bruno\Desktop\TP_Eng_SW\Code\MEDSTOCK\MEDSTOCK_APP\Pages\p_Requerimento.py:300> exception=UnboundLocalError("cannot access local variable 'ui_updated' where it is not associated with a value")>
+Traceback (most recent call last):
+  File "c:\Users\bruno\Desktop\TP_Eng_SW\Code\MEDSTOCK\MEDSTOCK_APP\Pages\p_Requerimento.py", line 349, in load_requerimentos
+    if ui_updated:
+       ^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'ui_updated' where it is not associated with a value
+2025-01-10 03:47:04,057 - DEBUG - Invoking event callback <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B0540>
+2025-01-10 03:47:04,061 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Fri, 10 Jan 2025 03:47:03 GMT'), (b'Content-Type', b'application/json'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'CF-Ray', b'8ff9aefa9b294892-LIS'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Vary', b'Accept-Encoding'), (b'rndr-id', b'085f5467-ae14-4582'), (b'x-render-origin-server', b'uvicorn'), (b'Server', b'cloudflare'), (b'Content-Encoding', b'gzip'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-01-10 03:47:04,062 - INFO - HTTP Request: GET https://medstock-api-ce98.onrender.com/MedStock_GetSectors/ "HTTP/1.1 200 OK"
+2025-01-10 03:47:04,062 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-01-10 03:47:04,063 - DEBUG - receive_response_body.complete
+2025-01-10 03:47:04,063 - DEBUG - response_closed.started
+2025-01-10 03:47:04,064 - DEBUG - response_closed.complete
+2025-01-10 03:47:04,064 - DEBUG - close.started
+2025-01-10 03:47:04,064 - DEBUG - close.complete
+2025-01-10 03:47:04,066 - DEBUG - load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-01-10 03:47:04,066 - DEBUG - load_verify_locations cafile='c:\\Users\\bruno\\anaconda3\\envs\\medstock\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-01-10 03:47:04,453 - DEBUG - connect_tcp.started host='medstock-api-ce98.onrender.com' port=443 local_address=None timeout=5.0 socket_options=None
+2025-01-10 03:47:04,453 - DEBUG - Submitting callback <function getaddrinfo at 0x000001C6DC0020C0> with args (b'medstock-api-ce98.onrender.com', 443, <AddressFamily.AF_UNSPEC: 0>, <SocketKind.SOCK_STREAM: 1>, 0, 0) and kwargs {} to thread worker queue
+2025-01-10 03:47:04,454 - DEBUG - #3 got callback <function getaddrinfo at 0x000001C6DC0020C0> with args (b'medstock-api-ce98.onrender.com', 443, <AddressFamily.AF_UNSPEC: 0>, <SocketKind.SOCK_STREAM: 1>, 0, 0) and kwargs {} from queue
+2025-01-10 03:47:04,454 - DEBUG - Invoking callback
+2025-01-10 03:47:04,455 - DEBUG - Setting Future result: [(<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_STREAM: 1>, 0, '', ('216.24.57.4', 443)), (<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_STREAM: 1>, 0, '', ('216.24.57.252', 443))]
+2025-01-10 03:47:04,604 - DEBUG - Got events from poll: [(<_OverlappedFuture pending cb=[Task.task_wakeup()]>, <function IocpProactor.connect.<locals>.finish_connect at 0x000001C6FA11FEC0>, 0, 0, <_overlapped.Overlapped object at 0x000001C6FA0E3630>)]
+2025-01-10 03:47:04,611 - DEBUG - Invoking event callback <function IocpProactor.connect.<locals>.finish_connect at 0x000001C6FA11FEC0>
+2025-01-10 03:47:04,644 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C6FB69EC10>
+2025-01-10 03:47:04,644 - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x000001C6FB7336E0> server_hostname='medstock-api-ce98.onrender.com' timeout=5.0
+2025-01-10 03:47:04,678 - DEBUG - Got events from poll: [(<_OverlappedFuture pending cb=[_ProactorReadPipeTransport._loop_reading()]>, <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FA11FEC0>, 2844, 0, <_overlapped.Overlapped object at 0x000001C6FA0E3630>)]
+2025-01-10 03:47:04,680 - DEBUG - Invoking event callback <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FA11FEC0>
+2025-01-10 03:47:04,704 - DEBUG - start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C6FB69EED0>
+2025-01-10 03:47:04,720 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-01-10 03:47:04,721 - DEBUG - send_request_headers.complete
+2025-01-10 03:47:04,721 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-01-10 03:47:04,722 - DEBUG - send_request_body.complete
+2025-01-10 03:47:04,722 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-01-10 03:47:04,807 - DEBUG - Got events from poll: [(<_OverlappedFuture pending cb=[_ProactorReadPipeTransport._loop_reading()]>, <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B3CE0>, 984, 0, <_overlapped.Overlapped object at 0x000001C6FA0E3CF0>)]
+2025-01-10 03:47:04,820 - DEBUG - Invoking event callback <function IocpProactor.recv_into.<locals>.finish_recv at 0x000001C6FB6B3CE0>
+2025-01-10 03:47:04,837 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Fri, 10 Jan 2025 03:47:04 GMT'), (b'Content-Type', b'application/json'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'CF-Ray', b'8ff9af011e4e4892-LIS'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Vary', b'Accept-Encoding'), (b'rndr-id', b'348b79cd-a3a5-46a9'), (b'x-render-origin-server', b'uvicorn'), (b'Server', b'cloudflare'), (b'Content-Encoding', b'gzip'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-01-10 03:47:04,838 - INFO - HTTP Request: GET https://medstock-api-ce98.onrender.com/MedStock_GetUtilizadoresComSetores/ "HTTP/1.1 200 OK"
+2025-01-10 03:47:04,838 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-01-10 03:47:04,840 - DEBUG - receive_response_body.complete
+2025-01-10 03:47:04,840 - DEBUG - response_closed.started
+2025-01-10 03:47:04,863 - DEBUG - response_closed.complete
+2025-01-10 03:47:04,864 - DEBUG - close.started
+2025-01-10 03:47:04,866 - DEBUG - close.complete
+2025-01-10 03:47:11,024 - DEBUG - Stopping worker thread...
+2025-01-10 03:47:11,038 - DEBUG - Exiting thread
+2025-01-10 03:47:11,040 - DEBUG - Shutting down
+2025-01-10 03:47:11,040 - DEBUG - Waiting for thread #1 to stop...
+2025-01-10 03:47:11,040 - DEBUG - Thread #10 stopped
+2025-01-10 03:47:11,040 - DEBUG - Thread #6 stopped
+2025-01-10 03:47:11,041 - DEBUG - Thread #8 stopped
+2025-01-10 03:47:11,041 - DEBUG - Thread #4 stopped
+2025-01-10 03:47:11,041 - DEBUG - Thread #7 stopped
+2025-01-10 03:47:11,041 - DEBUG - Thread #5 stopped
+2025-01-10 03:47:11,041 - DEBUG - Thread #1 stopped
+2025-01-10 03:47:11,041 - DEBUG - Thread #9 stopped
+2025-01-10 03:47:11,041 - DEBUG - Thread #2 stopped
+2025-01-10 03:47:11,041 - DEBUG - Thread #3 stopped
+2025-01-10 03:47:11,043 - DEBUG - Waiting for thread #2 to stop...
+2025-01-10 03:47:11,043 - DEBUG - Waiting for thread #3 to stop...
+2025-01-10 03:47:11,043 - DEBUG - Waiting for thread #4 to stop...
+2025-01-10 03:47:11,043 - DEBUG - Waiting for thread #5 to stop...
+2025-01-10 03:47:11,043 - DEBUG - Waiting for thread #6 to stop...
+2025-01-10 03:47:11,043 - DEBUG - Waiting for thread #7 to stop...
+2025-01-10 03:47:11,044 - DEBUG - Waiting for thread #8 to stop...
+2025-01-10 03:47:11,044 - DEBUG - Waiting for thread #9 to stop...
+2025-01-10 03:47:11,044 - DEBUG - Waiting for thread #10 to stop...
+2025-01-10 03:47:11,044 - DEBUG - Closing
