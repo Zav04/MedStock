@@ -1,13 +1,11 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../styles/Pedidos.css";
-import { getProdutosPorFornecedor } from '../services/api';
-import CardEmEspera from '../components/CardEstados/CardEmEspera'; // Importando o novo componente
-import CardEmPreparacao from '../components/CardEstados/CardEmPreparacao';
-import CardEnviado from '../components/CardEstados/CardEnviado'; // Importando o componente para os requerimentos enviados
-import CardFinalizado from '../components/CardEstados/CardFinalizado'; // Importando o componente para os requerimentos finalizados
-
-
+import { getProdutosPorFornecedor } from "../services/api";
+import CardEmEspera from "../components/CardEstados/CardEmEspera"; // Importando o novo componente
+import CardEmPreparacao from "../components/CardEstados/CardEmPreparacao";
+import CardEnviado from "../components/CardEstados/CardEnviado"; // Importando o componente para os requerimentos enviados
+import CardFinalizado from "../components/CardEstados/CardFinalizado"; // Importando o componente para os requerimentos finalizados
 
 const Medicamentos = () => {
   const [produtos, setProdutos] = useState([]);
@@ -27,21 +25,21 @@ const Medicamentos = () => {
   };
 
   return (
-    
     <div className="home-container">
       {/* Cabeçalho */}
       <div className="header">
         <h1>Fornecedor de Medicamentos</h1>
-        <div >
-          <button onClick={fetchProdutos}
-          style={{ marginRight: '20px' }} // Afastando o botão do link
+        <div>
+          <button
+            onClick={fetchProdutos}
+            style={{ marginRight: "20px" }} // Afastando o botão do link
           >
             {mostrarProdutos ? "Ocultar Produtos" : "Mostrar Produtos"}
           </button>
 
-        <Link to="/" className="botao-voltar-home">
-          Voltar para o menú
-        </Link>
+          <Link to="/" className="botao-voltar-home">
+            Voltar para o menú
+          </Link>
         </div>
       </div>
 

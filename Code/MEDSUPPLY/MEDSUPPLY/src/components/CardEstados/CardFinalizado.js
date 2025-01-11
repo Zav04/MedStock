@@ -1,6 +1,6 @@
 // src/components/CardFinalizado.js
 import React, { useState, useEffect } from "react";
-import { getRequerimentosFinalizado } from "../../services/api"; 
+import { getRequerimentosFinalizado } from "../../services/api";
 import "../../styles/Pedidos.css"; // Certifique-se de que o estilo está no arquivo correto
 
 const CardFinalizado = ({ fornecedorId }) => {
@@ -8,6 +8,7 @@ const CardFinalizado = ({ fornecedorId }) => {
   const [expandedRequerimentos, setExpandedRequerimentos] = useState([]);
 
   // Função para buscar os requerimentos finalizados do fornecedor
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchRequerimentosFinalizado = async () => {
     try {
       const requerimentosData = await getRequerimentosFinalizado(fornecedorId);
@@ -27,7 +28,7 @@ const CardFinalizado = ({ fornecedorId }) => {
   // Usando useEffect para buscar os requerimentos finalizados
   useEffect(() => {
     fetchRequerimentosFinalizado();
-  }, [fornecedorId]);
+  }, [fetchRequerimentosFinalizado, fornecedorId]);
 
   return (
     <div className="requerimentos-container">
@@ -41,7 +42,9 @@ const CardFinalizado = ({ fornecedorId }) => {
                 ? "expandido"
                 : ""
             }`}
-            onClick={() => toggleExpandRequerimento(requerimento.id_requerimento)}
+            onClick={() =>
+              toggleExpandRequerimento(requerimento.id_requerimento)
+            }
           >
             {/* Cabeçalho do requerimento */}
             <div className="requerimento-header">
@@ -53,7 +56,8 @@ const CardFinalizado = ({ fornecedorId }) => {
               <ul>
                 {requerimento.produtos.map((produto) => (
                   <li key={produto.produto_id}>
-                    {produto.produto_nome} - Quantidade: {produto.quantidade_pedida}
+                    {produto.produto_nome} - Quantidade:{" "}
+                    {produto.quantidade_pedida}
                   </li>
                 ))}
               </ul>

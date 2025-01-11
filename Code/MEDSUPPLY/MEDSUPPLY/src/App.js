@@ -1,10 +1,10 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import Medicamentos from './pages/Medicamentos';
-import Vacinas from './pages/Vacinas';
-import Descartaveis from './pages/Descartaveis';
-import Consumiveis from './pages/Consumiveis';
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Medicamentos from "./pages/Medicamentos";
+import Vacinas from "./pages/Vacinas";
+import Descartaveis from "./pages/Descartaveis";
+import Consumiveis from "./pages/Consumiveis";
 
 const App = () => {
   return (

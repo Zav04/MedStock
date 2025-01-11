@@ -1,19 +1,30 @@
 // src/components/CardEmPreparacao.js
 import React, { useState, useEffect } from "react";
-import { getRequerimentosEmPreparacao, updateRequerimentoEstado } from "../../services/api"; 
+import {
+  getRequerimentosEmPreparacao,
+  updateRequerimentoEstado,
+} from "../../services/api";
 import "../../styles/Pedidos.css"; // Certifique-se de que o estilo está no arquivo correto
 
 const CardEmPreparacao = ({ fornecedorId }) => {
-  const [requerimentosEmPreparacao, setRequerimentosEmPreparacao] = useState([]);
+  const [requerimentosEmPreparacao, setRequerimentosEmPreparacao] = useState(
+    []
+  );
   const [expandedRequerimentos, setExpandedRequerimentos] = useState([]);
 
   // Função para buscar os requerimentos em preparação do fornecedor
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchRequerimentosEmPreparacao = async () => {
     try {
-      const requerimentosData = await getRequerimentosEmPreparacao(fornecedorId);
+      const requerimentosData = await getRequerimentosEmPreparacao(
+        fornecedorId
+      );
       setRequerimentosEmPreparacao(requerimentosData);
     } catch (error) {
-      console.error("Erro ao buscar requerimentos em preparação:", error.message);
+      console.error(
+        "Erro ao buscar requerimentos em preparação:",
+        error.message
+      );
     }
   };
 
@@ -40,7 +51,7 @@ const CardEmPreparacao = ({ fornecedorId }) => {
   // Usando useEffect para buscar os requerimentos em preparação
   useEffect(() => {
     fetchRequerimentosEmPreparacao();
-  }, [fornecedorId]);
+  }, [fetchRequerimentosEmPreparacao, fornecedorId]);
 
   return (
     <div className="requerimentos-container">
@@ -54,7 +65,9 @@ const CardEmPreparacao = ({ fornecedorId }) => {
                 ? "expandido"
                 : ""
             }`}
-            onClick={() => toggleExpandRequerimento(requerimento.id_requerimento)}
+            onClick={() =>
+              toggleExpandRequerimento(requerimento.id_requerimento)
+            }
           >
             {/* Cabeçalho do requerimento */}
             <div className="requerimento-header">
@@ -66,7 +79,8 @@ const CardEmPreparacao = ({ fornecedorId }) => {
               <ul>
                 {requerimento.produtos.map((produto) => (
                   <li key={produto.produto_id}>
-                    {produto.produto_nome} - Quantidade: {produto.quantidade_pedida}
+                    {produto.produto_nome} - Quantidade:{" "}
+                    {produto.quantidade_pedida}
                   </li>
                 ))}
               </ul>

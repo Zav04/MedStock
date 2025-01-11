@@ -1,12 +1,14 @@
 // src/pages/Home.js
-import React, { useState, useEffect } from 'react';
-import { getFornecedores, getRequerimentosAgrupados } from '../../services/api';
+import React, { useState, useEffect } from "react";
+import { getFornecedores, getRequerimentosAgrupados } from "../../services/api";
 import "../../styles/FornecedorCard.css"; // Certifique-se de que o CSS está sendo importado corretamente
-import { Link } from 'react-router-dom'; // Adicionando o Link
+import { Link } from "react-router-dom"; // Adicionando o Link
 
 const CardConsumiveis = () => {
   const [fornecedores, setFornecedores] = useState([]);
-  const [requerimentosPorFornecedor, setRequerimentosPorFornecedor] = useState({});
+  const [requerimentosPorFornecedor, setRequerimentosPorFornecedor] = useState(
+    {}
+  );
   const [erro, setErro] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -16,11 +18,13 @@ const CardConsumiveis = () => {
       try {
         // Buscar todos os fornecedores
         const fornecedoresData = await getFornecedores();
-        
-        // Filtra para pegar apenas o fornecedor de vacinas
-        const fornecedorVacina = fornecedoresData.find(fornecedor => fornecedor.categoria === 'Consumíveis'); 
 
-        setFornecedores(fornecedorVacina ? [fornecedorVacina] : []); 
+        // Filtra para pegar apenas o fornecedor de vacinas
+        const fornecedorVacina = fornecedoresData.find(
+          (fornecedor) => fornecedor.categoria === "Outros"
+        );
+
+        setFornecedores(fornecedorVacina ? [fornecedorVacina] : []);
         setLoading(false);
       } catch (error) {
         setErro("Erro ao carregar fornecedores");
@@ -79,9 +83,7 @@ const CardConsumiveis = () => {
           <div className="estado em-preparacao">
             Em Preparação: {requerimentos.em_preparacao}
           </div>
-          <div className="estado enviado">
-            Enviado: {requerimentos.enviado}
-          </div>
+          <div className="estado enviado">Enviado: {requerimentos.enviado}</div>
           <div className="estado finalizado">
             Finalizado: {requerimentos.finalizado}
           </div>

@@ -1,12 +1,14 @@
 // src/components/CardVacinas.js
-import React, { useState, useEffect } from 'react';
-import { getFornecedores, getRequerimentosAgrupados } from '../../services/api';
-import { Link } from 'react-router-dom'; // Adicionando o Link
+import React, { useState, useEffect } from "react";
+import { getFornecedores, getRequerimentosAgrupados } from "../../services/api";
+import { Link } from "react-router-dom"; // Adicionando o Link
 import "../../styles/FornecedorCard.css"; // Certifique-se de que o CSS está sendo importado corretamente
 
 const CardVacinas = () => {
   const [fornecedores, setFornecedores] = useState([]);
-  const [requerimentosPorFornecedor, setRequerimentosPorFornecedor] = useState({});
+  const [requerimentosPorFornecedor, setRequerimentosPorFornecedor] = useState(
+    {}
+  );
   const [erro, setErro] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -16,9 +18,11 @@ const CardVacinas = () => {
       try {
         // Buscar todos os fornecedores
         const fornecedoresData = await getFornecedores();
-        
+
         // Filtra para pegar apenas o fornecedor de vacinas
-        const fornecedorVacina = fornecedoresData.find(fornecedor => fornecedor.categoria === 'Vacinas'); 
+        const fornecedorVacina = fornecedoresData.find(
+          (fornecedor) => fornecedor.categoria === "Vacinas"
+        );
 
         setFornecedores(fornecedorVacina ? [fornecedorVacina] : []); // Apenas o fornecedor de vacinas
         setLoading(false);
@@ -79,9 +83,7 @@ const CardVacinas = () => {
           <div className="estado em-preparacao">
             Em Preparação: {requerimentos.em_preparacao}
           </div>
-          <div className="estado enviado">
-            Enviado: {requerimentos.enviado}
-          </div>
+          <div className="estado enviado">Enviado: {requerimentos.enviado}</div>
           <div className="estado finalizado">
             Finalizado: {requerimentos.finalizado}
           </div>
