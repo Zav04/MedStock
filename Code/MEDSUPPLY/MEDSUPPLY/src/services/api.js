@@ -1,7 +1,7 @@
-import axios from 'axios';
+import axios from "axios";
 
 // URL base da API Flask
-const API_URL = 'http://localhost:5000/api';
+const API_URL = "https://medsupply-api.onrender.com/api";
 
 /**
  * Função utilitária para tratar erros da API.
@@ -12,7 +12,10 @@ const handleApiError = (error, customMessage) => {
   if (error.response) {
     console.error(`${customMessage}:`, error.response.data);
     console.error(`Status Code: ${error.response.status}`);
-    throw new Error(error.response.data.message || `${customMessage}: Erro desconhecido na API`);
+    throw new Error(
+      error.response.data.message ||
+        `${customMessage}: Erro desconhecido na API`
+    );
   } else if (error.request) {
     console.error(`${customMessage}: Erro de solicitação`, error.request);
     throw new Error(`${customMessage}: Sem resposta da API`);
@@ -31,7 +34,7 @@ export const getFornecedores = async () => {
     const response = await axios.get(`${API_URL}/fornecedores`);
     return response.data; // Retorna os dados dos fornecedores.
   } catch (error) {
-    handleApiError(error, 'Erro ao buscar fornecedores');
+    handleApiError(error, "Erro ao buscar fornecedores");
   }
 };
 
@@ -44,7 +47,7 @@ export const getRequerimentosAgrupados = async () => {
     const response = await axios.get(`${API_URL}/fornecedores/requerimentos`);
     return response.data; // Retorna os dados agrupados por fornecedor.
   } catch (error) {
-    handleApiError(error, 'Erro ao buscar requerimentos agrupados');
+    handleApiError(error, "Erro ao buscar requerimentos agrupados");
   }
 };
 
@@ -56,11 +59,16 @@ export const getRequerimentosAgrupados = async () => {
  */
 export const getProdutosPorFornecedor = async (fornecedorId) => {
   try {
-    const response = await axios.get(`${API_URL}/fornecedores/${fornecedorId}/produtos`);
+    const response = await axios.get(
+      `${API_URL}/fornecedores/${fornecedorId}/produtos`
+    );
     const produtos = response.data.produtos;
 
     // Calcula a quantidade total de produtos
-    const quantidadeTotal = produtos.reduce((total, produto) => total + produto.quantidade, 0);
+    const quantidadeTotal = produtos.reduce(
+      (total, produto) => total + produto.quantidade,
+      0
+    );
 
     return {
       fornecedor: response.data.fornecedor,
@@ -68,7 +76,7 @@ export const getProdutosPorFornecedor = async (fornecedorId) => {
       quantidade: quantidadeTotal, // Quantidade total de produtos disponíveis
     };
   } catch (error) {
-    handleApiError(error, 'Erro ao buscar produtos do fornecedor');
+    handleApiError(error, "Erro ao buscar produtos do fornecedor");
   }
 };
 
@@ -79,13 +87,14 @@ export const getProdutosPorFornecedor = async (fornecedorId) => {
  */
 export const getRequerimentosEmEspera = async (fornecedorId) => {
   try {
-    const response = await axios.get(`${API_URL}/fornecedores/${fornecedorId}/requerimentos/em_espera`);
+    const response = await axios.get(
+      `${API_URL}/fornecedores/${fornecedorId}/requerimentos/em_espera`
+    );
     return response.data; // Retorna os dados dos requerimentos em espera.
   } catch (error) {
-    handleApiError(error, 'Erro ao buscar requerimentos em espera');
+    handleApiError(error, "Erro ao buscar requerimentos em espera");
   }
 };
-
 
 /**
  * Busca os requerimentos em espera de um fornecedor específico.
@@ -94,10 +103,12 @@ export const getRequerimentosEmEspera = async (fornecedorId) => {
  */
 export const getRequerimentosEnviado = async (fornecedorId) => {
   try {
-    const response = await axios.get(`${API_URL}/fornecedores/${fornecedorId}/requerimentos/enviado`);
+    const response = await axios.get(
+      `${API_URL}/fornecedores/${fornecedorId}/requerimentos/enviado`
+    );
     return response.data; // Retorna os dados dos requerimentos em espera.
   } catch (error) {
-    handleApiError(error, 'Erro ao buscar requerimentos enviados');
+    handleApiError(error, "Erro ao buscar requerimentos enviados");
   }
 };
 
@@ -108,13 +119,14 @@ export const getRequerimentosEnviado = async (fornecedorId) => {
  */
 export const getRequerimentosFinalizado = async (fornecedorId) => {
   try {
-    const response = await axios.get(`${API_URL}/fornecedores/${fornecedorId}/requerimentos/finalizado`);
+    const response = await axios.get(
+      `${API_URL}/fornecedores/${fornecedorId}/requerimentos/finalizado`
+    );
     return response.data; // Retorna os dados dos requerimentos em espera.
   } catch (error) {
-    handleApiError(error, 'Erro ao buscar requerimentos finalizados');
+    handleApiError(error, "Erro ao buscar requerimentos finalizados");
   }
 };
-
 
 /**
  * Busca os requerimentos em espera de um fornecedor específico.
@@ -123,14 +135,14 @@ export const getRequerimentosFinalizado = async (fornecedorId) => {
  */
 export const getRequerimentosEmPreparacao = async (fornecedorId) => {
   try {
-    const response = await axios.get(`${API_URL}/fornecedores/${fornecedorId}/requerimentos/em_preparacao`);
+    const response = await axios.get(
+      `${API_URL}/fornecedores/${fornecedorId}/requerimentos/em_preparacao`
+    );
     return response.data; // Retorna os dados dos requerimentos em espera.
   } catch (error) {
-    handleApiError(error, 'Erro ao buscar requerimentos em preparação');
+    handleApiError(error, "Erro ao buscar requerimentos em preparação");
   }
 };
-
-
 
 /**
  * Atualiza o estado de um requerimento.
@@ -141,15 +153,17 @@ export const getRequerimentosEmPreparacao = async (fornecedorId) => {
 export const updateRequerimentoEstado = async (idRequerimento, novoEstado) => {
   try {
     console.log("Enviando requisição...");
-    const response = await axios.put(`${API_URL}/requerimentos/${idRequerimento}/estado`, 
-    {
-      estado: novoEstado
-    }, 
-    {
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await axios.put(
+      `${API_URL}/requerimentos/${idRequerimento}/estado`,
+      {
+        estado: novoEstado,
       },
-    });
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     console.log("Resposta da API:", response.data);
     return response.data;
@@ -159,25 +173,29 @@ export const updateRequerimentoEstado = async (idRequerimento, novoEstado) => {
   }
 };
 
-
 /**
  * Finaliza um requerimento e atualiza as quantidades dos produtos no estoque.
  * @param {number} requerimentoId - ID do requerimento a ser finalizado.
  * @param {Array} produtosQuantidades - Lista de produtos e suas quantidades para subtração.
  * @returns {Promise<Object>} Resposta da API após finalizar o requerimento.
  */
-export const finalizarRequerimento = async (requerimentoId, produtosQuantidades) => {
+export const finalizarRequerimento = async (
+  requerimentoId,
+  produtosQuantidades
+) => {
   try {
     // Enviando a requisição PUT para finalizar o requerimento
-    const response = await axios.put(`${API_URL}/requerimentos/${requerimentoId}/finalizar`, 
-    {
-      produtos: produtosQuantidades, // Lista com {produto_id, quantidade}
-    },
-    {
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await axios.put(
+      `${API_URL}/requerimentos/${requerimentoId}/finalizar`,
+      {
+        produtos: produtosQuantidades, // Lista com {produto_id, quantidade}
       },
-    });
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     console.log("Resposta da API:", response.data);
     return response.data;
@@ -186,4 +204,3 @@ export const finalizarRequerimento = async (requerimentoId, produtosQuantidades)
     throw error;
   }
 };
-
