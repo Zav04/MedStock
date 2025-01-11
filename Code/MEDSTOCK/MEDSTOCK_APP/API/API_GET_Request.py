@@ -13,7 +13,7 @@ from Class.RequerimentoHistorico import RequerimentoHistorico
 from Class.UtilizadorSetor import UtilizadorSetor
 from Class.Realocacao import Realocacao
 from Class.ConsumivelFornecedor import Consumivel_Fornecedor
-from Class.RequerimentoFornecedor import Consumivel_Requerimento_Fornecedor, RequerimentoFornecedor
+from Class.RequerimentoFornecedor import Consumivel_Requerimento_Fornecedor, Requerimento_Fornecedor
 from datetime import datetime
 
 
@@ -517,11 +517,12 @@ async def API_GetRequerimentosFornecedor() -> APIResponse:
                         )
                         for consumivel in requerimento_entry["consumiveis"]
                     ]
-                    requerimento = RequerimentoFornecedor(
+                    requerimento = Requerimento_Fornecedor(
                         id_requerimento=requerimento_entry["id_requerimento"],
                         fornecedor_nome=requerimento_entry["fornecedor"],
                         status=requerimento_entry["status"],
                         data_requerimento=requerimento_entry["data_requerimento"],
+                        alocado=requerimento_entry["alocado"],
                         consumiveis=consumiveis
                     )
                     requerimentos.append(requerimento)

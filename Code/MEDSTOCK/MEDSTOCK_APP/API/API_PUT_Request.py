@@ -363,3 +363,42 @@ def API_UpdateConsumivelAlocado(requerimento_id: int, consumiveis: list) -> APIR
             return APIResponse(success=False, error_message="Erro inesperado")
     except httpx.RequestError as e:
         return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
+    
+    
+async def API_UpdateStockConsumiveis(consumiveis: list[dict]) -> APIResponse:
+    URL = os.getenv('API_URL') + os.getenv('API_UpdateStock')
+
+    payload = {"consumiveis": consumiveis}
+
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.put(URL, json=payload, headers={"Content-Type": "application/json"})
+            
+            if response.status_code == 200:
+                success = response.json().get("response", False)
+                if success:
+                    return APIResponse(success=True)
+                else:
+                    error_message = response.json().get("error", "Erro desconhecido")
+                    return APIResponse(success=False, error_message=error_message)
+            else:
+                return APIResponse(success=False, error_message="Erro na API: Código de status {}".format(response.status_code))
+
+        except httpx.RequestError as e:
+            return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
+
+        
+def API_UpdateRequerimentoAlocado(requerimento_id: int) -> APIResponse:
+    URL = os.getenv('API_EXTERNAL_URL') + os.getenv('API_EXTERNAL_PUT_REQUERIMENTO') +f"/{requerimento_id}/alocado"
+    try:
+        response = httpx.put(URL, headers={"Content-Type": "application/json"})
+        if response.status_code == 200:
+            return APIResponse(success=True, data={"message": "Campo 'alocado' atualizado com sucesso"})
+        elif response.status_code == 404:
+            error_message = response.json().get("error", "Requerimento não encontrado")
+            return APIResponse(success=False, error_message=error_message)
+        else:
+            return APIResponse(success=False, error_message=f"Erro inesperado: {response.status_code}")
+    except httpx.RequestError as e:
+        return APIResponse(success=False, error_message=f"Erro de conexão: {e}")
+

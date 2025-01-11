@@ -378,7 +378,7 @@ class RequerimentoCard(QWidget):
         response = API_PrepareRequerimento(self.user.utilizador_id,self.requerimento.requerimento_id)
         if response.success:
             stringAlerts=f'Requerimento {self.requerimento.requerimento_id} esta em preparação e email enviado ao requerente'
-            asyncio.ensure_future(self.send_email_update(self.requerimento.requerimento_id, top_parent, stringAlerts))
+            asyncio.create_task(self.send_email_update(self.requerimento.requerimento_id, top_parent, stringAlerts))
             self.consumivel_manager.remover_requerimento(self.requerimento.requerimento_id)
         else:
             self.callbackUpdate()
@@ -390,7 +390,7 @@ class RequerimentoCard(QWidget):
         if response.success:
             if self.requerimento.tipo_requerimento == "Interno":
                 stringAlerts=f'Requerimento {self.requerimento.requerimento_id} foi entregue e email enviado ao requerente'
-                asyncio.ensure_future(self.send_email_update(self.requerimento.requerimento_id, top_parent, stringAlerts))
+                asyncio.create_task(self.send_email_update(self.requerimento.requerimento_id, top_parent, stringAlerts))
             else:
                 self.callbackUpdate()
                 Overlay.show_information(top_parent, f'Requerimento {self.requerimento.requerimento_id} foi entregue')
@@ -402,7 +402,7 @@ class RequerimentoCard(QWidget):
         response = API_AcceptRequerimento(self.user.utilizador_id,self.requerimento.requerimento_id)
         if response.success:
             stringAlerts=f'Requerimento {self.requerimento.requerimento_id} foi aceite e email enviado ao requerente'
-            asyncio.ensure_future(self.send_email_update(self.requerimento.requerimento_id, top_parent, stringAlerts))
+            asyncio.create_task(self.send_email_update(self.requerimento.requerimento_id, top_parent, stringAlerts))
         else:
             Overlay.show_error(top_parent, response.error_message)
 
@@ -425,7 +425,7 @@ class RequerimentoCard(QWidget):
         if response.success:
             self.consumivel_manager.desalocar_consumiveis(self.requerimento.requerimento_id)
             stringAlerts=f'Requerimento {self.requerimento.requerimento_id} foi recusado e email enviado ao requerente'
-            asyncio.ensure_future(self.send_email_update(self.requerimento.requerimento_id, top_parent, stringAlerts))
+            asyncio.create_task(self.send_email_update(self.requerimento.requerimento_id, top_parent, stringAlerts))
         else:
             Overlay.show_error(top_parent, response.error_message)
     

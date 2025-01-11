@@ -15,30 +15,33 @@ class Consumivel_Requerimento_Fornecedor:
 
 
 
-class RequerimentoFornecedor:
+class Requerimento_Fornecedor:
     def __init__(
         self,
         id_requerimento: int,
         fornecedor_nome: str,
         status: str,
         data_requerimento: str,
-        consumiveis: list[Consumivel_Requerimento_Fornecedor]
+        consumiveis: list[Consumivel_Requerimento_Fornecedor],
+        alocado: bool
     ):
         self.id_requerimento = id_requerimento
         self.fornecedor_nome = fornecedor_nome
         self.status = status
         self.data_requerimento = data_requerimento
         self.consumiveis = consumiveis
+        self.alocado = alocado
         
     def __eq__(self, other):
-        if not isinstance(other, RequerimentoFornecedor):
+        if not isinstance(other, Requerimento_Fornecedor):
             return False
         return (
             self.id_requerimento == other.id_requerimento and
             self.fornecedor_nome == other.fornecedor_nome and
             self.status == other.status and
             self.data_requerimento == other.data_requerimento and
-            self.consumiveis == other.consumiveis
+            self.consumiveis == other.consumiveis and 
+            self.alocado == other.alocado
         )
 
 

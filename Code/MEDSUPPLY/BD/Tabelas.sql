@@ -20,6 +20,7 @@ CREATE TABLE requerimentos (
     fornecedor_id INT NOT NULL,
     estado VARCHAR(50) CHECK (estado IN ('EM ESPERA', 'EM PREPARAÇÃO', 'ENVIADO', 'FINALIZADO')) NOT NULL,
     data TIMESTAMP DEFAULT NOW(), 
+    alocado BOOLEAN NOT NULL DEFAULT FALSE,
     FOREIGN KEY (fornecedor_id) REFERENCES fornecedores (id_fornecedor)
 );
 

@@ -1,7 +1,8 @@
 from Class.Consumivel import Consumivel
 from Class.Requerimento import Requerimento
 from API.API_PUT_Request import API_UpdateConsumivelAlocado,API_StandByRequerimento,API_ResumeRequerimento
-from API.API_POST_Request import API_CreateRedistribuicao,API_SendEmailRequerimentoStatus
+from API.API_POST_Request import API_CreateRedistribuicao,API_SendEmailRequerimentoStatus,API_External_CreatePedidoFornecedor
+from API.API_GET_Request import API_GetConsumiveisFornecedores
 from APP.Overlays.Overlay import Overlay
 from PyQt5.QtCore import QObject, pyqtSignal
 import asyncio
@@ -10,6 +11,7 @@ class ConsumivelManager(QObject):
     consumivel_updated = pyqtSignal()
     requerimento_updated = pyqtSignal()
     realocacoes_updated = pyqtSignal()
+    pedido_fornecedor_updated = pyqtSignal()
     def __init__(self):
         self.consumiveis = []
         self.requerimentos = []
@@ -42,6 +44,12 @@ class ConsumivelManager(QObject):
                 consumivel_existente.quantidade_alocada = min(
                     consumivel_existente.quantidade_alocada, consumivel_existente.quantidade_total
                 )
+                
+                quantidade_disponivel = consumivel_existente.quantidade_total - consumivel_existente.quantidade_alocada
+                
+                if quantidade_disponivel <= consumivel_existente.quantidade_minima:
+                    novo_consumivel.pedidoexterno=False
+                    
 
                 consumivel_existente.quantidade_minima = novo_consumivel.quantidade_minima
                 consumivel_existente.quantidade_pedido = novo_consumivel.quantidade_pedido
@@ -233,7 +241,8 @@ class ConsumivelManager(QObject):
                 aloc_urgente = self.redistribuir_para_urgente(requerimento.requerimento_id)
                 if aloc_urgente == -1:
                     requerimento.pendete_alocacao = True
-                    asyncio.ensure_future(self.stand_by_requerimento(requerimento.requerimento_id))
+                    asyncio.create_task(self.stand_by_requerimento(requerimento.requerimento_id))
+                    asyncio.create_task(self.verificar_stock())
                     if(self.user_role=="Farmacêutico"):
                         Overlay.show_error(self.parent_window, f"REQ - {requerimento.requerimento_id} Não foi possível alocar os consumíveis para o requerimento urgente.")
                     return False,aloc_urgente
@@ -241,50 +250,92 @@ class ConsumivelManager(QObject):
                     requerimento.pendete_alocacao = True
                     if(self.user_role=="Farmacêutico"):
                         Overlay.show_warning(self.parent_window, f"REQ - {requerimento.requerimento_id} Alguns consumíveis foram alocados, mas não todos.")
-                    asyncio.ensure_future(self.verificar_stock())
+                    asyncio.create_task(self.verificar_stock())
                     self.registrar_realocacoes(self.realocacoes)
                     return True,aloc_urgente
                 elif aloc_urgente == 1:
                     requerimento.pendete_alocacao = False
-                    asyncio.ensure_future(self.verificar_stock())
+                    asyncio.create_task(self.verificar_stock())
                     self.registrar_realocacoes(self.realocacoes)
                     return True,aloc_urgente
             if aloc == 0 and aloc_urgente == -99:
                 if(self.user_role=="Farmacêutico"):
                     Overlay.show_warning(self.parent_window, f"REQ - {requerimento.requerimento_id} Alguns consumíveis foram alocados, mas não todos.")
                 requerimento.pendete_alocacao = True
-                asyncio.ensure_future(self.verificar_stock())
+                asyncio.create_task(self.verificar_stock())
                 return True, aloc
             elif aloc == -1 and aloc_urgente == -99:
-                asyncio.ensure_future(self.stand_by_requerimento(requerimento.requerimento_id))
+                asyncio.create_task(self.stand_by_requerimento(requerimento.requerimento_id))
+                asyncio.create_task(self.verificar_stock())
                 if(self.user_role=="Farmacêutico"):
                     Overlay.show_error(self.parent_window, f"REQ - {requerimento.requerimento_id} Não foi possível alocar nenhum consumível.")
                 requerimento.pendete_alocacao = True
                 return False,aloc
         elif aloc == 1:
             requerimento.pendete_alocacao = False
-            asyncio.ensure_future(self.verificar_stock())
+            asyncio.create_task(self.verificar_stock())
             return True,aloc
         else:
             return False,aloc
 
 
-    # def requerimentos_pendentes(self, requerimento_id: int):
-    #     requerimento = next((r for r in self.requerimentos if r.requerimento_id == requerimento_id), None)
-    #     if not requerimento:
-    #         return
-    #     requerimento.pendete_alocacao = False
-    #     self.requerimento_manager(requerimento, self.parent_window)
-
-
     async def verificar_stock(self):
+        pedidos_por_fornecedor = {}
+
         for consumivel in self.consumiveis:
-            if consumivel.quantidade_total <= consumivel.quantidade_minima or consumivel.quantidade_alocada <= consumivel.quantidade_minima:
-                
-                if(consumivel.pedidoexterno==False):
-                    consumivel.pedidoexterno=True
-                    #asyncio.ensure_future(self.criar_pedido_externo(consumivel, quantidade_para_pedir))
-                #TODO FAZER ISTO DE PEDIDOS EXTERNOS
+            quantidade_disponivel = consumivel.quantidade_total - consumivel.quantidade_alocada
+            if quantidade_disponivel <= consumivel.quantidade_minima:
+                if not consumivel.pedidoexterno:
+                    consumivel.pedidoexterno = True
+
+                    all_external_consumivel = await self.fetch_consumivel_external()
+                    if not all_external_consumivel:
+                        Overlay.show_error(self.parent_window, "Não foi possível obter os consumíveis dos fornecedores.")
+                        return
+
+                    consumivel_from_external = next(
+                        (c for c in all_external_consumivel if c.nome_consumivel.lower() == consumivel.nome_consumivel.lower()),
+                        None
+                    )
+
+                    if not consumivel_from_external:
+                        Overlay.show_error(self.parent_window, f"Consumível '{consumivel.nome_consumivel}' não encontrado nos fornecedores.")
+                        continue
+
+                    fornecedor_id = consumivel_from_external.fornecedor_id
+                    fornecedor_nome = consumivel_from_external.fornecedor_nome
+                    consumivel_id = consumivel_from_external.consumivel_id
+
+                    if fornecedor_id not in pedidos_por_fornecedor:
+                        pedidos_por_fornecedor[fornecedor_id] = {
+                            "fornecedor_nome": fornecedor_nome,
+                            "pedidos": []
+                        }
+
+                    pedidos_por_fornecedor[fornecedor_id]["pedidos"].append({
+                        "produto_id": consumivel_id,
+                        "quantidade": consumivel.quantidade_pedido
+                    })
+
+        asyncio.create_task(self.criar_pedidos_externos(pedidos_por_fornecedor))
+
+
+    async def criar_pedidos_externos(self, pedidos_por_fornecedor):
+        try:
+            for fornecedor_id, pedido_data in pedidos_por_fornecedor.items():
+                fornecedor_nome = pedido_data["fornecedor_nome"]
+                pedidos = pedido_data["pedidos"]
+
+                response = API_External_CreatePedidoFornecedor(fornecedor_id, pedidos)
+                self.pedido_fornecedor_updated.emit()
+                if response.success:
+                    Overlay.show_success(self.parent_window, f"Pedido criado com sucesso para o fornecedor '{fornecedor_nome}'.")
+                else:
+                    Overlay.show_error(self.parent_window, f"Erro ao criar pedido para o fornecedor '{fornecedor_nome}': {response.error_message}")
+
+        except Exception as e:
+            Overlay.show_error(self.parent_window, f"Erro inesperado ao criar pedidos externos: {str(e)}")
+            
 
 
     def verificar_alocacao(self, requerimento_id: int) -> tuple[bool, list[dict]]:
@@ -310,23 +361,13 @@ class ConsumivelManager(QObject):
         return len(nao_alocados) == 0, nao_alocados
 
 
-
-    async def criar_pedido_externo(self, consumivel: Consumivel):
-        #TODO FAZER ISTO DA MANEIRA JA IMPLEMENTADA
-        #Falta fazer a implemntação da Função do Postgres, Da Route e Ligação com a API
-        #VAI SER PRECISO CRIAR UMA TABLEA NO POSTGRES PARA GUARDAR OS PEDIDOS EXTERNOS
-        
-        payload = {
-            "consumivel_id": consumivel.consumivel_id,
-            "fornecedor_nome": "Fornecedor Padrão",
-            "quantidade": consumivel.quantidade_pedido
-        }
-        try:
-            print(f"Registrando pedido externo: {payload}")
-        except Exception as e:
-            print(f"Erro ao registrar pedido externo para o consumível {consumivel.nome_consumivel}: {e}")
-
-
+    async def fetch_consumivel_external(self):
+        response = await API_GetConsumiveisFornecedores()
+        if response.success:
+            all_external_consumivel = response.data 
+            return all_external_consumivel
+        else:
+            Overlay.show_error(self.parent_window, response.error_message)
 
     def preparar_dados_alocacao(self, requerimento_id: int) -> dict:        
         requerimento = next((r for r in self.requerimentos if r.requerimento_id == requerimento_id), None)
@@ -361,7 +402,7 @@ class ConsumivelManager(QObject):
             if(requerimento.status_atual==6 and value==1):
                 result, _ = self.verificar_alocacao(requerimento.requerimento_id)
                 if result:
-                    asyncio.ensure_future(self.resume_requerimento(user_id,requerimento.requerimento_id))
+                    asyncio.create_task(self.resume_requerimento(user_id,requerimento.requerimento_id))
         else:
             if(value!=-2):
                 self.requerimento_updated.emit()
@@ -413,7 +454,7 @@ class ConsumivelManager(QObject):
 
             if requerimento_origem != requerimento_origem_BK:
                 requerimento_origem_BK = requerimento_origem
-                asyncio.ensure_future(self.stand_by_requerimento(requerimento_origem))
+                asyncio.create_task(self.stand_by_requerimento(requerimento_origem))
 
             response = API_CreateRedistribuicao(consumivel_id, requerimento_origem, requerimento_destino, quantidade_realocada)
             if not response.success:
@@ -421,6 +462,12 @@ class ConsumivelManager(QObject):
                     Overlay.show_error(self.parent_window, f"Erro ao registar a redistribuição: {response.error_message}")
             
             self.realocacoes_updated.emit()
+
+
+    def realocar_todos_requerimentos(self):
+        for requerimento in self.requerimentos:
+            if requerimento.pendete_alocacao:
+                self.requerimento_manager(requerimento, self.parent_window)
 
 
     async def stand_by_requerimento(self, requerimento_id: int):

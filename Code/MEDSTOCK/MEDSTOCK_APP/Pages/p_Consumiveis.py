@@ -64,10 +64,10 @@ class ConsumiveisTablePage(QWidget):
         self.update_timer.start(60000)
         self.current_items = []
 
-        asyncio.ensure_future(self.load_items())
+        asyncio.create_task(self.load_items())
 
     def load_items_wrapper(self):
-        asyncio.ensure_future(self.load_items())
+        asyncio.create_task(self.load_items())
     
     async def load_items(self):
         response = await API_GetConsumiveis()
@@ -148,7 +148,7 @@ class ConsumiveisTablePage(QWidget):
         if edit_button:
             edit_button.setIcon(QIcon(UIFunctions.recolor_icon("./icons/MaterialIcons/check.png", "#32CD32")))
             edit_button.clicked.disconnect()
-            edit_button.clicked.connect(lambda _, r=row: asyncio.ensure_future(self.save_changes(r)))
+            edit_button.clicked.connect(lambda _, r=row: asyncio.create_task(self.save_changes(r)))
 
 
         close_button = QPushButton()

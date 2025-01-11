@@ -32,7 +32,7 @@ class RequerimentoPage(QWidget):
         self.current_filter = None
         self.current_requerimentos_dict = {}
         self.setup_RequerimentoPage()
-        asyncio.ensure_future(self.load_requerimentos(self.user))
+        asyncio.create_task(self.load_requerimentos(self.user))
         
         self.update_timer = QTimer(self)
         self.update_timer.timeout.connect(self.load_requerimentos_wrapper)
@@ -156,7 +156,7 @@ class RequerimentoPage(QWidget):
         left_scroll_area.setWidgetResizable(True)
         left_scroll_area.setWidget(left_frame)
         
-        asyncio.ensure_future(self.fetch_consumivel())
+        asyncio.create_task(self.fetch_consumivel())
 
         right_frame = QFrame()
         right_layout = QVBoxLayout()
@@ -374,7 +374,7 @@ class RequerimentoPage(QWidget):
     async def update_sectors(self):
         response = await API_GetSectors()
         if response.success:
-            asyncio.ensure_future(self.create_sectors(response.data))
+            asyncio.create_task(self.create_sectors(response.data))
         else:
             Overlay.show_error(self, response.error_message)
 
@@ -385,18 +385,18 @@ class RequerimentoPage(QWidget):
             self.sector_input.addItem(f"{sector.nome_setor} - {sector.localizacao}", sector.setor_id)
 
     def load_requerimentos_wrapper(self):
-        asyncio.ensure_future(self.load_requerimentos(self.user))
+        asyncio.create_task(self.load_requerimentos(self.user))
     
     def update_sectors_wrapper(self):
-        asyncio.ensure_future(self.update_sectors())
+        asyncio.create_task(self.update_sectors())
     
     def show_create_requerimento_interno_page_wrapper(self):
-        asyncio.ensure_future(self.show_create_requerimento_page())
-        asyncio.ensure_future(self.requerimentoInterno_page())
+        asyncio.create_task(self.show_create_requerimento_page())
+        asyncio.create_task(self.requerimentoInterno_page())
     
     def show_create_requerimento_externo_page_wrapper(self, requerimento: Requerimento):
-        asyncio.ensure_future(self.show_create_requerimento_page())
-        asyncio.ensure_future(self.requerimentoExterno_page(requerimento=requerimento))
+        asyncio.create_task(self.show_create_requerimento_page())
+        asyncio.create_task(self.requerimentoExterno_page(requerimento=requerimento))
         
     def clear_layout(self, layout):
         while layout.count():

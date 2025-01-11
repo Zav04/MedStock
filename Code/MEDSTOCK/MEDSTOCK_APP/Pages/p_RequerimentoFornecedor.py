@@ -8,10 +8,12 @@ from APP.UI.ui_styles import Style
 from APP.Overlays.Overlay import Overlay
 from Class.Utilizador import Utilizador
 from Class.Requerimento import Requerimento
-from API.API_GET_Request import API_GetConsumiveisFornecedores,API_GetRequerimentosFornecedor
+from API.API_GET_Request import API_GetConsumiveisFornecedores,API_GetRequerimentosFornecedor,API_GetConsumiveis
 from API.API_POST_Request import API_External_CreatePedidoFornecedor
+from API.API_PUT_Request import API_UpdateStockConsumiveis,API_UpdateRequerimentoAlocado
 from APP.Card.FornecedorCard import FornecedorCard
 from Class.ConsumivelManager import ConsumivelManager
+from Class.RequerimentoFornecedor import Requerimento_Fornecedor
 from APP.UI.ui_functions import UIFunctions
 from Pages.Requerimento.ui_DragAndDrop_Itens import DraggableLabel, DropZone, DropLabel
 from Pages.p_Consumiveis import ConsumiveisTablePage
@@ -26,9 +28,8 @@ class RequerimentoFornecedor(QWidget):
         self.consumivel_manager = consumivel_manager
         self.all_external_consumivel = []
         self.current_requerimentos_externos = []
-        self.ui_updated = False
         self.main_layout = QVBoxLayout(self)
-        asyncio.ensure_future(self.load_requerimentos_fornecedor())
+        asyncio.create_task(self.load_requerimentos_fornecedor())
         self.setup_RequerimentoPage()
         
         self.update_timer = QTimer(self)
@@ -98,7 +99,7 @@ class RequerimentoFornecedor(QWidget):
         left_scroll_area.setWidgetResizable(True)
         left_scroll_area.setWidget(left_frame)
         
-        asyncio.ensure_future(self.fetch_consumivel_external())
+        asyncio.create_task(self.fetch_consumivel_external())
 
         right_frame = QFrame()
         right_layout = QVBoxLayout()
@@ -184,7 +185,6 @@ class RequerimentoFornecedor(QWidget):
             consumivel_id = int(consumivel_id)
             quantidade = drop_zone.cellWidget(row, 1).value()
 
-            # Adicionar o pedido ao agrupamento
             if fornecedor_id is not None:
                 fornecedores_pedidos[fornecedor_id].append({
                     "fornecedor_nome": fornecedor_nome,
@@ -197,8 +197,8 @@ class RequerimentoFornecedor(QWidget):
             response = API_External_CreatePedidoFornecedor(fornecedor_id=fornecedor_id, pedidos=pedidos)
             if response.success:
                 fornecedor_nome=pedidos[0]['fornecedor_nome']
-                Overlay.show_information(self, f"Pedido ao fornecedor {fornecedor_nome} criado com sucesso!")
                 self.reload_page_fornecedor()
+                Overlay.show_information(self, f"Pedido ao fornecedor {fornecedor_nome} criado com sucesso!")
             else:
                 Overlay.show_error(self, f"Erro ao criar pedido para o fornecedor {fornecedor_nome}: {response.error_message}")
 
@@ -210,6 +210,7 @@ class RequerimentoFornecedor(QWidget):
             return
 
         new_requerimentos = response.data
+
         for novo_requerimento in new_requerimentos:
             existing_requerimento = next(
                 (req for req in self.current_requerimentos_externos if req.id_requerimento == novo_requerimento.id_requerimento),
@@ -218,39 +219,73 @@ class RequerimentoFornecedor(QWidget):
 
             if existing_requerimento:
                 if existing_requerimento != novo_requerimento:
-                    self.remove_requerimento_fornecedor_card(existing_requerimento.id_requerimento)
                     self.current_requerimentos_externos.remove(existing_requerimento)
+                    self.remove_requerimento_fornecedor_card(existing_requerimento.id_requerimento)
+                else:
+                    continue
+
+            if novo_requerimento.status == "FINALIZADO" and not novo_requerimento.alocado:
+                asyncio.create_task(self.adicionar_consumivel(novo_requerimento))
+                API_UpdateRequerimentoAlocado(novo_requerimento.id_requerimento)
+                asyncio.create_task(self.load_consumiveis_update())
 
             self.current_requerimentos_externos.append(novo_requerimento)
             self.add_requerimento_fornecedor_card(novo_requerimento)
+
 
     def remove_requerimento_fornecedor_card(self, requerimento_id):
         for i in reversed(range(self.scroll_layout.count())):
             widget = self.scroll_layout.itemAt(i).widget()
             if isinstance(widget, FornecedorCard) and widget.requerimento_fornecedor.id_requerimento == requerimento_id:
                 widget.deleteLater()
-                break
-
-
+            break
+            
+            
+    async def adicionar_consumivel(self, requerimento: Requerimento_Fornecedor):
+        try:
+            consumiveis = [
+                {
+                    "nome_consumivel": consumivel.nome,
+                    "quantidade": consumivel.quantidade_pedida
+                }
+                for consumivel in requerimento.consumiveis
+            ]
+            
+            response = await API_UpdateStockConsumiveis(consumiveis)
+            
+            if response.success:
+                Overlay.show_success(self, f"Stock atualizado com sucesso para o requerimento {requerimento.id_requerimento}!")
+            else:
+                Overlay.show_error(self, f"Erro ao atualizar Stock: {response.error_message}")
+        
+        except Exception as e:
+            Overlay.show_error(self, f"Erro inesperado ao adicionar consumível: {str(e)}")
 
     def add_requerimento_fornecedor_card(self, requerimento_fornecedor):
         card = FornecedorCard(requerimento_fornecedor,self.consumivel_manager,page_stock=self.page_stock)
         self.scroll_layout.addWidget(card)
-
+        
+    async def load_consumiveis_update(self,):
+        response = await API_GetConsumiveis()
+        if response.success:
+            items = response.data
+            self.consumivel_manager.add_consumivel(items)
+            self.consumivel_manager.realocar_todos_requerimentos()
 
     def reload_page_fornecedor(self):
         self.clear_layout(self.main_layout)
         self.setup_RequerimentoPage()
+        self.current_requerimentos_externos=[]
         self.load_requerimentos_fornecedor_wrapper()
         
     def load_requerimentos_fornecedor_wrapper(self):
-        asyncio.ensure_future(self.load_requerimentos_fornecedor())
+        asyncio.create_task(self.load_requerimentos_fornecedor())
         
 
     def show_create_fornecedor_page_wrapper(self):
         self.clear_layout(self.main_layout)
-        asyncio.ensure_future(self.show_create_fornecedor_page())
-        asyncio.ensure_future(self.requerimentoInterno_page())
+        asyncio.create_task(self.show_create_fornecedor_page())
+        asyncio.create_task(self.requerimentoInterno_page())
     
         
     def clear_layout(self, layout):

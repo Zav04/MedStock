@@ -495,7 +495,8 @@ def get_todos_requerimentos():
             p.nome AS produto_nome,
             f.categoria AS produto_categoria,
             pd.quantidade AS quantidade_pedida,
-            r.estado AS status_requerimento
+            r.estado AS status_requerimento,
+            r.alocado AS alocado
         FROM requerimentos r
         JOIN fornecedores f ON r.fornecedor_id = f.id_fornecedor
         JOIN pedidos pd ON r.id_requerimento = pd.requerimento_id
@@ -516,6 +517,7 @@ def get_todos_requerimentos():
             produto_categoria = row[4]
             quantidade_pedida = row[5]
             status_requerimento = row[6]
+            alocado = row[7]
 
             # Adicionar o requerimento ao dicionário, se ainda não estiver
             if id_requerimento not in requerimentos:
@@ -524,6 +526,7 @@ def get_todos_requerimentos():
                     'data_requerimento': data_requerimento.strftime('%Y-%m-%d %H:%M:%S') if data_requerimento else None,
                     'fornecedor': fornecedor_nome,
                     'status': status_requerimento,
+                    'alocado': alocado,
                     'consumiveis': []
                 }
 
@@ -539,3 +542,27 @@ def get_todos_requerimentos():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+    
+    
+@api.route('/requerimentos/<int:id>/alocado', methods=['PUT'])
+def atualizar_alocado_para_true(id):
+    try:
+        # Buscar o requerimento pelo ID
+        requerimento = Requerimento.query.get(id)
+        if not requerimento:
+            return jsonify({'error': 'Requerimento não encontrado'}), 404
+
+        # Atualizar o campo `alocado` para `true`
+        requerimento.alocado = True
+        db.session.commit()
+
+        return jsonify({'message': 'Campo "alocado" atualizado para true com sucesso'}), 200
+
+    except Exception as e:
+        print(f"Erro ao atualizar campo 'alocado': {e}")
+        return jsonify({'error': 'Erro interno do servidor'}), 500
+
+
+
+

@@ -83,7 +83,7 @@ class AssociateUserToSectorPage(QWidget):
         return users_response, sectors_response, allocations_response
 
     def update_data(self):
-        asyncio.ensure_future(self.refresh_data())
+        asyncio.create_task(self.refresh_data())
 
     async def refresh_data(self):
         users_response, sectors_response, allocations_response = await self.fetch_data()
@@ -140,7 +140,7 @@ class AssociateUserToSectorPage(QWidget):
     def associate_user_to_sector(self):
         user_id = self.user_input.currentData()
         sector_id = self.sector_input.currentData()
-        asyncio.ensure_future(self.perform_association(user_id, sector_id))
+        asyncio.create_task(self.perform_association(user_id, sector_id))
 
     async def perform_association(self, user_id, sector_id):
         response = await API_AssociateUserToSector(user_id, sector_id)

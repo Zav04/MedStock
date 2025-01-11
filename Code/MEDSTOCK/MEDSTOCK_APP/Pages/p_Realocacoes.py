@@ -60,7 +60,7 @@ class RealocacoesTablePage(QWidget):
         
         UIFunctions.adjust_column_sizes(self.table_widget)
         
-        asyncio.ensure_future(self.load_realocacoes())
+        asyncio.create_task(self.load_realocacoes())
         
         self.update_timer = QTimer(self)
         self.update_timer.timeout.connect(self.load_realocacoes_wrapper)
@@ -68,7 +68,7 @@ class RealocacoesTablePage(QWidget):
         
 
     def load_realocacoes_wrapper(self):
-        asyncio.ensure_future(self.load_realocacoes())
+        asyncio.create_task(self.load_realocacoes())
 
     async def load_realocacoes(self):
         response = await API_GetRealocacoes()

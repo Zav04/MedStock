@@ -77,7 +77,7 @@ class CreateConsumivelPage(QWidget):
         self.update_tipos_thread.timeout.connect(self.update_tipos_wrapper)
         self.update_tipos_thread.start(60000)
         
-        asyncio.ensure_future(self.update_tipos())
+        asyncio.create_task(self.update_tipos())
         
         self.setLayout(self.main_layout)
         
@@ -99,7 +99,7 @@ class CreateConsumivelPage(QWidget):
     async def update_tipos(self):
         response = await API_GetAllTipoConsumiveis()
         if response.success:
-            asyncio.ensure_future(self.create_tipos(response.data))
+            asyncio.create_task(self.create_tipos(response.data))
         else:
             Overlay.show_error(self, response.error_message)
 
@@ -112,4 +112,4 @@ class CreateConsumivelPage(QWidget):
                 self.tipo_input.addItem(tipo.nome_tipo, tipo.tipo_consumivel_id)
 
     def update_tipos_wrapper(self):
-        asyncio.ensure_future(self.update_tipos())
+        asyncio.create_task(self.update_tipos())

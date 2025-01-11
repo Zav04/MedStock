@@ -1,5 +1,4 @@
 import sys
-from Pages.Dashboard.Layout_Dashboard import Dashboard
 from Pages.Login.Layout_Login import Login
 from dotenv import load_dotenv
 from qasync import QEventLoop
@@ -7,11 +6,6 @@ from APP.UI.ui_styles import Style
 from PyQt5.QtWidgets import QApplication
 import logging
 import asyncio
-
-# TODO JUST FOR TESTING
-from Class.Utilizador import Utilizador
-# TODO JUST FOR TESTING
-
 if __name__ == "__main__":
     load_dotenv()
 
@@ -25,28 +19,8 @@ if __name__ == "__main__":
     loop = QEventLoop(app)
     asyncio.set_event_loop(loop)
 
-    # TODO JUST FOR TESTING
-    user = Utilizador(
-        nome="Bruno Oliveira Rafael", 
-        email="bruno.bx04@hotmail.com", 
-        sexo="M", 
-        data_nascimento="1999-06-06", 
-        utilizador_id=12, 
-        role_id=1, 
-        #
-        #role_nome="Gestor Responsável"
-        role_nome="Administrador"
-        #role_nome="Farmacêutico"
-        #role_nome="Enfermeiro"
-        #role_nome="Médico"
-        #role_nome="Secretário Clínico"
-        #role_nome="Assistente"
-    )
-    # TODO JUST FOR TESTING
-
     try:
         window=Login()
-        #window = Dashboard(user=user)
         window.show()
 
         with loop:

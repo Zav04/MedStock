@@ -106,8 +106,8 @@ class CreateUserPage(QWidget):
         self.register_button.clicked.connect(self.register_user)
         self.main_layout.addWidget(self.register_button, alignment=Qt.AlignCenter)
 
-        asyncio.ensure_future(self.update_role())
-        asyncio.ensure_future(self.update_sectors())
+        asyncio.create_task(self.update_role())
+        asyncio.create_task(self.update_sectors())
         
         self.update_roles_thread = QTimer(self)
         self.update_roles_thread.timeout.connect(self.update_role_wrapper)
@@ -158,7 +158,7 @@ class CreateUserPage(QWidget):
     async def update_role(self):
         DbRoles = await API_GetRoles()
         if DbRoles.success:
-            asyncio.ensure_future(self.create_roles(DbRoles.data))
+            asyncio.create_task(self.create_roles(DbRoles.data))
         else:
             Overlay.show_error(self, DbRoles.error_message)
 
@@ -173,7 +173,7 @@ class CreateUserPage(QWidget):
     async def update_sectors(self):
         response = await API_GetSectors()
         if response.success:
-            asyncio.ensure_future(self.create_sectors(response.data))
+            asyncio.create_task(self.create_sectors(response.data))
         else:
             Overlay.show_error(self, response.error_message)
 
@@ -185,10 +185,10 @@ class CreateUserPage(QWidget):
                 self.sector_input.addItem(f"{sector.nome_setor} - {sector.localizacao}", sector.setor_id)
 
     def update_sectors_wrapper(self):
-        asyncio.ensure_future(self.update_sectors())
+        asyncio.create_task(self.update_sectors())
         
     def update_role_wrapper(self):
-        asyncio.ensure_future(self.update_role())
+        asyncio.create_task(self.update_role())
 
 def password_generator():
     upper = random.choice(string.ascii_uppercase)

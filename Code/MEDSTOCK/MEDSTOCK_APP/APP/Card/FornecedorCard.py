@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButt
 from PyQt5.QtGui import QFont, QIcon, QCursor,QPixmap
 from PyQt5.QtCore import Qt, QSize
 from datetime import datetime
-from Class.RequerimentoFornecedor import RequerimentoFornecedor
+from Class.RequerimentoFornecedor import Requerimento_Fornecedor
 from Pages.p_Consumiveis import ConsumiveisTablePage
 from Class.ConsumivelManager import ConsumivelManager
 from APP.UI.ui_functions import UIFunctions
@@ -14,7 +14,7 @@ from APP.Overlays.Overlay import Overlay
 
 
 class FornecedorCard(QWidget):
-    def __init__(self,requerimento_fornecedor: RequerimentoFornecedor,consumivel_manager: ConsumivelManager, page_stock : ConsumiveisTablePage):
+    def __init__(self,requerimento_fornecedor: Requerimento_Fornecedor,consumivel_manager: ConsumivelManager, page_stock : ConsumiveisTablePage):
         super().__init__()
         self.consumivel_manager = consumivel_manager
         self.page_stock = page_stock

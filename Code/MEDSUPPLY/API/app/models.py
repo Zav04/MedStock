@@ -34,6 +34,8 @@ class Produto(db.Model):
         return f"<Produto {self.nome}, Quantidade: {self.quantidade}>"
 
 
+from sqlalchemy.sql import expression
+
 class Requerimento(db.Model):
     __tablename__ = 'requerimentos'
     id_requerimento = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -45,9 +47,14 @@ class Requerimento(db.Model):
         server_default='EM ESPERA'
     )
     data = db.Column(db.DateTime, server_default=db.func.now())
+    alocado = db.Column(
+        db.Boolean,
+        nullable=False,
+        default=False,
+        server_default=expression.false()
+    )
     fornecedor = db.relationship('Fornecedor', back_populates='requerimentos')
 
-    # Constraint para validar os estados
     __table_args__ = (
         CheckConstraint(
             "estado IN ('EM ESPERA', 'EM PREPARAÇÃO', 'ENVIADO', 'FINALIZADO')",
@@ -56,7 +63,8 @@ class Requerimento(db.Model):
     )
 
     def __repr__(self):
-        return f"<Requerimento ID: {self.id_requerimento}, Estado: {self.estado}>"
+        return f"<Requerimento ID: {self.id_requerimento}, Estado: {self.estado}, Alocado: {self.alocado}>"
+
 
 
 class Pedido(db.Model):

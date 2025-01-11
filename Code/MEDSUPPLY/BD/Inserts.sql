@@ -1,7 +1,7 @@
 -- Inserir Fornecedores
 INSERT INTO fornecedores (nome, categoria, tempo_min)
 VALUES
-    ('Fornecedor de Medicamentos', 'Medicamentos', 24),
+    ('Fornecedor de Medicamentos', 'Medicamento', 24),
     ('Fornecedor de Vacinas', 'Vacinas', 48),
     ('Fornecedor de Descartáveis', 'Material Hospitalar', 72),
     ('Fornecedor de Consumíveis', 'Outros', 36);
