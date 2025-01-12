@@ -102,6 +102,13 @@ class Dashboard(QMainWindow):
             UIFunctions.addNewMenu(self, "GESTOR DE ALA HOSPITALAR", "btn_gestor_setor", "url(:/20x20/icons/20x20/manage_accounts.png)", True)
             UIFunctions.addNewMenu(self, "ITENS STOCK", "btn_stock", "url(:/20x20/icons/20x20/cil-notes.png)", True)
         elif role == "Gestor Responsável":
+            
+            self.page_stock = ConsumiveisTablePage(self.consumivelmanager_child)
+            self.ui.stackedWidget.addWidget(self.page_stock)
+            
+            self.fornecedor=RequerimentoFornecedor(self.consumivelmanager_child, self.page_stock)
+            self.ui.stackedWidget.addWidget(self.fornecedor)
+            
             self.page_requerimento = RequerimentoPage(self.user, self.consumivelmanager_child, self.page_stock)
             self.ui.stackedWidget.addWidget(self.page_requerimento)
             
@@ -129,6 +136,9 @@ class Dashboard(QMainWindow):
             self.page_stock = ConsumiveisTablePage(self.consumivelmanager_child)
             self.ui.stackedWidget.addWidget(self.page_stock)
             
+            self.fornecedor=RequerimentoFornecedor(self.consumivelmanager_child, self.page_stock)
+            self.ui.stackedWidget.addWidget(self.fornecedor)
+            
             self.page_requerimento = RequerimentoPage(self.user, self.consumivelmanager_child, self.page_stock)
             self.ui.stackedWidget.addWidget(self.page_requerimento)
             
@@ -155,14 +165,14 @@ class Dashboard(QMainWindow):
         elif(self.user.role_nome == "Gestor Responsável"):
             page_map = {
                 "btn_home": (self.page_home, "Home"),
-                "btn_requerimento": (self.page_requerimento, "Requerimento"),
+                "btn_requerimento": (self.page_requerimento, "Requerimento - Gestor Responsável "),
                 "btn_log_out": None
             }
         elif(self.user.role_nome == "Farmacêutico"):
             page_map = {
                 "btn_home": (self.page_home, "Home"),
                 "btn_stock": (self.page_stock, "Stock"),
-                "btn_requerimento": (self.page_requerimento, "Requerimento"),
+                "btn_requerimento": (self.page_requerimento, "Requerimento - Farmacêutico"),
                 "btn_realocacoes": (self.page_realocacoes, "Realocações"),
                 "btn_fornecedor": (self.fornecedor, "Pedido Fornecedor"),
                 "btn_log_out": None
@@ -170,7 +180,7 @@ class Dashboard(QMainWindow):
         else:
             page_map = {
                 "btn_home": (self.page_home, "Home"),
-                "btn_requerimento": (self.page_requerimento, "Requerimento"),
+                "btn_requerimento": (self.page_requerimento, "Requerimento - Requerente"),
                 "btn_log_out": None
             }
 

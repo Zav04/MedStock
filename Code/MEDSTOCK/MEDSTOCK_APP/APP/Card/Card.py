@@ -527,11 +527,22 @@ class RequerimentoCard(QWidget):
                         f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
                         )
                 case 9:
+                    descricao_texto = ""
+                    if hist.descricao:
+                        descricao_limpa = hist.descricao.replace("Requerimento enviado para reavaliação.", "").strip()
+                        descricao_limpa = descricao_limpa.replace("\\n", ' ')
+                        if descricao_limpa:
+                            descricao_texto = (
+                                f"<br><span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                                f"Comentário:</span> "
+                                f"<span style='font-size:14px; color:#555555;'>{descricao_limpa}</span>"
+                            )
                     historico_text_label.setText(
                         f"<span style='font-size:16px; font-weight:bold; color:#000000;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
                         f"Colocado em Re-Validação por:</span> "
                         f"<span style='font-size:14px; color:#555555;'>{hist.user_responsavel}</span> "
                         f"<span style='font-size:14px; color:#555555;'>em {datetime.strptime(hist.data, '%Y-%m-%dT%H:%M:%S').strftime('%d-%m-%Y %H:%M')}</span>"
+                        f"{descricao_texto}"
                         )
                 case 10:
                     user_responsavel = hist.user_responsavel if hist.user_responsavel else "Sistema MedStock"
@@ -709,7 +720,7 @@ class RequerimentoCard(QWidget):
             observations = validation_dialog.get_observations()
             self.finishRequerimento(observations)
         elif validation_dialog.was_cancelled:
-            Overlay.show_information(top_parent, "Validação REQ-{self.requerimento.requerimento_id} Cancelada!")
+            Overlay.show_information(top_parent, f"Validação REQ-{self.requerimento.requerimento_id} Cancelada!")
         elif result == QDialog.Rejected:
             rejected_items = validation_dialog.get_rejected_items()
             observations = validation_dialog.get_observations()

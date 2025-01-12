@@ -118,7 +118,7 @@ class RequerimentoFornecedor(QWidget):
 
         self.content_layout.addLayout(horizontal_content_layout)
 
-    async def requerimentoInterno_page(self):
+    async def requerimentoFornecedor_page(self):
         create_button = QPushButton("Criar Pedido")
         create_button.setFixedSize(500, 40)
         create_button.setStyleSheet(Style.style_bt_QPushButton)
@@ -224,6 +224,7 @@ class RequerimentoFornecedor(QWidget):
                 else:
                     continue
 
+
             if novo_requerimento.status == "FINALIZADO" and not novo_requerimento.alocado:
                 asyncio.create_task(self.adicionar_consumivel(novo_requerimento))
                 API_UpdateRequerimentoAlocado(novo_requerimento.id_requerimento)
@@ -275,17 +276,17 @@ class RequerimentoFornecedor(QWidget):
     def reload_page_fornecedor(self):
         self.clear_layout(self.main_layout)
         self.setup_RequerimentoPage()
-        self.current_requerimentos_externos=[]
         self.load_requerimentos_fornecedor_wrapper()
         
     def load_requerimentos_fornecedor_wrapper(self):
+        self.current_requerimentos_externos=[]
         asyncio.create_task(self.load_requerimentos_fornecedor())
         
 
     def show_create_fornecedor_page_wrapper(self):
         self.clear_layout(self.main_layout)
         asyncio.create_task(self.show_create_fornecedor_page())
-        asyncio.create_task(self.requerimentoInterno_page())
+        asyncio.create_task(self.requerimentoFornecedor_page())
     
         
     def clear_layout(self, layout):
