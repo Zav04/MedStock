@@ -34,7 +34,7 @@ class RequerimentoFornecedor(QWidget):
         
         self.update_timer = QTimer(self)
         self.update_timer.timeout.connect(self.load_requerimentos_fornecedor_wrapper)
-        self.update_timer.start(60000)
+        self.update_timer.start(10000)
 
     def setup_RequerimentoPage(self):
         self.setup_page=True
@@ -223,15 +223,15 @@ class RequerimentoFornecedor(QWidget):
                     self.remove_requerimento_fornecedor_card(existing_requerimento.id_requerimento)
                 else:
                     continue
-
+                
 
             if novo_requerimento.status == "FINALIZADO" and not novo_requerimento.alocado:
                 asyncio.create_task(self.adicionar_consumivel(novo_requerimento))
                 API_UpdateRequerimentoAlocado(novo_requerimento.id_requerimento)
                 asyncio.create_task(self.load_consumiveis_update())
-
-            self.current_requerimentos_externos.append(novo_requerimento)
+                
             self.add_requerimento_fornecedor_card(novo_requerimento)
+            self.current_requerimentos_externos.append(novo_requerimento)
 
 
     def remove_requerimento_fornecedor_card(self, requerimento_id):
@@ -274,12 +274,12 @@ class RequerimentoFornecedor(QWidget):
             self.consumivel_manager.realocar_todos_requerimentos()
 
     def reload_page_fornecedor(self):
+        self.current_requerimentos_externos=[]
         self.clear_layout(self.main_layout)
         self.setup_RequerimentoPage()
         self.load_requerimentos_fornecedor_wrapper()
         
     def load_requerimentos_fornecedor_wrapper(self):
-        self.current_requerimentos_externos=[]
         asyncio.create_task(self.load_requerimentos_fornecedor())
         
 
